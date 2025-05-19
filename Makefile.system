@@ -270,6 +270,7 @@ SMALL_MATRIX_OPT = 1
 BUILD_BFLOAT16 = 1
 else ifeq ($(ARCH), arm64)
 SMALL_MATRIX_OPT = 1
+BUILD_BFLOAT16 = 1
 endif
 ifeq ($(ARCH), loongarch64)
 SMALL_MATRIX_OPT = 1
