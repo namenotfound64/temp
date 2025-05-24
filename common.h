@@ -313,6 +313,13 @@ typedef int blasint;
 #define SIZE   2
 #define BASE_SHIFT 1
 #define ZBASE_SHIFT 2
+#elif defined(FLOAT16)
+#define IFLOAT	float16
+#define XFLOAT	IFLOAT
+#define FLOAT	float
+#define SIZE	2
+#define BASE_SHIFT 1
+#define ZBASE_SHIFT 2
 #else
 #define FLOAT	float
 #define SIZE    4
