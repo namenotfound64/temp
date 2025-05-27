@@ -39,6 +39,11 @@ typedef unsigned long BLASULONG;
 typedef uint16_t bfloat16;
 #endif
 
+#ifndef HFLOAT16
+#include <stdint.h>
+typedef uint16_t hfloat16;
+#endif
+
 #ifdef OPENBLAS_USE64BITINT
 typedef BLASLONG blasint;
 #else

@@ -1889,6 +1889,7 @@ export TARGET_CORE
 export NO_AVX512
 export NO_AVX2
 export BUILD_BFLOAT16
+export BUILD_HFLOAT16
 export NO_LSX
 export NO_LASX
 
