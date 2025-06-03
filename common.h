@@ -266,9 +266,12 @@ typedef uint16_t bfloat16;
 #define BFLOAT16CONVERSION 1
 #endif
 
-#ifndef hfloat16
-#include <stdint.h>
-typedef uint16_t hfloat16;
+#ifdef BUILD_HFLOAT16
+  #ifndef hfloat16
+  typedef _Float16 hfloat16;
+  #endif
+#else
+  typedef uint16_t hfloat16;
 #endif
 
 #ifdef USE64BITINT

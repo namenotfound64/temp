@@ -1,5 +1,6 @@
 
 #include "common.h"
+#include <riscv_vector.h>
 
 int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B, FLOAT *C, BLASLONG ldc)
 {
@@ -14,7 +15,7 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
 
         for (BLASLONG i=0; i<M/8; i+=1) {
             BLASLONG ai=m_top*K;	
-            BLASLONG bi=n_top*K;	
+            BLASLONG bi=n_top*K;
             
             _Float16 B0 = B[bi+0];
             _Float16 B1 = B[bi+1];
@@ -50,17 +51,17 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
                 bi += 8;
 
                 A0 = __riscv_vle16_v_f16m1( &A[ai+0*gvl], gvl );
-                ai += 16;
+                ai += 8;
 
                 
-                result0 = __riscv_vfwmacc_vf_f32m2(result0, A0, B0, gvl);
-                result1 = __riscv_vfwmacc_vf_f32m2(result1, A0, B1, gvl);
-                result2 = __riscv_vfwmacc_vf_f32m2(result2, A0, B2, gvl);
-                result3 = __riscv_vfwmacc_vf_f32m2(result3, A0, B3, gvl);
-                result4 = __riscv_vfwmacc_vf_f32m2(result4, A0, B4, gvl);
-                result5 = __riscv_vfwmacc_vf_f32m2(result5, A0, B5, gvl);
-                result6 = __riscv_vfwmacc_vf_f32m2(result6, A0, B6, gvl);
-                result7 = __riscv_vfwmacc_vf_f32m2(result7, A0, B7, gvl);
+                result0 = __riscv_vfwmacc_vf_f32m2(result0, B0, A0, gvl);
+                result1 = __riscv_vfwmacc_vf_f32m2(result1, B1, A0, gvl);
+                result2 = __riscv_vfwmacc_vf_f32m2(result2, B2, A0, gvl);
+                result3 = __riscv_vfwmacc_vf_f32m2(result3, B3, A0, gvl);
+                result4 = __riscv_vfwmacc_vf_f32m2(result4, B4, A0, gvl);
+                result5 = __riscv_vfwmacc_vf_f32m2(result5, B5, A0, gvl);
+                result6 = __riscv_vfwmacc_vf_f32m2(result6, B6, A0, gvl);
+                result7 = __riscv_vfwmacc_vf_f32m2(result7, B7, A0, gvl);
             }
             
 
@@ -86,14 +87,14 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
 
             ci = n_top * ldc + m_top;
 
-            __riscv_vse16_v_f16m1( &C[ci], c0, gvl); ci += ldc-gvl*0;
-            __riscv_vse16_v_f16m1( &C[ci], c1, gvl); ci += ldc-gvl*0;
-            __riscv_vse16_v_f16m1( &C[ci], c2, gvl); ci += ldc-gvl*0;
-            __riscv_vse16_v_f16m1( &C[ci], c3, gvl); ci += ldc-gvl*0;
-            __riscv_vse16_v_f16m1( &C[ci], c4, gvl); ci += ldc-gvl*0;
-            __riscv_vse16_v_f16m1( &C[ci], c5, gvl); ci += ldc-gvl*0;
-            __riscv_vse16_v_f16m1( &C[ci], c6, gvl); ci += ldc-gvl*0;
-            __riscv_vse16_v_f16m1( &C[ci], c7, gvl); ci += ldc-gvl*0;
+            __riscv_vse32_v_f32m2( &C[ci], c0, gvl); ci += ldc-gvl*0;
+            __riscv_vse32_v_f32m2( &C[ci], c1, gvl); ci += ldc-gvl*0;
+            __riscv_vse32_v_f32m2( &C[ci], c2, gvl); ci += ldc-gvl*0;
+            __riscv_vse32_v_f32m2( &C[ci], c3, gvl); ci += ldc-gvl*0;
+            __riscv_vse32_v_f32m2( &C[ci], c4, gvl); ci += ldc-gvl*0;
+            __riscv_vse32_v_f32m2( &C[ci], c5, gvl); ci += ldc-gvl*0;
+            __riscv_vse32_v_f32m2( &C[ci], c6, gvl); ci += ldc-gvl*0;
+            __riscv_vse32_v_f32m2( &C[ci], c7, gvl); ci += ldc-gvl*0;
             m_top += 8;
         }
 
@@ -332,10 +333,10 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
                 A0 = __riscv_vle16_v_f16m1( &A[ai+0*gvl], gvl );
                 ai += 8;
 
-                result0 = __riscv_vfwmacc_vf_f32m2(result0, A0, B0, gvl);
-                result1 = __riscv_vfwmacc_vf_f32m2(result1, A0, B1, gvl);
-                result2 = __riscv_vfwmacc_vf_f32m2(result2, A0, B2, gvl);
-                result3 = __riscv_vfwmacc_vf_f32m2(result3, A0, B3, gvl);
+                result0 = __riscv_vfwmacc_vf_f32m2(result0, B0, A0, gvl);
+                result1 = __riscv_vfwmacc_vf_f32m2(result1, B1, A0, gvl);
+                result2 = __riscv_vfwmacc_vf_f32m2(result2, B2, A0, gvl);
+                result3 = __riscv_vfwmacc_vf_f32m2(result3, B3, A0, gvl);
             }
             
 
@@ -353,10 +354,10 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
 
             ci = n_top * ldc + m_top;
 
-            __riscv_vse16_v_f16m1( &C[ci], c0, gvl); ci += ldc-gvl*0;
-            __riscv_vse16_v_f16m1( &C[ci], c1, gvl); ci += ldc-gvl*0;
-            __riscv_vse16_v_f16m1( &C[ci], c2, gvl); ci += ldc-gvl*0;
-            __riscv_vse16_v_f16m1( &C[ci], c3, gvl);
+            __riscv_vse32_v_f32m2( &C[ci], c0, gvl); ci += ldc-gvl*0;
+            __riscv_vse32_v_f32m2( &C[ci], c1, gvl); ci += ldc-gvl*0;
+            __riscv_vse32_v_f32m2( &C[ci], c2, gvl); ci += ldc-gvl*0;
+            __riscv_vse32_v_f32m2( &C[ci], c3, gvl);
             m_top += 8;
         }
 
@@ -521,8 +522,8 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
                 A0 = __riscv_vle16_v_f16m1( &A[ai+0*gvl], gvl );
                 ai += 8;
 
-                result0 = __riscv_vfwmacc_vf_f32m2(result0, A0, B0, gvl);
-                result1 = __riscv_vfwmacc_vf_f32m2(result1, A0, B1, gvl);
+                result0 = __riscv_vfwmacc_vf_f32m2(result0, B0, A0, gvl);
+                result1 = __riscv_vfwmacc_vf_f32m2(result1, B1, A0, gvl);
             }
 
 
@@ -536,8 +537,8 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
 
             ci = n_top * ldc + m_top;
 
-            __riscv_vse16_v_f16m1( &C[ci], c0, gvl); ci += ldc-gvl*0;
-            __riscv_vse16_v_f16m1( &C[ci], c1, gvl); 
+            __riscv_vse32_v_f32m2( &C[ci], c0, gvl); ci += ldc-gvl*0;
+            __riscv_vse32_v_f32m2( &C[ci], c1, gvl); 
             m_top += 8;
         }
 
@@ -604,7 +605,6 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
                 bi+=2;
             }
             
-            
             BLASLONG ci=n_top*ldc+m_top;
             C[ci + 0 * ldc + 0] += alpha * result0;
             C[ci + 0 * ldc + 1] += alpha * result1;
@@ -665,7 +665,7 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
                 A0 = __riscv_vle16_v_f16m1( &A[ai+0*gvl], gvl );
                 ai += 8;
 
-                result0 = __riscv_vfwmacc_vf_f32m2(result0, A0, B0, gvl);
+                result0 = __riscv_vfwmacc_vf_f32m2(result0, B0, A0, gvl);
             }
 
 
@@ -677,7 +677,7 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
 
             ci = n_top * ldc + m_top;
 
-            __riscv_vse16_v_f16m1( &C[ci], c0, gvl);
+            __riscv_vse32_v_f32m2( &C[ci], c0, gvl);
             m_top += 8;
         }
 
