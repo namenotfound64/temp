@@ -52,6 +52,7 @@
 
 @blasobjs = (lsame, xerbla);
 @bfblasobjs = (sbgemm, sbgemmt, sbgemmtr, sbgemv, sbdot, sbstobf16, sbdtobf16, sbf16tos, dbf16tod);
+@hfblasobjs = (shgemm);
 @cblasobjsc = (
     cblas_caxpy, cblas_ccopy, cblas_cdotc, cblas_cdotu, cblas_cgbmv, cblas_cgemm, cblas_cgemv,
     cblas_cgerc, cblas_cgeru, cblas_chbmv, cblas_chemm, cblas_chemv, cblas_cher2, cblas_cher2k,
@@ -97,7 +98,7 @@
 @cblasobjs = (  cblas_xerbla );
 
 @bfcblasobjs = (cblas_sbgemm, cblas_sbgemmt, cblas_sbgemmtr, cblas_sbgemv, cblas_sbdot, cblas_sbstobf16, cblas_sbdtobf16, cblas_sbf16tos, cblas_dbf16tod, cblas_sbgemm_batch);
-
+@hfcblasobjs = (cblas_shgemm);
 @exblasobjs = (
     qamax,qamin,qasum,qaxpy,qcabs1,qcopy,qdot,qgbmv,qgemm,
     qgemv,qger,qmax,qmin,
@@ -3773,8 +3774,8 @@ use File::Basename;
 my $dirname = File::Spec->catfile(dirname(dirname(File::Spec->rel2abs(__FILE__))), "lapack-netlib");
 
 if ($ARGV[12] == 1) {
-	@blasobjs = (@blasobjs, @bfblasobjs);
-	@cblasobjs = (@cblasobjs, @bfcblasobjs);
+	@blasobjs = (@blasobjs, @bfblasobjs, @hfblasobjs);
+	@cblasobjs = (@cblasobjs, @bfcblasobjs, @hfcblasobjs);
 }
 if ($ARGV[13] == 1) {
 	@blasobjs = (@blasobjs, @blasobjss);

@@ -39,6 +39,9 @@ endif
 ifndef BUILD_BFLOAT16
 BUILD_BFLOAT16 = 0
 endif
+ifndef BUILD_HFLOAT16
+BUILD_HFLOAT16 = 0
+endif
 ifndef BUILD_SINGLE
 BUILD_SINGLE = 0
 endif

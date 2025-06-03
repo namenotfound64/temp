@@ -152,6 +152,9 @@ endif ()
 if (NOT DEFINED BUILD_BFLOAT16)
  set (BUILD_BFLOAT16 false)
 endif ()
+if (NOT DEFINED BUILD_HFLOAT16)
+ set (BUILD_HFLOAT16 false)
+endif ()
 # set which float types we want to build for
 if (NOT DEFINED BUILD_SINGLE AND NOT DEFINED BUILD_DOUBLE AND NOT DEFINED BUILD_COMPLEX AND NOT DEFINED BUILD_COMPLEX16)
   # if none are defined, build for all

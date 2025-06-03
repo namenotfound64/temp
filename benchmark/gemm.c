@@ -35,6 +35,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define GEMM   BLASFUNC(dgemm)
 #elif defined(HALF)
 #define GEMM   BLASFUNC(sbgemm)
+#elif defined(HFLOAT16)
+#define GEMM   BLASFUNC(shgemm)
 #else
 #define GEMM   BLASFUNC(sgemm)
 #endif

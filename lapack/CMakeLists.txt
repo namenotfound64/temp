@@ -3,6 +3,7 @@ include_directories(${PROJECT_SOURCE_DIR})
 include_directories(${PROJECT_BINARY_DIR})
 
 list (REMOVE_ITEM FLOAT_TYPES "BFLOAT16")
+list (REMOVE_ITEM FLOAT_TYPES "HFLOAT16")
 
 set(LAPACK_SOURCES
   potrf/potrf_U_single.c

@@ -2,7 +2,7 @@
 #define CBLAS_H
 
 #include <stddef.h>
-#include "common.h"
+#include "openblas_config.h"
 
 #ifdef __cplusplus
 extern "C" {
