@@ -280,7 +280,6 @@ GEMM_GEMV_FORWARD_BF16 = 1
 endif
 ifeq ($(ARCH), riscv)
 GEMM_GEMV_FORWARD = 1
-BUILD_HFLOAT16 = 1
 endif
 ifeq ($(ARCH), power)
 GEMM_GEMV_FORWARD = 1

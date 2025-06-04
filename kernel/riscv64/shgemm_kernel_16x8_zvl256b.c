@@ -4,18 +4,18 @@
 int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B, FLOAT *C, BLASLONG ldc)
 {
     BLASLONG gvl = 0;
-    volatile BLASLONG m_top = 0;
+    BLASLONG m_top = 0;
     BLASLONG n_top = 0;
 
     // -- MAIN PASS
     for (BLASLONG j=0; j<N/8; j+=1) {
         m_top = 0;
-        BLASLONG gvl = __riscv_vsetvl_e16m1(16);// 设置向量长度为16
+        BLASLONG gvl = __riscv_vsetvl_e16m1(16);
 
         for (BLASLONG i=0; i<M/16; i+=1) {
-            BLASLONG ai=m_top*K;	// A矩阵的当前行索引
-            BLASLONG bi=n_top*K;	// B矩阵的当前列索引
-            // 加载B矩阵的8个元素
+            BLASLONG ai=m_top*K;	
+            BLASLONG bi=n_top*K;	
+
             _Float16 B0 = B[bi+0];
             _Float16 B1 = B[bi+1];
             _Float16 B2 = B[bi+2];
@@ -26,10 +26,9 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
             _Float16 B7 = B[bi+7];
             bi += 8;
 
-		    // 加载A矩阵的16个元素，并与B矩阵元素相乘
             vfloat16m1_t A0 = __riscv_vle16_v_f16m1( &A[ai+0*gvl], gvl );
             ai += 16;
-		    // 执行乘法运算，并转换为32位浮点数进行累加
+            
             vfloat32m2_t result0 = __riscv_vfwmul_vf_f32m2( A0, B0, gvl);
             vfloat32m2_t result1 = __riscv_vfwmul_vf_f32m2( A0, B1, gvl);
             vfloat32m2_t result2 = __riscv_vfwmul_vf_f32m2( A0, B2, gvl);
@@ -38,7 +37,7 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
             vfloat32m2_t result5 = __riscv_vfwmul_vf_f32m2( A0, B5, gvl);
             vfloat32m2_t result6 = __riscv_vfwmul_vf_f32m2( A0, B6, gvl);
             vfloat32m2_t result7 = __riscv_vfwmul_vf_f32m2( A0, B7, gvl);
-		    // 循环处理K维度的剩余部分
+            
             for(BLASLONG k=1; k<K; k++) {
                 B0 = B[bi+0];
                 B1 = B[bi+1];
@@ -51,7 +50,7 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
                 bi += 8;
                 A0 = __riscv_vle16_v_f16m1( &A[ai+0*gvl], gvl );
                 ai += 16;
-                // 执行乘法和累加运算
+                
                 result0 = __riscv_vfwmacc_vf_f32m2(result0, B0, A0, gvl);
                 result1 = __riscv_vfwmacc_vf_f32m2(result1, B1, A0, gvl);
                 result2 = __riscv_vfwmacc_vf_f32m2(result2, B2, A0, gvl);
@@ -61,7 +60,7 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
                 result6 = __riscv_vfwmacc_vf_f32m2(result6, B6, A0, gvl);
                 result7 = __riscv_vfwmacc_vf_f32m2(result7, B7, A0, gvl);
             }
-	        // 加载C矩阵的元素，并与计算结果相加
+            
             BLASLONG ci=n_top*ldc+m_top;
 
             vfloat32m2_t c0 = __riscv_vle32_v_f32m2( &C[ci], gvl); ci += ldc-gvl*0;
@@ -72,7 +71,7 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
             vfloat32m2_t c5 = __riscv_vle32_v_f32m2( &C[ci], gvl); ci += ldc-gvl*0;
             vfloat32m2_t c6 = __riscv_vle32_v_f32m2( &C[ci], gvl); ci += ldc-gvl*0;
             vfloat32m2_t c7 = __riscv_vle32_v_f32m2( &C[ci], gvl);
-            	// 将C矩阵元素转换为32位单精度浮点数，并与计算结果相加
+            
             c0 = __riscv_vfmacc_vf_f32m2(c0, alpha, result0, gvl);
             c1 = __riscv_vfmacc_vf_f32m2(c1, alpha, result1, gvl);
             c2 = __riscv_vfmacc_vf_f32m2(c2, alpha, result2, gvl);
@@ -98,9 +97,9 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
 
 
         // -- tails for main pass
-	    // 处理M维度的剩余部分（如果M不是16的倍数）
+        
         if( M & 8 ) {
-            gvl = __riscv_vsetvl_e16m1(8);
+            gvl = __riscv_vsetvl_e16mf2(8);
 
             BLASLONG ai=m_top*K;
             BLASLONG bi=n_top*K;
@@ -185,7 +184,7 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
 
 
         if( M & 4 ) {
-            gvl = __riscv_vsetvl_e16m1(4);
+            gvl = __riscv_vsetvl_e16mf2(4);
 
             BLASLONG ai=m_top*K;
             BLASLONG bi=n_top*K;
@@ -276,10 +275,6 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
         }
 
         if( M & 2 ) {
-
-            BLASLONG ai = m_top * K;
-            BLASLONG bi = n_top * K;
-
             float result0 = 0;
             float result1 = 0;
             float result2 = 0;
@@ -296,7 +291,9 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
             float result13 = 0;
             float result14 = 0;
             float result15 = 0;
-
+            BLASLONG ai = m_top * K;
+            BLASLONG bi = n_top * K;
+            
             for(BLASLONG k=0; k<K; k++) {
                 result0+=(float)(A[ai+0]*B[bi+0]);
                 result1+=(float)(A[ai+1]*B[bi+0]);
@@ -387,24 +384,24 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
         m_top = 0;
 
         for (BLASLONG i=0; i<M/16; i+=1) {
-            BLASLONG ai=m_top*K;	// A矩阵的当前行索引
-            BLASLONG bi=n_top*K;	// B矩阵的当前列索引
-            // 加载B矩阵的4个元素
+            BLASLONG ai=m_top*K;	
+            BLASLONG bi=n_top*K;	
+            
             _Float16 B0 = B[bi+0];
             _Float16 B1 = B[bi+1];
             _Float16 B2 = B[bi+2];
             _Float16 B3 = B[bi+3];
             bi += 4;
 
-		    // 加载A矩阵的16个元素，并与B矩阵元素相乘
+            
             vfloat16m1_t A0 = __riscv_vle16_v_f16m1( &A[ai+0*gvl], gvl );
             ai += 16;
-		    // 执行乘法运算，并转换为32位浮点数进行累加
+            
             vfloat32m2_t result0 = __riscv_vfwmul_vf_f32m2( A0, B0, gvl);
             vfloat32m2_t result1 = __riscv_vfwmul_vf_f32m2( A0, B1, gvl);
             vfloat32m2_t result2 = __riscv_vfwmul_vf_f32m2( A0, B2, gvl);
             vfloat32m2_t result3 = __riscv_vfwmul_vf_f32m2( A0, B3, gvl);
-		    // 循环处理K维度的剩余部分
+            
             for(BLASLONG k=1; k<K; k++) {
                 B0 = B[bi+0];
                 B1 = B[bi+1];
@@ -414,20 +411,20 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
 
                 A0 = __riscv_vle16_v_f16m1( &A[ai+0*gvl], gvl );
                 ai += 16;
-                // 执行乘法和累加运算
+                
                 result0 = __riscv_vfwmacc_vf_f32m2(result0, B0, A0, gvl);
                 result1 = __riscv_vfwmacc_vf_f32m2(result1, B1, A0, gvl);
                 result2 = __riscv_vfwmacc_vf_f32m2(result2, B2, A0, gvl);
                 result3 = __riscv_vfwmacc_vf_f32m2(result3, B3, A0, gvl);
             }
-	        // 加载C矩阵的元素，并与计算结果相加
+            
             BLASLONG ci=n_top*ldc+m_top;
 
             vfloat32m2_t c0 = __riscv_vle32_v_f32m2( &C[ci], gvl); ci += ldc-gvl*0;
             vfloat32m2_t c1 = __riscv_vle32_v_f32m2( &C[ci], gvl); ci += ldc-gvl*0;
             vfloat32m2_t c2 = __riscv_vle32_v_f32m2( &C[ci], gvl); ci += ldc-gvl*0;
             vfloat32m2_t c3 = __riscv_vle32_v_f32m2( &C[ci], gvl);
-            	// 将C矩阵元素转换为32位单精度浮点数，并与计算结果相加
+            
             c0 = __riscv_vfmacc_vf_f32m2(c0, alpha, result0, gvl);
             c1 = __riscv_vfmacc_vf_f32m2(c1, alpha, result1, gvl);
             c2 = __riscv_vfmacc_vf_f32m2(c2, alpha, result2, gvl);
@@ -443,7 +440,7 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
         }
 
         if( M & 8 ) {
-            gvl = __riscv_vsetvl_e16m1(8);
+            gvl = __riscv_vsetvl_e16mf2(8);
             BLASLONG ai=m_top*K;	
             BLASLONG bi=n_top*K;	
             
@@ -500,7 +497,7 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
         }
 
         if( M & 4 ) {
-            gvl = __riscv_vsetvl_e16m1(4);
+            gvl = __riscv_vsetvl_e16mf2(4);
 
             BLASLONG ai=m_top*K;
             BLASLONG bi=n_top*K;
@@ -560,10 +557,6 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
 
 
         if( M & 2 ) {
-
-            BLASLONG ai = m_top * K;
-            BLASLONG bi = n_top * K;
-
             float result0 = 0;
             float result1 = 0;
             float result2 = 0;
@@ -572,6 +565,8 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
             float result5 = 0;
             float result6 = 0;
             float result7 = 0;
+            BLASLONG ai = m_top * K;
+            BLASLONG bi = n_top * K;
 
             for(BLASLONG k=0; k<K; k++) {
                 result0+=(float)(A[ai+0]*B[bi+0]);
@@ -639,20 +634,20 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
         m_top = 0;
 
         for (BLASLONG i=0; i<M/16; i+=1) {
-            BLASLONG ai=m_top*K;	// A矩阵的当前行索引
-            BLASLONG bi=n_top*K;	// B矩阵的当前列索引
-            // 加载B矩阵的4个元素
+            BLASLONG ai=m_top*K;	
+            BLASLONG bi=n_top*K;	
+            
             _Float16 B0 = B[bi+0];
             _Float16 B1 = B[bi+1];
             bi += 2;
 
-		    // 加载A矩阵的16个元素，并与B矩阵元素相乘
+            
             vfloat16m1_t A0 = __riscv_vle16_v_f16m1( &A[ai+0*gvl], gvl );
             ai += 16;
-		    // 执行乘法运算，并转换为32位浮点数进行累加
+            
             vfloat32m2_t result0 = __riscv_vfwmul_vf_f32m2( A0, B0, gvl);
             vfloat32m2_t result1 = __riscv_vfwmul_vf_f32m2( A0, B1, gvl);
-		    // 循环处理K维度的剩余部分
+            
             for(BLASLONG k=1; k<K; k++) {
                 B0 = B[bi+0];
                 B1 = B[bi+1];
@@ -660,16 +655,15 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
 
                 A0 = __riscv_vle16_v_f16m1( &A[ai+0*gvl], gvl );
                 ai += 16;
-                // 执行乘法和累加运算
+
                 result0 = __riscv_vfwmacc_vf_f32m2(result0, B0, A0, gvl);
                 result1 = __riscv_vfwmacc_vf_f32m2(result1, B1, A0, gvl);
             }
-	        // 加载C矩阵的元素，并与计算结果相加
+
             BLASLONG ci=n_top*ldc+m_top;
 
             vfloat32m2_t c0 = __riscv_vle32_v_f32m2( &C[ci], gvl); ci += ldc-gvl*0;
             vfloat32m2_t c1 = __riscv_vle32_v_f32m2( &C[ci], gvl);
-            	// 将C矩阵元素转换为32位单精度浮点数，并与计算结果相加
             c0 = __riscv_vfmacc_vf_f32m2(c0, alpha, result0, gvl);
             c1 = __riscv_vfmacc_vf_f32m2(c1, alpha, result1, gvl);
 
@@ -681,7 +675,7 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
         }
 
         if( M & 8 ) {
-            gvl = __riscv_vsetvl_e16m1(8);
+            gvl = __riscv_vsetvl_e16mf2(8);
             BLASLONG ai=m_top*K;	
             BLASLONG bi=n_top*K;	
             
@@ -724,7 +718,7 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
         }
 
         if( M & 4 ) {
-            gvl = __riscv_vsetvl_e16m1(4);
+            gvl = __riscv_vsetvl_e16mf2(4);
 
             BLASLONG ai=m_top*K;
             BLASLONG bi=n_top*K;
@@ -826,32 +820,30 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
         m_top = 0;
 
         for (BLASLONG i=0; i<M/16; i+=1) {
-            BLASLONG ai=m_top*K;	// A矩阵的当前行索引
-            BLASLONG bi=n_top*K;	// B矩阵的当前列索引
-            // 加载B矩阵的4个元素
+            BLASLONG ai=m_top*K;	
+            BLASLONG bi=n_top*K;	
             _Float16 B0 = B[bi+0];
             bi += 1;
 
-		    // 加载A矩阵的16个元素，并与B矩阵元素相乘
             vfloat16m1_t A0 = __riscv_vle16_v_f16m1( &A[ai+0*gvl], gvl );
             ai += 16;
-		    // 执行乘法运算，并转换为32位浮点数进行累加
+
             vfloat32m2_t result0 = __riscv_vfwmul_vf_f32m2( A0, B0, gvl);
-		    // 循环处理K维度的剩余部分
+
             for(BLASLONG k=1; k<K; k++) {
                 B0 = B[bi+0];
                 bi += 1;
 
                 A0 = __riscv_vle16_v_f16m1( &A[ai+0*gvl], gvl );
                 ai += 16;
-                // 执行乘法和累加运算
+                
                 result0 = __riscv_vfwmacc_vf_f32m2(result0, B0, A0, gvl);
             }
-	        // 加载C矩阵的元素，并与计算结果相加
+            
             BLASLONG ci=n_top*ldc+m_top;
 
             vfloat32m2_t c0 = __riscv_vle32_v_f32m2( &C[ci], gvl);
-            	// 将C矩阵元素转换为32位单精度浮点数，并与计算结果相加
+            
             c0 = __riscv_vfmacc_vf_f32m2(c0, alpha, result0, gvl);
 
             ci=n_top*ldc+m_top;
@@ -861,7 +853,7 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
         }
 
         if( M & 8 ) {
-            gvl = __riscv_vsetvl_e16m1(8);
+            gvl = __riscv_vsetvl_e16mf2(8);
             BLASLONG ai=m_top*K;	
             BLASLONG bi=n_top*K;	
             
@@ -897,7 +889,7 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
         }
 
         if( M & 4 ) {
-            gvl = __riscv_vsetvl_e16m1(4);
+            gvl = __riscv_vsetvl_e16mf2(4);
 
             BLASLONG ai=m_top*K;
             BLASLONG bi=n_top*K;
@@ -932,12 +924,10 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
 
 
         if( M & 2 ) {
-
-            BLASLONG ai = m_top * K;
-            BLASLONG bi = n_top * K;
-
             float result0 = 0;
             float result1 = 0;
+            BLASLONG ai = m_top * K;
+            BLASLONG bi = n_top * K;
 
             for(BLASLONG k=0; k<K; k++) {
                 result0+=(float)(A[ai+0]*B[bi+0]);
