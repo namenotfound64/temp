@@ -106,3 +106,12 @@ DASUMKERNEL = dasum.c
 
 SROTKERNEL = srot.c
 DROTKERNEL = drot.c
+
+
+ifeq ($(BUILD_BFLOAT16), 1)
+SHGEMMKERNEL    =  ../generic/gemmkernel_2x2.c
+SHGEMMONCOPY    =  ../generic/gemm_ncopy_2.c
+SHGEMMOTCOPY    =  ../generic/gemm_tcopy_2.c
+SHGEMMONCOPYOBJ =  shgemm_oncopy$(TSUFFIX).$(SUFFIX)
+SHGEMMOTCOPYOBJ =  shgemm_otcopy$(TSUFFIX).$(SUFFIX)
+endif

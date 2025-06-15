@@ -3774,10 +3774,14 @@ use File::Basename;
 my $dirname = File::Spec->catfile(dirname(dirname(File::Spec->rel2abs(__FILE__))), "lapack-netlib");
 
 if ($ARGV[12] == 1) {
-	@blasobjs = (@blasobjs, @bfblasobjs, @hfblasobjs);
-	@cblasobjs = (@cblasobjs, @bfcblasobjs, @hfcblasobjs);
+	@blasobjs = (@blasobjs, @bfblasobjs);
+	@cblasobjs = (@cblasobjs, @bfcblasobjs);
 }
 if ($ARGV[13] == 1) {
+	@blasobjs = (@blasobjs, @hfblasobjs);
+	@cblasobjs = (@cblasobjs, @hfcblasobjs);
+}
+if ($ARGV[14] == 1) {
 	@blasobjs = (@blasobjs, @blasobjss);
 	@cblasobjs = (@cblasobjs, @cblasobjss);
 	@lapackobjs = (@lapackobjs, @lapackobjss);
@@ -3789,11 +3793,11 @@ if ($ARGV[13] == 1) {
 	@lapack_embeded_underscore_objs = (@lapack_embeded_underscore_objs,  @lapack_embeded_underscore_objs_s); 
 	@lapackeobjs = (@lapackeobjs, @lapackeobjss);
 }
-if ($ARGV[14] == 1) {
+if ($ARGV[15] == 1) {
 	@blasobjs = (@blasobjs, @blasobjsd);
 	@cblasobjs = (@cblasobjs, @cblasobjsd);
 	@lapackobjs = (@lapackobjs, @lapackobjsd);
-	if ($ARGV[13] == 0) { 
+	if ($ARGV[14] == 0) { 
 		@lapackobjs2 = (@lapackobjs2, @lapackobjs2ds);
 	}
 	@lapackobjs2 = (@lapackobjs2, @lapackobjs2d, @lapackobjs2dz);
@@ -3802,14 +3806,14 @@ if ($ARGV[14] == 1) {
 	@lapack_embeded_underscore_objs = (@lapack_embeded_underscore_objs,  @lapack_embeded_underscore_objs_d);
 	@lapackeobjs = (@lapackeobjs, @lapackeobjsd);
 }
-if ($ARGV[15] == 1) {
+if ($ARGV[16] == 1) {
 	@blasobjs = (@blasobjs, @blasobjsc);
 	@cblasobjs = (@cblasobjs, @cblasobjsc);
 	@gemm3mobjs = (@gemm3mobjs, @gemm3mobjsc);
 	@cblasgemm3mobjs = (@cblasgemm3mobjs, @cblasgemm3mobjsc);
 	@lapackobjs = (@lapackobjs, @lapackobjsc);
 	@lapackobjs2 = (@lapackobjs2, @lapackobjs2c, @lapackobjs2zc);
-	if ($ARGV[13] == 0) { 
+	if ($ARGV[14] == 0) { 
 		@lapackobjs2 = (@lapackobjs2, @lapackobjs2sc);
 	}
 	@lapack_deprecated_objs = (@lapack_deprecated_objs, @lapack_deprecated_objsc);
@@ -3817,17 +3821,17 @@ if ($ARGV[15] == 1) {
 	@lapack_embeded_underscore_objs = (@lapack_embeded_underscore_objs,  @lapack_embeded_underscore_objs_c);
 	@lapackeobjs = (@lapackeobjs, @lapackeobjsc);
 }
-if ($ARGV[16] == 1) {
+if ($ARGV[17] == 1) {
 	@blasobjs = (@blasobjs, @blasobjsz);
 	@cblasobjs = (@cblasobjs, @cblasobjsz);
 	@gemm3mobjs = (@gemm3mobjs, @gemm3mobjsz);
 	@cblasgemm3mobjs = (@cblasgemm3mobjs, @cblasgemm3mobjsz);
 	@lapackobjs = (@lapackobjs, @lapackobjsz);
 	@lapackobjs2 = (@lapackobjs2, @lapackobjs2z);
-	if ($ARGV[15] == 0) { 
+	if ($ARGV[16] == 0) { 
 		@lapackobjs2 = (@lapackobjs2, @lapackobjs2zc);
 	}
-	if ($ARGV[14] == 0) { 
+	if ($ARGV[15] == 0) { 
 		@lapackobjs2 = (@lapackobjs2, @lapackobjs2dz);
 	}
 	@lapack_deprecated_objs = (@lapack_deprecated_objs, @lapack_deprecated_objsz);
