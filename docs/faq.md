@@ -91,7 +91,7 @@ like Intel Haswell. There once was an effort to build an OpenCL implementation t
 
 We obtained a performance comparable with Intel MKL that actually outperformed Intel MKL in some cases.
 Here is the result of the DGEMM subroutine's performance on Intel Core i5-2500K Windows 7 SP1 64-bit:
-![Single Thread DGEMM Performance on Intel Desktop Sandy Bridge](http://xianyi.github.com/OpenBLAS/dgemm_snb_1thread.png)
+![Single Thread DGEMM Performance on Intel Desktop Sandy Bridge](dgemm_snb_1thread.png)
 
 <hr noshade="noshade">
 
