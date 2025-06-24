@@ -305,8 +305,8 @@ if (USE_OPENMP)
   endif()
 endif()
 
-# Fix "Argument list too long" for macOS with Intel CPUs and DYNAMIC_ARCH turned on
-if(APPLE AND DYNAMIC_ARCH AND (NOT CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "arm64"))
+# Fix "Argument list too long" for macOS with POWERPC or Intel CPUs 
+if(APPLE AND (NOT CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "arm64"))
   # Use response files
   set(CMAKE_C_USE_RESPONSE_FILE_FOR_OBJECTS 1)
   # Always build static library first
