@@ -136,6 +136,9 @@ if (BUILD_BFLOAT16)
 	GenerateNamedObjects("gemm_batch.c" "" "sbgemm_batch" ${CBLAS_FLAG} "" "" true "BFLOAT16")
 endif ()
 endif ()
+if (BUILD_HFLOAT16)
+  GenerateNamedObjects("gemm.c" "" "shgemm" ${CBLAS_FLAG} "" "" true "HFLOAT16")
+endif ()
 
 # complex-specific sources
 foreach (float_type ${FLOAT_TYPES})
