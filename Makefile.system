@@ -1193,6 +1193,13 @@ endif
 else ifeq ($(ARCH), $(filter $(ARCH),mips))
 FCOMMON_OPT += -mabi=32
 endif
+ifeq ($(ARCH), $(filter $(ARCH),loongarch64))
+ifdef INTERFACE64
+ifneq ($(INTERFACE64), 0)
+FCOMMON_OPT +=  -fdefault-integer-8
+endif
+endif
+endif
 else
 ifdef BINARY64
 ifneq ($(OSNAME), AIX)
