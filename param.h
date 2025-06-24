@@ -3635,7 +3635,7 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 #define CGEMM_DEFAULT_R 4096
 #define ZGEMM_DEFAULT_R 4096
 
-#elif defined(AMPERE1) || defined(AMPERE1A)
+#elif defined(AMPERE1)
 
 #if defined(XDOUBLE) || defined(DOUBLE)
 #define SWITCH_RATIO            8

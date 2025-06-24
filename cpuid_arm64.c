@@ -80,7 +80,6 @@ size_t length64=sizeof(value64);
 // Ampere
 #define CPU_EMAG8180	 10
 #define CPU_AMPERE1      25
-#define CPU_AMPERE1A     26
 // Apple
 #define CPU_VORTEX       13
 // Fujitsu
@@ -114,8 +113,7 @@ static char *cpuname[] = {
   "FT2000",
   "CORTEXA76",
   "NEOVERSEV2",
-  "AMPERE1",
-  "AMPERE1A"
+  "AMPERE1"
 };
 
 static char *cpuname_lower[] = {
@@ -341,10 +339,8 @@ int detect(void)
     else if (strstr(cpu_implementer, "0x50") && strstr(cpu_part, "0x000"))
                         return CPU_EMAG8180;
     else if (strstr(cpu_implementer, "0xc0")) {
-        if (strstr(cpu_part, "0xac3"))
+        if (strstr(cpu_part, "0xac3") || strstr(cpu_part, "0xac4"))
             return CPU_AMPERE1;
-        else if (strstr(cpu_part, "0xac4"))
-            return CPU_AMPERE1A;
     }
     // Fujitsu
     else if (strstr(cpu_implementer, "0x46") && strstr(cpu_part, "0x001"))
@@ -697,7 +693,6 @@ void get_cpuconfig(void)
 		break;
 
 	    case CPU_AMPERE1:
-	    case CPU_AMPERE1A:
 		printf("#define %s\n", cpuname[d]);
 		printf("#define L1_CODE_SIZE 16384\n");
 		printf("#define L1_CODE_LINESIZE 64\n");
