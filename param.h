@@ -3701,6 +3701,12 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 
 #elif defined(A64FX) // 512-bit SVE
 
+#if defined(XDOUBLE) || defined(DOUBLE)
+#define GEMM_PREFERED_SIZE  8
+#else
+#define GEMM_PREFERED_SIZE 16
+#endif
+
 /* When all BLAS3 routines are implemeted with SVE, SGEMM_DEFAULT_UNROLL_M should be "sve_vl".
 Until then, just keep it different than DGEMM_DEFAULT_UNROLL_N to keep copy routines in both directions seperated. */
 #define SGEMM_DEFAULT_UNROLL_M  4
