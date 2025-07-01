@@ -221,6 +221,7 @@ if (NOT NO_LAPACK)
   GenerateNamedObjects("lapack/lauu2.c" "" "" 0 "" "" 0 3)
   GenerateNamedObjects("lapack/trti2.c" "" "" 0 "" "" 0 3)
   endif()
+  GenerateNamedObjects("lapack/laed3.c" "" "" 0 "" "" 0 1)
 endif ()
 
 if ( BUILD_COMPLEX AND NOT  BUILD_SINGLE)

@@ -429,8 +429,8 @@ XBLASOBJS    = $(XBLAS1OBJS) $(XBLAS2OBJS) $(XBLAS3OBJS)
 SLAPACKOBJS	= \
 	sgetrf.$(SUFFIX) sgetrs.$(SUFFIX) spotrf.$(SUFFIX) sgetf2.$(SUFFIX) \
 	spotf2.$(SUFFIX) slaswp.$(SUFFIX) sgesv.$(SUFFIX) slauu2.$(SUFFIX)  \
-	slauum.$(SUFFIX) strti2.$(SUFFIX) strtri.$(SUFFIX) strtrs.$(SUFFIX)
-
+	slauum.$(SUFFIX) strti2.$(SUFFIX) strtri.$(SUFFIX) strtrs.$(SUFFIX) \
+	slaed3.$(SUFFIX)
 
 #DLAPACKOBJS	= \
 #	dgetrf.$(SUFFIX) dgetrs.$(SUFFIX) dpotrf.$(SUFFIX) dgetf2.$(SUFFIX) \
@@ -440,8 +440,8 @@ SLAPACKOBJS	= \
 DLAPACKOBJS	= \
 	dgetrf.$(SUFFIX) dgetrs.$(SUFFIX) dpotrf.$(SUFFIX) dgetf2.$(SUFFIX) \
 	dpotf2.$(SUFFIX) dlaswp.$(SUFFIX) dgesv.$(SUFFIX) dlauu2.$(SUFFIX)  \
-	dlauum.$(SUFFIX) dtrti2.$(SUFFIX) dtrtri.$(SUFFIX) dtrtrs.$(SUFFIX)
-
+	dlauum.$(SUFFIX) dtrti2.$(SUFFIX) dtrtri.$(SUFFIX) dtrtrs.$(SUFFIX) \
+	dlaed3.$(SUFFIX)
 
 QLAPACKOBJS	= \
 	qgetf2.$(SUFFIX) qgetrf.$(SUFFIX) qlauu2.$(SUFFIX) qlauum.$(SUFFIX) \
@@ -2365,6 +2365,11 @@ zlarf.$(SUFFIX) zlarf.$(PSUFFIX) : larf.c
 xlarf.$(SUFFIX) xlarf.$(PSUFFIX) : larf.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
+slaed3.$(SUFFIX) slaed3.$(PSUFFIX) : lapack/laed3.c
+	$(CC) -c $(CFLAGS) $< -o $(@F)
+
+dlaed3.$(SUFFIX) dlaed3.$(PSUFFIX) : lapack/laed3.c
+	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 ############# BLAS EXTENSIONS #####################################
 
