@@ -3701,6 +3701,8 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 
 #elif defined(A64FX) // 512-bit SVE
 
+#define GEMM_DIVIDE_RATE  1
+
 #if defined(XDOUBLE) || defined(DOUBLE)
 #define GEMM_PREFERED_SIZE  8
 #else
