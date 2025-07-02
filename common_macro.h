@@ -3035,6 +3035,8 @@ typedef struct {
 #define NEG_TCOPY	DNEG_TCOPY
 #define	LARF_L		DLARF_L
 #define	LARF_R		DLARF_R
+#define LAED3_SINGLE	dlaed3_single
+#define LAED3_PARALLEL	dlaed3_parallel
 #else
 #define GETF2	SGETF2
 #define GETRF	SGETRF
@@ -3056,6 +3058,8 @@ typedef struct {
 #define NEG_TCOPY	SNEG_TCOPY
 #define	LARF_L		SLARF_L
 #define	LARF_R		SLARF_R
+#define LAED3_SINGLE	slaed3_single
+#define LAED3_PARALLEL	slaed3_parallel
 #endif
 #else
 #ifdef XDOUBLE

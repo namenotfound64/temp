@@ -10,6 +10,7 @@ set(LAPACK_SOURCES
   potrf/potrf_L_single.c
   lauum/lauum_U_single.c
   lauum/lauum_L_single.c
+  laed3/laed3_single.c
 )
 
 # add a 'z' to filename for complex version
@@ -79,6 +80,7 @@ if (USE_THREAD)
     lauum/lauum_L_parallel.c
     potrf/potrf_U_parallel.c
     potrf/potrf_L_parallel.c
+    laed3/laed3_parallel.c
   )
 
   # this has a z version
