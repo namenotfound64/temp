@@ -12,9 +12,29 @@ bfloat16tof32 (bfloat16 f16)
 #endif
   return result;
 }
-#define BF16TOF32(x) (bfloat16tof32(x))
+
+static bfloat16 f32tobfloat16(float f32) {
+  unsigned short *q = (unsigned short *)(&f32);
+#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+  return q[0];
 #else
+  return q[1];
+#endif
+}
+
+#ifdef BGEMM
+#define ALPHA bfloat16tof32(alpha)
+#define BF16TOF32(x) (bfloat16tof32(x))
+#define F32TOBF16(x) (f32tobfloat16(x))
+#else
+#define ALPHA alpha
+#define BF16TOF32(x) (bfloat16tof32(x))
+#define F32TOBF16(x) x
+#endif
+#else
+#define ALPHA alpha
 #define BF16TOF32(x) x
+#define F32TOBF16(x) x
 #endif
 int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,IFLOAT* ba,IFLOAT* bb,FLOAT* C,BLASLONG ldc
 #ifdef TRMMKERNEL
@@ -25,7 +45,11 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,IFLOAT* ba,IFLOAT* bb,
    BLASLONG i,j,k;
    FLOAT *C0,*C1;
    IFLOAT *ptrba,*ptrbb;
+#ifdef BGEMM
+   float res0,res1,res2,res3;
+#else
    FLOAT res0,res1,res2,res3;
+#endif
    IFLOAT load0,load1,load2,load3,load4,load5,load6,load7;
    for (j=0; j<bn/2; j+=1)
      {
@@ -89,14 +113,14 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,IFLOAT* ba,IFLOAT* bb,
                   ptrba = ptrba+2;
                   ptrbb = ptrbb+2;
                }
-             res0 = res0*alpha;
-             C0[0] = C0[0]+res0;
-             res1 = res1*alpha;
-             C0[1] = C0[1]+res1;
-             res2 = res2*alpha;
-             C1[0] = C1[0]+res2;
-             res3 = res3*alpha;
-             C1[1] = C1[1]+res3;
+             res0 = res0*ALPHA;
+             C0[0] = F32TOBF16(BF16TOF32(C0[0])+res0);
+             res1 = res1*ALPHA;
+             C0[1] = F32TOBF16(BF16TOF32(C0[1])+res1);
+             res2 = res2*ALPHA;
+             C1[0] = F32TOBF16(BF16TOF32(C1[0])+res2);
+             res3 = res3*ALPHA;
+             C1[1] = F32TOBF16(BF16TOF32(C1[1])+res3);
              C0 = C0+2;
              C1 = C1+2;
           }
@@ -115,10 +139,10 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,IFLOAT* ba,IFLOAT* bb,
                   ptrba = ptrba+1;
                   ptrbb = ptrbb+2;
                }
-             res0 = res0*alpha;
-             C0[0] = C0[0]+res0;
-             res1 = res1*alpha;
-             C1[0] = C1[0]+res1;
+             res0 = res0*ALPHA;
+             C0[0] = F32TOBF16(BF16TOF32(C0[0])+res0);
+             res1 = res1*ALPHA;
+             C1[0] = F32TOBF16(BF16TOF32(C1[0])+res1);
              C0 = C0+1;
              C1 = C1+1;
           }
@@ -146,10 +170,10 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,IFLOAT* ba,IFLOAT* bb,
                   ptrba = ptrba+2;
                   ptrbb = ptrbb+1;
                }
-             res0 = res0*alpha;
-             C0[0] = C0[0]+res0;
-             res1 = res1*alpha;
-             C0[1] = C0[1]+res1;
+             res0 = res0*ALPHA;
+             C0[0] = F32TOBF16(BF16TOF32(C0[0])+res0);
+             res1 = res1*ALPHA;
+             C0[1] = F32TOBF16(BF16TOF32(C0[1])+res1);
              C0 = C0+2;
           }
         for (i=0; i<(bm&1); i+=1)
@@ -164,8 +188,8 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,IFLOAT* ba,IFLOAT* bb,
                   ptrba = ptrba+1;
                   ptrbb = ptrbb+1;
                }
-             res0 = res0*alpha;
-             C0[0] = C0[0]+res0;
+             res0 = res0*ALPHA;
+             C0[0] = F32TOBF16(BF16TOF32(C0[0])+res0);
              C0 = C0+1;
           }
         k = (bk<<0);

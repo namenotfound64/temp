@@ -54,8 +54,13 @@
 #define ERROR_NAME "DGEMM "
 #define GEMV BLASFUNC(dgemv)
 #elif defined(BFLOAT16)
+#ifdef BGEMM
+#define ERROR_NAME "BGEMM "
+#define GEMV BLASFUNC(bgemv)
+#else
 #define ERROR_NAME "SBGEMM "
 #define GEMV BLASFUNC(sbgemv)
+#endif
 #elif defined(HFLOAT16)
 #define ERROR_NAME "SHGEMM "
 #else
@@ -579,7 +584,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
 	 args.m, args.n, args.k, args.lda, args.ldb, args.ldc);
 #endif
 
-#if defined(GEMM_GEMV_FORWARD) && !defined(GEMM3M) && !defined(COMPLEX) && !defined(HFLOAT16) && (!defined(BFLOAT16) || defined(GEMM_GEMV_FORWARD_BF16))
+#if defined(GEMM_GEMV_FORWARD) && !defined(GEMM3M) && !defined(COMPLEX) && !defined(HFLOAT16) && (!defined(BFLOAT16) || (!defined(BGEMM) && defined(SBGEMM_GEMV_FORWARD)) || (defined(BGEMM) && defined(BGEMM_GEMV_FORWARD)))
 #if defined(ARCH_ARM64)
   // The gemv kernels in arm64/{gemv_n.S,gemv_n_sve.c,gemv_t.S,gemv_t_sve.c}
   // perform poorly in certain circumstances. We use the following boolean
