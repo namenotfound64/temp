@@ -95,6 +95,7 @@ jobs:
               cmake -DDYNAMIC_ARCH=1 \
                     -DNOFORTRAN=0 \
                     -DBUILD_WITHOUT_LAPACK=0 \
+                    -DBUILD_BFLOAT16=1 \
                     -DCMAKE_VERBOSE_MAKEFILE=ON \
                     -DCMAKE_BUILD_TYPE=Release \
                     -DCMAKE_Fortran_COMPILER=${{ matrix.fortran }} \
