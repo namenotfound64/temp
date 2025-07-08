@@ -200,3 +200,8 @@ endif
 ifndef QROTMKERNEL
 QROTMKERNEL = ../generic/rotm.c
 endif
+
+CSCALKERNEL = ../arm/zscal.c
+ZSCALKERNEL = ../arm/zscal.c
+CDOTKERNEL = ../arm/zdot.c
+ZDOTKERNEL = ../arm/zdot.c
