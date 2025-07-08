@@ -407,7 +407,7 @@ static int thread_driver(blas_arg_t *args, FLOAT *sa, FLOAT *sb){
   mode  =  BLAS_DOUBLE  | BLAS_REAL;
   mask  = MAX(DGEMM_UNROLL_M, DGEMM_UNROLL_N) - 1;
 #elif defined(BFLOAT16)
-  mode  =  BLAS_HALF  | BLAS_REAL;
+  mode  =  BLAS_BFLOAT16  | BLAS_REAL;
   mask  = MAX(SBGEMM_UNROLL_M, SBGEMM_UNROLL_N) - 1;
 #else
   mode  =  BLAS_SINGLE  | BLAS_REAL;
