@@ -1,6 +1,6 @@
 /*********************************************************************/
 /* Copyright 2009, 2010 The University of Texas at Austin.           */
-/* Copyright 2023 The OpenBLAS Project.                              */
+/* Copyright 2023, 2025 The OpenBLAS Project.                        */
 /* All rights reserved.                                              */
 /*                                                                   */
 /* Redistribution and use in source and binary forms, with or        */
@@ -58,6 +58,15 @@ gotoblas_t TABLE_NAME = {
 
 #ifdef BUILD_BFLOAT16
   0, 0, 0,
+  BGEMM_DEFAULT_UNROLL_M, BGEMM_DEFAULT_UNROLL_N,
+#ifdef BGEMM_DEFAULT_UNROLL_MN
+ BGEMM_DEFAULT_UNROLL_MN,
+#else
+ MAX(BGEMM_DEFAULT_UNROLL_M, BGEMM_DEFAULT_UNROLL_N),
+#endif
+  BGEMM_ALIGN_K,
+
+  0, 0, 0,
   SBGEMM_DEFAULT_UNROLL_M, SBGEMM_DEFAULT_UNROLL_N,
 #ifdef SBGEMM_DEFAULT_UNROLL_MN
  SBGEMM_DEFAULT_UNROLL_MN,
@@ -77,6 +86,10 @@ gotoblas_t TABLE_NAME = {
   srot_kTS,   srotm_kTS,  saxpy_kTS,  sscal_kTS, sswap_kTS,
   sbgemv_nTS, sbgemv_tTS, sger_kTS,
   ssymv_LTS, ssymv_UTS,
+
+  bgemm_kernelTS, bgemm_betaTS,
+  bgemm_incopyTS, bgemm_itcopyTS,
+  bgemm_oncopyTS, bgemm_otcopyTS,
 
   sbgemm_kernelTS, sbgemm_betaTS,
 #if SBGEMM_DEFAULT_UNROLL_M != SBGEMM_DEFAULT_UNROLL_N

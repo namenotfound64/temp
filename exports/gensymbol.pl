@@ -51,7 +51,7 @@
     zgeadd, dzsum, zgemmt,zgemmtr);
 
 @blasobjs = (lsame, xerbla);
-@bfblasobjs = (sbgemm, sbgemmt, sbgemmtr, sbgemv, sbdot, sbstobf16, sbdtobf16, sbf16tos, dbf16tod);
+@bfblasobjs = (bgemm, sbgemm, sbgemmt, sbgemmtr, sbgemv, sbdot, sbstobf16, sbdtobf16, sbf16tos, dbf16tod);
 @hfblasobjs = (shgemm);
 @cblasobjsc = (
     cblas_caxpy, cblas_ccopy, cblas_cdotc, cblas_cdotu, cblas_cgbmv, cblas_cgemm, cblas_cgemv,

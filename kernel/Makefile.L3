@@ -1,3 +1,30 @@
+###############################################################################
+# Copyright (c) 2025, The OpenBLAS Project
+# All rights reserved.
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the OpenBLAS project nor the names of
+#    its contributors may be used to endorse or promote products
+#    derived from this software without specific prior written permission.
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE OPENBLAS PROJECT OR CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+###############################################################################
 USE_GEMM3M = 0
 OS := $(shell uname)
 
@@ -110,6 +137,23 @@ endif
 endif
 
 ifeq ($(BUILD_BFLOAT16), 1)
+ifndef BGEMMKERNEL
+BGEMM_BETA = ../generic/gemm_beta.c
+BGEMMKERNEL    = ../generic/gemmkernel_2x2.c
+BGEMMINCOPY    = ../generic/gemm_ncopy_2.c
+BGEMMITCOPY    = ../generic/gemm_tcopy_2.c
+BGEMMONCOPY    = ../generic/gemm_ncopy_2.c
+BGEMMOTCOPY    = ../generic/gemm_tcopy_2.c
+BGEMMINCOPYOBJ =  bgemm_incopy$(TSUFFIX).$(SUFFIX)
+BGEMMITCOPYOBJ =  bgemm_itcopy$(TSUFFIX).$(SUFFIX)
+BGEMMONCOPYOBJ =  bgemm_oncopy$(TSUFFIX).$(SUFFIX)
+BGEMMOTCOPYOBJ =  bgemm_otcopy$(TSUFFIX).$(SUFFIX)
+endif
+BKERNELOBJS += \
+	bgemm_kernel$(TSUFFIX).$(SUFFIX) \
+	$(BGEMMINCOPYOBJ) $(BGEMMITCOPYOBJ) \
+	$(BGEMMONCOPYOBJ) $(BGEMMOTCOPYOBJ)	
+
 ifndef SBGEMMKERNEL
 SBGEMM_BETA = ../generic/gemm_beta.c
 SBGEMMKERNEL    = ../generic/gemmkernel_2x2.c
@@ -210,6 +254,7 @@ XKERNELOBJS	+= \
 	$(XGEMMONCOPYOBJ) $(XGEMMOTCOPYOBJ)
 
 ifeq ($(BUILD_BFLOAT16),1)
+BBLASOBJS += $(BKERNELOBJS)
 SBBLASOBJS      += $(SBKERNELOBJS)
 endif
 ifeq ($(BUILD_HFLOAT16),1)
@@ -223,6 +268,7 @@ ZBLASOBJS	+= $(ZKERNELOBJS)
 XBLASOBJS	+= $(XKERNELOBJS)
 
 ifeq ($(BUILD_BFLOAT16),1)
+BBLASOBJS += bgemm_beta$(TSUFFIX).$(SUFFIX)
 SBBLASOBJS += sbgemm_beta$(TSUFFIX).$(SUFFIX)
 endif
 ifeq ($(BUILD_HFLOAT16),1)
@@ -667,6 +713,8 @@ XGEMMONCOPYOBJ_P = $(XGEMMONCOPYOBJ:.$(SUFFIX)=.$(PSUFFIX))
 XGEMMOTCOPYOBJ_P = $(XGEMMOTCOPYOBJ:.$(SUFFIX)=.$(PSUFFIX))
 
 ifeq ($(BUILD_BFLOAT16),1)
+$(KDIR)bgemm_beta$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(BGEMM_BETA)
+	$(CC) $(CFLAGS) -c -DBFLOAT16 -DBGEMM -UDOUBLE -UCOMPLEX $< -o $@
 $(KDIR)sbgemm_beta$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SBGEMM_BETA)
 	$(CC) $(CFLAGS) -c -DBFLOAT16 -UDOUBLE -UCOMPLEX $< -o $@
 endif
@@ -698,8 +746,21 @@ ifeq ($(ARCH), E2K)
 USE_TRMM = 1
 endif
 
-
 ifeq ($(BUILD_BFLOAT16), 1)
+
+$(KDIR)$(BGEMMONCOPYOBJ) : $(KERNELDIR)/$(BGEMMONCOPY)
+	$(CC) $(CFLAGS) -c -DBFLOAT16 -DBGEMM -UDOUBLE -UCOMPLEX $< -o $@
+
+$(KDIR)$(BGEMMOTCOPYOBJ) : $(KERNELDIR)/$(BGEMMOTCOPY)
+	$(CC) $(CFLAGS) -c -DBFLOAT16 -DBGEMM -UDOUBLE -UCOMPLEX $< -o $@
+
+ifneq ($(BGEMM_UNROLL_M), $(BGEMM_UNROLL_N))
+$(KDIR)$(BGEMMINCOPYOBJ) : $(KERNELDIR)/$(BGEMMINCOPY)
+	$(CC) $(CFLAGS) -c -DBFLOAT16 -DBGEMM -UDOUBLE -UCOMPLEX $< -o $@
+
+$(KDIR)$(BGEMMITCOPYOBJ) : $(KERNELDIR)/$(BGEMMITCOPY)
+	$(CC) $(CFLAGS) -c -DBFLOAT16 -DBGEMM -UDOUBLE -UCOMPLEX $< -o $@
+endif
 
 $(KDIR)$(SBGEMMONCOPYOBJ) : $(KERNELDIR)/$(SBGEMMONCOPY)
 	$(CC) $(CFLAGS) -c -DBFLOAT16 -UDOUBLE -UCOMPLEX $< -o $@
@@ -914,7 +975,8 @@ endif
 endif
 
 ifeq ($(BUILD_BFLOAT16), 1)
-
+$(KDIR)bgemm_kernel$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(BGEMMKERNEL) 
+	$(CC) $(CFLAGS) -c -DBFLOAT16 -DBGEMM -UDOUBLE -UCOMPLEX $< -o $@
 $(KDIR)sbgemm_kernel$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SBGEMMKERNEL) $(SBGEMMDEPEND)
 	$(CC) $(CFLAGS) -c -DBFLOAT16 -UDOUBLE -UCOMPLEX $< -o $@
 endif
@@ -2908,6 +2970,8 @@ $(KDIR)sgemm_beta$(TSUFFIX).$(PSUFFIX) : $(KERNELDIR)/$(SGEMM_BETA)
 	$(CC) $(PFLAGS) -c -UDOUBLE -UCOMPLEX $< -o $@
 
 ifeq ($(BUILD_BFLOAT16),1)
+$(KDIR)bgemm_beta$(TSUFFIX).$(PSUFFIX) : $(KERNELDIR)/$(BGEMM_BETA)
+	$(CC) $(PFLAGS) -c -DBFLOAT16 -DBGEMM -UDOUBLE -UCOMPLEX $< -o $@
 $(KDIR)sbgemm_beta$(TSUFFIX).$(PSUFFIX) : $(KERNELDIR)/$(SBGEMM_BETA)
 	$(CC) $(PFLAGS) -c -DBFLOAT16 -UDOUBLE -UCOMPLEX $< -o $@
 endif
