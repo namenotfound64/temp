@@ -88,7 +88,11 @@ gotoblas_t TABLE_NAME = {
   ssymv_LTS, ssymv_UTS,
 
   bgemm_kernelTS, bgemm_betaTS,
+#if BGEMM_DEFAULT_UNROLL_M != BGEMM_DEFAULT_UNROLL_N
   bgemm_incopyTS, bgemm_itcopyTS,
+#else
+  bgemm_oncopyTS, bgemm_otcopyTS,
+#endif
   bgemm_oncopyTS, bgemm_otcopyTS,
 
   sbgemm_kernelTS, sbgemm_betaTS,
