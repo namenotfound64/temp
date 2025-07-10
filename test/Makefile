@@ -229,8 +229,8 @@ ifneq ($(CROSS), 1)
 ifeq ($(BUILD_BFLOAT16),1)
 	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./test_sbgemm > SBBLAT3.SUMM
 	@$(GREP) -q FATAL SBBLAT3.SUMM && cat SBBLAT3.SUMM || exit 0
-	# OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./test_bgemm > BBLAT3.SUMM
-	# @$(GREP) -q FATAL BBLAT3.SUMM && cat BBLAT3.SUMM || exit 0
+	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./test_bgemm > BBLAT3.SUMM
+	@$(GREP) -q FATAL BBLAT3.SUMM && cat BBLAT3.SUMM || exit 0
 endif
 ifeq ($(BUILD_SINGLE),1)
 	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./sblat3 < ./sblat3.dat
@@ -254,8 +254,8 @@ ifeq ($(USE_OPENMP), 1)
 ifeq ($(BUILD_BFLOAT16),1)
 	OMP_NUM_THREADS=2 ./test_sbgemm > SBBLAT3.SUMM
 	@$(GREP) -q FATAL SBBLAT3.SUMM && cat SBBLAT3.SUMM || exit 0
-	# OMP_NUM_THREADS=2 ./test_bgemm > BBLAT3.SUMM
-	# @$(GREP) -q FATAL BBLAT3.SUMM && cat BBLAT3.SUMM || exit 0
+	OMP_NUM_THREADS=2 ./test_bgemm > BBLAT3.SUMM
+	@$(GREP) -q FATAL BBLAT3.SUMM && cat BBLAT3.SUMM || exit 0
 endif
 ifeq ($(BUILD_SINGLE),1)
 	OMP_NUM_THREADS=2 ./sblat3 < ./sblat3.dat
@@ -277,8 +277,8 @@ else
 ifeq ($(BUILD_BFLOAT16),1)
 	OPENBLAS_NUM_THREADS=2 ./test_sbgemm > SBBLAT3.SUMM
 	@$(GREP) -q FATAL SBBLAT3.SUMM && cat SBBLAT3.SUMM || exit 0
-	# OPENBLAS_NUM_THREADS=2 ./test_bgemm > BBLAT3.SUMM
-	# @$(GREP) -q FATAL BBLAT3.SUMM && cat BBLAT3.SUMM || exit 0
+	OPENBLAS_NUM_THREADS=2 ./test_bgemm > BBLAT3.SUMM
+	@$(GREP) -q FATAL BBLAT3.SUMM && cat BBLAT3.SUMM || exit 0
 endif
 ifeq ($(BUILD_SINGLE),1)
 	OPENBLAS_NUM_THREADS=2 ./sblat3 < ./sblat3.dat
