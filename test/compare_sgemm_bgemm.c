@@ -28,7 +28,6 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdint.h>
 #include <stdio.h>
 
-#include <arm_neon.h>
 
 #define SGEMM BLASFUNC(sgemm)
 #define BGEMM BLASFUNC(bgemm)
