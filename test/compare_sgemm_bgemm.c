@@ -33,78 +33,32 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define BGEMM BLASFUNC(bgemm)
 #define BGEMM_LARGEST 256
 
-typedef union
+static float float16to32(bfloat16 value)
 {
-  unsigned short v;
-#if defined(_AIX)
-  struct __attribute__((packed))
-#else
-  struct
-#endif
-  {
-#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
-    unsigned short s:1;
-    unsigned short e:8;
-    unsigned short m:7;
-#else
-    unsigned short m:7;
-    unsigned short e:8;
-    unsigned short s:1;
-#endif
-  } bits;
-} bfloat16_bits;
-
-typedef union
-{
-  float v;
-#if defined(_AIX)
-  struct __attribute__((packed))
-#else
-  struct
-#endif
-  {
-#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
-    uint32_t s:1;
-    uint32_t e:8;
-    uint32_t m:23;
-#else
-    uint32_t m:23;
-    uint32_t e:8;
-    uint32_t s:1;
-#endif
-  } bits;
-} float32_bits;
-
-float
-float16to32 (bfloat16_bits f16)
-{
-  float32_bits f32;
-  f32.bits.s = f16.bits.s;
-  f32.bits.e = f16.bits.e;
-  f32.bits.m = (uint32_t) f16.bits.m << 16;
-  return f32.v;
-}
-
-bfloat16
-float32to16 (float32_bits f32)
-{
-  bfloat16_bits f16;
-  f16.bits.s = f32.bits.s;
-  f16.bits.e = f32.bits.e;
-  f16.bits.m = (f32.bits.m >> 16) & 0x7f;
-  return f16.v;
+  blasint one = 1;
+  float result;
+  sbf16tos_(&one, &value, &one, &result, &one);
+  return result;
 }
 
 static float truncate_float(float value) {
-  bfloat16_bits f16 = (bfloat16_bits)float32to16((float32_bits)value);
-  return float16to32(f16);
+  blasint one = 1;
+  bfloat16 tmp;
+  float result;
+  sbstobf16_(&one, &value, &one, &tmp, &one);
+  sbf16tos_(&one, &tmp, &one, &result, &one);
+  return result;
 }
 
-void *malloc_safe(size_t size) {
+static void *malloc_safe(size_t size) {
   if (size == 0)
     return malloc(1);
   else
     return malloc(size);
+}
+
+static is_close(float a, float b, float rtol, float atol) {
+  return fabs(a - b) <= (atol + rtol*fabs(b));
 }
 
 int
@@ -113,12 +67,15 @@ main (int argc, char *argv[])
   blasint m, n, k;
   int i, j, l;
   blasint x, y;
+  blasint one = 1;
   int ret = 0;
   int loop = BGEMM_LARGEST;
   char transA = 'N', transB = 'N';
   float alpha = 1.0, beta = 0.0;
-  bfloat16 alpha_bf16 = float32to16((float32_bits)alpha);
-  bfloat16 beta_bf16 = float32to16((float32_bits)beta);
+  bfloat16 alpha_bf16;
+  sbstobf16_(&one, &alpha, &one, &alpha_bf16, &one);
+  bfloat16 beta_bf16;
+  sbstobf16_(&one, &beta, &one, &beta_bf16, &one);
 
   for (x = 0; x <= loop; x++)
   {
@@ -127,23 +84,20 @@ main (int argc, char *argv[])
     float *A = (float *)malloc_safe(m * k * sizeof(FLOAT));
     float *B = (float *)malloc_safe(k * n * sizeof(FLOAT));
     float *C = (float *)malloc_safe(m * n * sizeof(FLOAT));
-    bfloat16_bits *AA = (bfloat16_bits *)malloc_safe(m * k * sizeof(bfloat16_bits));
-    bfloat16_bits *BB = (bfloat16_bits *)malloc_safe(k * n * sizeof(bfloat16_bits));
-    bfloat16_bits *CC = (bfloat16_bits *)malloc_safe(k * n * sizeof(bfloat16_bits));
+    bfloat16 *AA = (bfloat16 *)malloc_safe(m * k * sizeof(bfloat16));
+    bfloat16 *BB = (bfloat16 *)malloc_safe(k * n * sizeof(bfloat16));
+    bfloat16 *CC = (bfloat16 *)malloc_safe(k * n * sizeof(bfloat16));
     FLOAT *DD = (FLOAT *)malloc_safe(m * n * sizeof(FLOAT));
     if ((A == NULL) || (B == NULL) || (C == NULL) || (AA == NULL) || (BB == NULL) ||
         (DD == NULL) || (CC == NULL))
       return 1;
-    bfloat16 atmp,btmp;
-    blasint one=1;
 
     for (j = 0; j < m; j++)
     {
       for (i = 0; i < k; i++)
       {
         A[j * k + i] = ((FLOAT) rand () / (FLOAT) RAND_MAX) + 0.5;
-        sbstobf16_(&one, &A[j*k+i], &one, &atmp, &one);
-        AA[j * k + i].v = atmp;
+        sbstobf16_(&one, &A[j*k+i], &one, &AA[j * k + i], &one);
       }
     }
     for (j = 0; j < n; j++)
@@ -151,8 +105,7 @@ main (int argc, char *argv[])
       for (i = 0; i < k; i++)
       {
         B[j * k + i] = ((FLOAT) rand () / (FLOAT) RAND_MAX) + 0.5;
-        sbstobf16_(&one, &B[j*k+i], &one, &btmp, &one);
-        BB[j * k + i].v = btmp;
+        sbstobf16_(&one, &B[j*k+i], &one, &BB[j * k + i], &one);
       }
     }
     for (y = 0; y < 4; y++)
@@ -168,7 +121,7 @@ main (int argc, char *argv[])
         transB = 'T';
       }
 
-      memset(CC, 0, m * n * sizeof(bfloat16_bits));
+      memset(CC, 0, m * n * sizeof(bfloat16));
       memset(DD, 0, m * n * sizeof(FLOAT));
       memset(C, 0, m * n * sizeof(FLOAT));
 
@@ -198,10 +151,15 @@ main (int argc, char *argv[])
               DD[i * m + j] +=
                 float16to32 (AA[k * j + l]) * float16to32 (BB[i + l * n]);
             }
-          if (fabs(float16to32(CC[i * m + j]) - truncate_float(C[i * m + j])) > 2.0) {
+          if (!is_close(float16to32(CC[i * m + j]), truncate_float(C[i * m + j]), 0.01, 0.001)) {
+            printf("Mismatch at i=%d, j=%d, k=%d: CC=%.6f, C=%.6f\n",
+                    i, j, k, float16to32(CC[i * m + j]), truncate_float(C[i * m + j]));
             ret++;
           }
-          if (fabs(float16to32(CC[i * m + j]) - truncate_float(DD[i * m + j])) > 1.0) {
+
+          if (!is_close(float16to32(CC[i * m + j]), truncate_float(DD[i * m + j]), 0.0001, 0.00001)) {
+            printf("Mismatch at i=%d, j=%d, k=%d: CC=%.6f, DD=%.6f\n",
+                    i, j, k, float16to32(CC[i * m + j]), truncate_float(DD[i * m + j]));
             ret++;
           }
             

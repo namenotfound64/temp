@@ -30,10 +30,16 @@
 #define COMMON_B_H
 
 #ifndef DYNAMIC_ARCH
-#define BGEMM_ONCOPY bgemm_oncopy
-#define BGEMM_OTCOPY bgemm_otcopy
-#define BGEMM_INCOPY bgemm_incopy
-#define BGEMM_ITCOPY bgemm_itcopy
+#define	BGEMM_ONCOPY		bgemm_oncopy
+#define	BGEMM_OTCOPY		bgemm_otcopy
+
+#if BGEMM_DEFAULT_UNROLL_M == BGEMM_DEFAULT_UNROLL_N
+#define	BGEMM_INCOPY		bgemm_oncopy
+#define	BGEMM_ITCOPY		bgemm_otcopy
+#else
+#define	BGEMM_INCOPY		bgemm_incopy
+#define	BGEMM_ITCOPY		bgemm_itcopy
+#endif
 
 #define BGEMM_BETA bgemm_beta
 #define BGEMM_KERNEL bgemm_kernel
