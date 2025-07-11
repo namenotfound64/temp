@@ -57,7 +57,7 @@ static void *malloc_safe(size_t size) {
     return malloc(size);
 }
 
-static is_close(float a, float b, float rtol, float atol) {
+static float is_close(float a, float b, float rtol, float atol) {
   return fabs(a - b) <= (atol + rtol*fabs(b));
 }
 
