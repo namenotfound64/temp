@@ -105,6 +105,7 @@ ifeq ($(TARGET_CORE), ARMV9SME)
 HAVE_SME = 1
 endif
 SGEMMDIRECTKERNEL = sgemm_direct_arm64_sme1.c
+SGEMMDIRECTKERNEL_ALPHA_BETA = sgemm_direct_alpha_beta_arm64_sme1.c
 endif
 endif
 endif
@@ -164,7 +165,8 @@ SKERNELOBJS += \
 endif
 ifeq ($(ARCH), arm64)
 SKERNELOBJS += \
-	sgemm_direct$(TSUFFIX).$(SUFFIX)
+	sgemm_direct$(TSUFFIX).$(SUFFIX) \
+	sgemm_direct_alpha_beta$(TSUFFIX).$(SUFFIX)
 ifdef HAVE_SME
 SKERNELOBJS += \
 	sgemm_direct_sme1$(TSUFFIX).$(SUFFIX) \
@@ -903,6 +905,8 @@ $(KDIR)sgemm_direct$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMMDIRECTKERNEL)
 endif
 ifeq ($(ARCH), arm64)
 $(KDIR)sgemm_direct$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMMDIRECTKERNEL)
+	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX $< -o $@
+$(KDIR)sgemm_direct_alpha_beta$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMMDIRECTKERNEL_ALPHA_BETA)
 	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX $< -o $@
 ifdef HAVE_SME
 $(KDIR)sgemm_direct_sme1$(TSUFFIX).$(SUFFIX) : 

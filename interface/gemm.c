@@ -436,6 +436,9 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
   if (beta == 0 && alpha == 1.0 && order == CblasRowMajor && TransA == CblasNoTrans && TransB == CblasNoTrans) {
 	SGEMM_DIRECT(m, n, k, a, lda, b, ldb, c, ldc);
 	return;
+  }else if (order == CblasRowMajor && TransA == CblasNoTrans && TransB == CblasNoTrans) {
+	SGEMM_DIRECT_ALPHA_BETA(m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
+	return;
   }
 #endif
 #endif
