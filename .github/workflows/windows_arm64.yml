@@ -19,7 +19,7 @@ permissions:
 
 jobs:
   build:
-    # if: "github.repository == 'OpenMathLib/OpenBLAS'"
+    if: "github.repository == 'OpenMathLib/OpenBLAS'"
     runs-on: windows-11-arm
     steps:
       - name: Checkout repository
