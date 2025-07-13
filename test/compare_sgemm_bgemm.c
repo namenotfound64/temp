@@ -28,37 +28,19 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdint.h>
 #include <stdio.h>
 
+#include "test_helpers.h"
 
 #define SGEMM BLASFUNC(sgemm)
 #define BGEMM BLASFUNC(bgemm)
 #define BGEMM_LARGEST 256
 
-static float float16to32(bfloat16 value)
-{
-  blasint one = 1;
-  float result;
-  sbf16tos_(&one, &value, &one, &result, &one);
-  return result;
-}
-
-static float truncate_float(float value) {
+static float truncate_float32_to_bfloat16(float value) {
   blasint one = 1;
   bfloat16 tmp;
   float result;
   sbstobf16_(&one, &value, &one, &tmp, &one);
   sbf16tos_(&one, &tmp, &one, &result, &one);
   return result;
-}
-
-static void *malloc_safe(size_t size) {
-  if (size == 0)
-    return malloc(1);
-  else
-    return malloc(size);
-}
-
-static float is_close(float a, float b, float rtol, float atol) {
-  return fabs(a - b) <= (atol + rtol*fabs(b));
 }
 
 int
@@ -151,15 +133,15 @@ main (int argc, char *argv[])
               DD[i * m + j] +=
                 float16to32 (AA[k * j + l]) * float16to32 (BB[i + l * n]);
             }
-          if (!is_close(float16to32(CC[i * m + j]), truncate_float(C[i * m + j]), 0.01, 0.001)) {
+          if (!is_close(float16to32(CC[i * m + j]), truncate_float32_to_bfloat16(C[i * m + j]), 0.01, 0.001)) {
             printf("Mismatch at i=%d, j=%d, k=%d: CC=%.6f, C=%.6f\n",
-                    i, j, k, float16to32(CC[i * m + j]), truncate_float(C[i * m + j]));
+                    i, j, k, float16to32(CC[i * m + j]), truncate_float32_to_bfloat16(C[i * m + j]));
             ret++;
           }
 
-          if (!is_close(float16to32(CC[i * m + j]), truncate_float(DD[i * m + j]), 0.0001, 0.00001)) {
+          if (!is_close(float16to32(CC[i * m + j]), truncate_float32_to_bfloat16(DD[i * m + j]), 0.0001, 0.00001)) {
             printf("Mismatch at i=%d, j=%d, k=%d: CC=%.6f, DD=%.6f\n",
-                    i, j, k, float16to32(CC[i * m + j]), truncate_float(DD[i * m + j]));
+                    i, j, k, float16to32(CC[i * m + j]), truncate_float32_to_bfloat16(DD[i * m + j]));
             ret++;
           }
             
