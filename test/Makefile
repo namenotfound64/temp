@@ -13,7 +13,7 @@
 # 3. Neither the name of the OpenBLAS project nor the names of
 #    its contributors may be used to endorse or promote products
 #    derived from this software without specific prior written permission.
-# 
+#
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 # AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 # IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -34,6 +34,7 @@ ifneq (, $(filter $(CORE),LOONGSON3R3 LOONGSON3R4))
 endif
         override FFLAGS += -fno-tree-vectorize
 endif
+override CFLAGS += -std=c11 -Wall -Werror
 
 SUPPORT_GEMM3M = 0
 
@@ -402,10 +403,10 @@ zblat3 : zblat3.$(SUFFIX) ../$(LIBNAME)
 endif
 
 ifeq ($(BUILD_BFLOAT16),1)
-test_bgemm : compare_sgemm_bgemm.c ../$(LIBNAME)
+test_bgemm : compare_sgemm_bgemm.c test_helpers.h ../$(LIBNAME)
 	$(CC) $(CLDFLAGS) -o test_bgemm compare_sgemm_bgemm.c ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
 
-test_sbgemm : compare_sgemm_sbgemm.c ../$(LIBNAME)
+test_sbgemm : compare_sgemm_sbgemm.c test_helpers.h ../$(LIBNAME)
 	$(CC) $(CLDFLAGS) -o test_sbgemm compare_sgemm_sbgemm.c ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
 endif
 
