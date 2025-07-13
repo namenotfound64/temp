@@ -30,6 +30,11 @@
 #define COMMON_B_H
 
 #ifndef DYNAMIC_ARCH
+#define BGEMV_N_K          bgemv_n
+#define BGEMV_T_K          bgemv_t
+
+#define	BSCAL_K			bscal_k
+
 #define	BGEMM_ONCOPY		bgemm_oncopy
 #define	BGEMM_OTCOPY		bgemm_otcopy
 
@@ -45,6 +50,10 @@
 #define BGEMM_KERNEL bgemm_kernel
 
 #else
+#define BGEMV_N_K          gotoblas->bgemv_n
+#define BGEMV_T_K          gotoblas->bgemv_t
+
+#define	BSCAL_K            gotoblas->bscal_k
 
 #define BGEMM_ONCOPY gotoblas->bgemm_oncopy
 #define BGEMM_OTCOPY gotoblas->bgemm_otcopy

@@ -31,12 +31,23 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "../common.h"
 
-#if IFLOAT == bfloat16
+#ifdef IBFLOAT16
 static float float16to32(bfloat16 value)
 {
   blasint one = 1;
   float result;
   sbf16tos_(&one, &value, &one, &result, &one);
+  return result;
+}
+#endif
+
+#ifdef OBFLOAT16
+static float truncate_float32_to_bfloat16(float value) {
+  blasint one = 1;
+  bfloat16 tmp;
+  float result;
+  sbstobf16_(&one, &value, &one, &tmp, &one);
+  sbf16tos_(&one, &tmp, &one, &result, &one);
   return result;
 }
 #endif

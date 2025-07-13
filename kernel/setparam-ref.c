@@ -83,8 +83,8 @@ gotoblas_t TABLE_NAME = {
   isamax_kTS, isamin_kTS, ismax_kTS, ismin_kTS,
   snrm2_kTS,  sasum_kTS,  ssum_kTS, scopy_kTS, sbdot_kTS,
   dsdot_kTS,
-  srot_kTS,   srotm_kTS,  saxpy_kTS,  sscal_kTS, sswap_kTS,
-  sbgemv_nTS, sbgemv_tTS, sger_kTS,
+  srot_kTS,   srotm_kTS, bscal_kTS, saxpy_kTS,  sscal_kTS, sswap_kTS,
+  bgemv_nTS, bgemv_tTS, sbgemv_nTS, sbgemv_tTS, sger_kTS,
   ssymv_LTS, ssymv_UTS,
 
   bgemm_kernelTS, bgemm_betaTS,

@@ -34,15 +34,6 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define BGEMM BLASFUNC(bgemm)
 #define BGEMM_LARGEST 256
 
-static float truncate_float32_to_bfloat16(float value) {
-  blasint one = 1;
-  bfloat16 tmp;
-  float result;
-  sbstobf16_(&one, &value, &one, &tmp, &one);
-  sbf16tos_(&one, &tmp, &one, &result, &one);
-  return result;
-}
-
 int
 main (int argc, char *argv[])
 {

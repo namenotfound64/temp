@@ -60,6 +60,7 @@ double BLASFUNC(dsdot) (blasint *, float  *, blasint *, float  *, blasint *);
 double BLASFUNC(ddot)  (blasint *, double *, blasint *, double *, blasint *);
 xdouble BLASFUNC(qdot)  (blasint *, xdouble *, blasint *, xdouble *, blasint *);
 
+void   BLASFUNC(bscal) (blasint *,  bfloat16  *, bfloat16  *, blasint *);
 float  BLASFUNC(sbdot)     (blasint *, bfloat16 *, blasint *, bfloat16 *, blasint *);
 void   BLASFUNC(sbstobf16) (blasint *, float *,    blasint *, bfloat16 *, blasint *);
 void   BLASFUNC(sbdtobf16) (blasint *, double *,   blasint *, bfloat16 *, blasint *);
@@ -256,6 +257,8 @@ void BLASFUNC(xgeru)(blasint *,    blasint *, xdouble *, xdouble *, blasint *,
 void BLASFUNC(xgerc)(blasint *,    blasint *, xdouble *, xdouble *, blasint *,
 		    xdouble *, blasint *, xdouble *, blasint *);
 
+void BLASFUNC(bgemv)(char *, blasint *, blasint *, bfloat16  *, bfloat16 *, blasint *,
+            bfloat16  *, blasint *, bfloat16  *, bfloat16  *, blasint *);
 void BLASFUNC(sbgemv)(char *, blasint *, blasint *, float  *, bfloat16 *, blasint *,
             bfloat16  *, blasint *, float  *, float  *, blasint *);
 void BLASFUNC(sgemv)(char *, blasint *, blasint *, float  *, float  *, blasint *,

@@ -705,6 +705,11 @@
 
 
 #elif defined(BFLOAT16) && defined(BGEMM)
+#define SCAL_K        BSCAL_K
+
+#define GEMV_N        BGEMV_N_K
+#define GEMV_T        BGEMV_T_K
+
 #define GEMM_BETA               BGEMM_BETA
 #define	GEMM_KERNEL_N		BGEMM_KERNEL
 #define	GEMM_KERNEL_L		BGEMM_KERNEL
@@ -754,8 +759,8 @@
 #define D_BF16_TO_K     DBF16TOD_K
 #define S_TO_BF16_K     SBSTOBF16_K
 #define S_BF16_TO_K     SBF16TOS_K
-#define SBGEMV_N        SBGEMV_N_K
-#define SBGEMV_T        SBGEMV_T_K
+#define GEMV_N          SBGEMV_N_K
+#define GEMV_T          SBGEMV_T_K
 
 #define	AMAX_K			SAMAX_K
 #define	AMIN_K			SAMIN_K
@@ -773,8 +778,6 @@
 #define	AXPYC_K			SAXPYC_K
 #define AXPBY_K     SAXPBY_K
 #define SCAL_K			SSCAL_K
-#define GEMV_N			SGEMV_N
-#define GEMV_T			SGEMV_T
 #define SYMV_U			SSYMV_U
 #define SYMV_L			SSYMV_L
 #define	GERU_K			SGERU_K
