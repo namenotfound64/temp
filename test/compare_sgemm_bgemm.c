@@ -158,6 +158,7 @@ main (int argc, char *argv[])
 
   if (ret != 0) {
     fprintf (stderr, "FATAL ERROR BGEMM - Return code: %d\n", ret);
-    return ret;
   }
+
+  return ret;
 }
