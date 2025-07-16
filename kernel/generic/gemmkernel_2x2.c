@@ -27,39 +27,8 @@
  * *****************************************************************************/
 
 #include "common.h"
-#if defined(BFLOAT16) && defined(BFLOAT16CONVERSION)
-static float
-bfloat16tof32 (bfloat16 value)
-{
-  blasint one = 1;
-  float result;
-  sbf16tos_(&one, &value, &one, &result, &one);
-  return result;
-}
+#include "bf16_macros.h"
 
-#ifdef BGEMM
-static bfloat16 f32tobfloat16(float value) {
-  blasint one = 1;
-  bfloat16 result;
-  sbstobf16_(&one, &value, &one, &result, &one);
-  return result;
-}
-#endif
-
-#ifdef BGEMM
-#define ALPHA bfloat16tof32(alpha)
-#define BF16TOF32(x) (bfloat16tof32(x))
-#define F32TOBF16(x) (f32tobfloat16(x))
-#else
-#define ALPHA alpha
-#define BF16TOF32(x) (bfloat16tof32(x))
-#define F32TOBF16(x) x
-#endif
-#else
-#define ALPHA alpha
-#define BF16TOF32(x) x
-#define F32TOBF16(x) x
-#endif
 int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,IFLOAT* ba,IFLOAT* bb,FLOAT* C,BLASLONG ldc
 #ifdef TRMMKERNEL
 		,BLASLONG offset

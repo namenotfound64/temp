@@ -119,6 +119,10 @@ endif
 endif
 endif
 
+ifeq ($(BUILD_BFLOAT16), 1)
+BB2 = test_bgemv
+B2 = test_sbgemv
+endif
 ifeq ($(BUILD_SINGLE),1)
 S2=sblat2
 endif
@@ -132,11 +136,17 @@ ifeq ($(BUILD_COMPLEX16),1)
 Z2=zblat2
 endif
 
-level2: $(S2) $(D2) $(C2) $(Z2)
+level2: $(BB2) $(B2) $(S2) $(D2) $(C2) $(Z2)
 
 
 ifneq ($(CROSS), 1)
 	rm -f ?BLAT2.SUMM
+ifeq ($(BUILD_BFLOAT16),1)
+	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./test_bgemv > BBLAT2.SUMM
+	@$(GREP) -q FATAL BBLAT2.SUMM && cat BBLAT2.SUMM || exit 0
+	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./test_sbgemv > SBBLAT2.SUMM
+	@$(GREP) -q FATAL SBBLAT2.SUMM && cat SBBLAT2.SUMM || exit 0
+endif
 ifeq ($(BUILD_SINGLE),1)
 	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./sblat2 < ./sblat2.dat
 	@$(GREP) -q FATAL SBLAT2.SUMM && cat SBLAT2.SUMM || exit 0
@@ -156,6 +166,12 @@ endif
 ifdef SMP
 	rm -f ?BLAT2.SUMM
 ifeq ($(USE_OPENMP), 1)
+ifeq ($(BUILD_BFLOAT16),1)
+	OMP_NUM_THREADS=2 ./test_bgemv > BBLAT2.SUMM
+	@$(GREP) -q FATAL BBLAT2.SUMM && cat BBLAT2.SUMM || exit 0
+	OMP_NUM_THREADS=2 ./test_sbgemv > SBBLAT2.SUMM
+	@$(GREP) -q FATAL SBBLAT2.SUMM && cat SBBLAT2.SUMM || exit 0
+endif
 ifeq ($(BUILD_SINGLE),1)
 	OMP_NUM_THREADS=2 ./sblat2 < ./sblat2.dat
 	@$(GREP) -q FATAL SBLAT2.SUMM && cat SBLAT2.SUMM || exit 0
@@ -173,6 +189,12 @@ ifeq ($(BUILD_COMPLEX16),1)
 	@$(GREP) -q FATAL ZBLAT2.SUMM && cat ZBLAT2.SUMM || exit 0
 endif
 else
+ifeq ($(BUILD_BFLOAT16),1)
+	OMP_NUM_THREADS=2 ./test_bgemv > BBLAT2.SUMM
+	@$(GREP) -q FATAL BBLAT2.SUMM && cat BBLAT2.SUMM || exit 0
+	OMP_NUM_THREADS=2 ./test_sbgemv > SBBLAT2.SUMM
+	@$(GREP) -q FATAL SBBLAT2.SUMM && cat SBBLAT2.SUMM || exit 0
+endif
 ifeq ($(BUILD_SINGLE),1)
 	OPENBLAS_NUM_THREADS=2 ./sblat2 < ./sblat2.dat
 	@$(GREP) -q FATAL SBLAT2.SUMM && cat SBLAT2.SUMM || exit 0
@@ -195,7 +217,7 @@ endif
 
 ifeq ($(BUILD_BFLOAT16),1)
 BF3= test_bgemm
-B3= test_sbgemm
+B3 = test_sbgemm
 endif
 ifeq ($(BUILD_SINGLE),1)
 S3=sblat3
@@ -404,10 +426,16 @@ endif
 
 ifeq ($(BUILD_BFLOAT16),1)
 test_bgemm : compare_sgemm_bgemm.c test_helpers.h ../$(LIBNAME)
-	$(CC) $(CLDFLAGS) -o test_bgemm compare_sgemm_bgemm.c ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
+	$(CC) $(CLDFLAGS) -DIBFLOAT16 -DOBFLOAT16 -o test_bgemm compare_sgemm_bgemm.c ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
+
+test_bgemv : compare_sgemv_bgemv.c ../$(LIBNAME)
+	$(CC) $(CLDFLAGS) -DIBFLOAT16 -DOBFLOAT16 -o test_bgemv compare_sgemv_bgemv.c ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
 
 test_sbgemm : compare_sgemm_sbgemm.c test_helpers.h ../$(LIBNAME)
-	$(CC) $(CLDFLAGS) -o test_sbgemm compare_sgemm_sbgemm.c ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
+	$(CC) $(CLDFLAGS) -DIBFLOAT16 -o test_sbgemm compare_sgemm_sbgemm.c ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
+
+test_sbgemv : compare_sgemv_sbgemv.c ../$(LIBNAME)
+	$(CC) $(CLDFLAGS) -DIBFLOAT16 -o test_sbgemv compare_sgemv_sbgemv.c ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
 endif
 
 ifeq ($(BUILD_COMPLEX),1)
@@ -426,7 +454,7 @@ clean:
 	@rm -f *.$(SUFFIX) *.$(PSUFFIX) gmon.$(SUFFIX)ut *.SUMM *.cxml *.exe *.pdb *.dwf \
 	sblat1 dblat1 cblat1 zblat1 \
 	sblat2 dblat2 cblat2 zblat2 \
-	test_bgemm test_sbgemm sblat3 dblat3 cblat3 zblat3 \
+	test_bgemm test_bgemv test_sbgemm test_sbgemv sblat3 dblat3 cblat3 zblat3 \
 	sblat1p dblat1p cblat1p zblat1p \
 	sblat2p dblat2p cblat2p zblat2p \
 	sblat3p dblat3p cblat3p zblat3p \
