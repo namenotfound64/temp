@@ -52,6 +52,13 @@ void sgemm_direct(BLASLONG M, BLASLONG N, BLASLONG K,
 	float * B, BLASLONG strideB,
 	float * R, BLASLONG strideR);
 
+void sgemm_direct_alpha_beta(BLASLONG M, BLASLONG N, BLASLONG K,
+	float alpha,
+	float * A, BLASLONG strideA,
+	float * B, BLASLONG strideB,
+	float beta,
+	float * R, BLASLONG strideR);
+
 int sgemm_direct_performant(BLASLONG M, BLASLONG N, BLASLONG K);
 
 int shgemm_beta(BLASLONG, BLASLONG, BLASLONG, float,
