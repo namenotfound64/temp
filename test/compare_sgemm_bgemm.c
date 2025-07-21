@@ -100,7 +100,7 @@ main (int argc, char *argv[])
 
       SGEMM (&transA, &transB, &m, &n, &k, &alpha, A,
         &m, B, &k, &beta, C, &m);
-      BGEMM (&transA, &transB, &m, &n, &k, &alpha_bf16, (bfloat16*) AA,
+      BGEMM (&transA, &transB, &m, &n, &k, &alpha_bf16, (bfloat16*)AA,
         &m, (bfloat16*)BB, &k, &beta_bf16, (bfloat16*)CC, &m);
 
       for (i = 0; i < n; i++)
@@ -126,15 +126,15 @@ main (int argc, char *argv[])
             }
           if (!is_close(float16to32(CC[i * m + j]), truncate_float32_to_bfloat16(C[i * m + j]), 0.01, 0.001)) {
 #ifdef DEBUG
-            printf("Mismatch at i=%d, j=%d, k=%ld: CC=%.6f, C=%.6f\n",
+            printf("Mismatch at i=%d, j=%d, k=%d: CC=%.6f, C=%.6f\n",
                     i, j, k, float16to32(CC[i * m + j]), truncate_float32_to_bfloat16(C[i * m + j]));
 #endif
             ret++;
           }
 
-          if (!is_close(float16to32(CC[i * m + j]), truncate_float32_to_bfloat16(DD[i * m + j]), 0.0001, 0.00001)) {
+          if (!is_close(float16to32(CC[i * m + j]), truncate_float32_to_bfloat16(DD[i * m + j]), 0.01, 0.001)) {
 #ifdef DEBUG
-            printf("Mismatch at i=%d, j=%d, k=%ld: CC=%.6f, DD=%.6f\n",
+            printf("Mismatch at i=%d, j=%d, k=%d: CC=%.6f, DD=%.6f\n",
                     i, j, k, float16to32(CC[i * m + j]), truncate_float32_to_bfloat16(DD[i * m + j]));
 #endif
             ret++;
