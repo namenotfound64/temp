@@ -84,7 +84,7 @@ GOTO_LAPACK_TARGETS=
 endif
 
 ifeq ($(BUILD_BFLOAT16),1)
-GOTO_BFLOAT_TARGETS=bgemm.goto sbgemm.goto
+GOTO_BFLOAT_TARGETS=bgemm.goto sbgemm.goto bgemv.goto sbgemv.goto
 else
 GOTO_BFLOAT_TARGETS=
 endif
@@ -666,6 +666,10 @@ ifeq ($(BUILD_BFLOAT16),1)
 bgemm.goto : bgemm.$(SUFFIX) ../$(LIBNAME)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 sbgemm.goto : sbgemm.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+bgemv.goto : bgemv.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+sbgemv.goto : sbgemv.$(SUFFIX) ../$(LIBNAME)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 endif
 
@@ -3145,6 +3149,13 @@ dgemv.$(SUFFIX) : gemv.c
 
 cgemv.$(SUFFIX) : gemv.c
 	$(CC) $(CFLAGS) -c -DCOMPLEX -UDOUBLE -o $(@F) $^
+
+ifeq ($(BUILD_BFLOAT16),1) 
+bgemv.$(SUFFIX) : gemv.c
+	$(CC) $(CFLAGS) -c -DBFLOAT16 -DBGEMM -UCOMPLEX -UDOUBLE -o $(@F) $^
+sbgemv.$(SUFFIX) : gemv.c
+	$(CC) $(CFLAGS) -c -DBFLOAT16 -UCOMPLEX -UDOUBLE -o $(@F) $^
+endif ()
 
 zgemv.$(SUFFIX) : gemv.c
 	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
