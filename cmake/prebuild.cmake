@@ -1407,6 +1407,78 @@ endif ()
     set(ZGEMM_UNROLL_M 8)
     set(ZGEMM_UNROLL_N 2)
     set(SYMV_P 8)
+  elseif ("${TCORE}" STREQUAL "C910V")
+    file(APPEND ${TARGET_CONF_TEMP}
+      "#define L1_DATA_SIZE 32768\n"
+      "#define L1_DATA_LINESIZE 32\n"
+      "#define L2_SIZE 1048576\n"
+      "#define L2_LINESIZE 32 \n"
+      "#define DTB_DEFAULT_ENTRIES 128\n"
+      "#define DTB_SIZE 4096\n"
+      "#define L2_ASSOCIATIVE 4\n")
+    set(SGEMM_UNROLL_M 16)
+    set(SGEMM_UNROLL_N 4)
+    set(DGEMM_UNROLL_M 8)
+    set(DGEMM_UNROLL_N 4)
+    set(CGEMM_UNROLL_M 2)
+    set(CGEMM_UNROLL_N 2)
+    set(ZGEMM_UNROLL_M 2)
+    set(ZGEMM_UNROLL_N 2)
+    set(SYMV_P 16)
+  elseif ("${TCORE}" STREQUAL "x280")
+    file(APPEND ${TARGET_CONF_TEMP}
+      "#define L1_DATA_SIZE 64536\n"
+      "#define L1_LINESIZE 32 \n"
+      "#define L2_SIZE 262144\n"
+      "#define L2_LINESIZE 32 \n"
+      "#define DTB_DEFAULT_ENTRIES 128\n"
+      "#define DTB_SIZE 4096\n"
+      "#define L2_ASSOCIATIVE 4\n")
+    set(SGEMM_UNROLL_M 16)
+    set(SGEMM_UNROLL_N 8)
+    set(DGEMM_UNROLL_M 16)
+    set(DGEMM_UNROLL_N 8)
+    set(CGEMM_UNROLL_M 8)
+    set(CGEMM_UNROLL_N 4)
+    set(ZGEMM_UNROLL_M 8)
+    set(ZGEMM_UNROLL_N 4)
+    set(SYMV_P 16)
+  elseif ("${TCORE}" STREQUAL "RISCV64_ZVL128B")
+    file(APPEND ${TARGET_CONF_TEMP}
+      "#define L1_DATA_SIZE 32768\n"
+      "#define L1_DATA_LINESIZE 128\n"
+      "#define L2_SIZE 1048576\n"
+      "#define L2_LINESIZE 32 \n"
+      "#define DTB_DEFAULT_ENTRIES 128\n"
+      "#define DTB_SIZE 4096\n"
+      "#define L2_ASSOCIATIVE 4\n")
+    set(SGEMM_UNROLL_M 8)
+    set(SGEMM_UNROLL_N 8)
+    set(DGEMM_UNROLL_M 8)
+    set(DGEMM_UNROLL_N 4)
+    set(CGEMM_UNROLL_M 8)
+    set(CGEMM_UNROLL_N 4)
+    set(ZGEMM_UNROLL_M 4)
+    set(ZGEMM_UNROLL_N 4)
+    set(SYMV_P 16)
+  elseif ("${TCORE}" STREQUAL "RISCV64_ZVL256B")
+    file(APPEND ${TARGET_CONF_TEMP}
+      "#define L1_DATA_SIZE 32768\n"
+      "#define L1_DATA_LINESIZE 128\n"
+      "#define L2_SIZE 524288\n"
+      "#define L2_LINESIZE 128 \n"
+      "#define DTB_DEFAULT_ENTRIES 128\n"
+      "#define DTB_SIZE 4096\n"
+      "#define L2_ASSOCIATIVE 4\n")
+    set(SGEMM_UNROLL_M 16)
+    set(SGEMM_UNROLL_N 8)
+    set(DGEMM_UNROLL_M 8)
+    set(DGEMM_UNROLL_N 8)
+    set(CGEMM_UNROLL_M 8)
+    set(CGEMM_UNROLL_N 8)
+    set(ZGEMM_UNROLL_M 8)
+    set(ZGEMM_UNROLL_N 4)
+    set(SYMV_P 16)
   elseif ("${TCORE}" STREQUAL "GENERIC")
     file(APPEND ${TARGET_CONF_TEMP}
       "#define L1_DATA_SIZE 32768\n"
@@ -1418,9 +1490,9 @@ endif ()
       "#define L2_ASSOCIATIVE 8\n")
   elseif ("${TCORE}" STREQUAL "RISCV64_GENERIC")
     file(APPEND ${TARGET_CONF_TEMP}
-        "#define L1_DATA_SIZE 32768\n"
+      "#define L1_DATA_SIZE 64536\n"
       "#define L1_DATA_LINESIZE 32\n"
-      "#define L2_SIZE 1048576\n"
+      "#define L2_SIZE 262144\n"
       "#define L2_LINESIZE 32 \n"
       "#define DTB_DEFAULT_ENTRIES 128\n"
       "#define DTB_SIZE 4096\n"
