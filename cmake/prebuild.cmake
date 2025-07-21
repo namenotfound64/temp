@@ -1427,7 +1427,7 @@ endif ()
     set(SYMV_P 16)
   elseif ("${TCORE}" STREQUAL "x280")
     file(APPEND ${TARGET_CONF_TEMP}
-      "#define L1_DATA_SIZE 64536\n"
+      "#define L1_DATA_SIZE 65536\n"
       "#define L1_LINESIZE 32 \n"
       "#define L2_SIZE 262144\n"
       "#define L2_LINESIZE 32 \n"
@@ -1446,7 +1446,7 @@ endif ()
   elseif ("${TCORE}" STREQUAL "RISCV64_ZVL128B")
     file(APPEND ${TARGET_CONF_TEMP}
       "#define L1_DATA_SIZE 32768\n"
-      "#define L1_DATA_LINESIZE 128\n"
+      "#define L1_DATA_LINESIZE 32\n"
       "#define L2_SIZE 1048576\n"
       "#define L2_LINESIZE 32 \n"
       "#define DTB_DEFAULT_ENTRIES 128\n"
@@ -1463,10 +1463,10 @@ endif ()
     set(SYMV_P 16)
   elseif ("${TCORE}" STREQUAL "RISCV64_ZVL256B")
     file(APPEND ${TARGET_CONF_TEMP}
-      "#define L1_DATA_SIZE 32768\n"
-      "#define L1_DATA_LINESIZE 128\n"
-      "#define L2_SIZE 524288\n"
-      "#define L2_LINESIZE 128 \n"
+      "#define L1_DATA_SIZE 65536\n"
+      "#define L1_DATA_LINESIZE 32\n"
+      "#define L2_SIZE 262144\n"
+      "#define L2_LINESIZE 32 \n"
       "#define DTB_DEFAULT_ENTRIES 128\n"
       "#define DTB_SIZE 4096\n"
       "#define L2_ASSOCIATIVE 4\n")
@@ -1490,9 +1490,9 @@ endif ()
       "#define L2_ASSOCIATIVE 8\n")
   elseif ("${TCORE}" STREQUAL "RISCV64_GENERIC")
     file(APPEND ${TARGET_CONF_TEMP}
-      "#define L1_DATA_SIZE 64536\n"
+      "#define L1_DATA_SIZE 32768\n"
       "#define L1_DATA_LINESIZE 32\n"
-      "#define L2_SIZE 262144\n"
+      "#define L2_SIZE 1048576\n"
       "#define L2_LINESIZE 32 \n"
       "#define DTB_DEFAULT_ENTRIES 128\n"
       "#define DTB_SIZE 4096\n"
