@@ -283,6 +283,11 @@ if ( BUILD_COMPLEX16 AND NOT  BUILD_DOUBLE)
 	GenerateNamedObjects("imax.c" "USE_ABS" "i*amax" 0 "" "" false "DOUBLE")
 endif ()
 
+if ( BUILD_BFLOAT16 AND NO_FBLAS )
+	GenerateNamedObjects("tobf16.c" "SINGLE_PREC" "sbstobf16" 0 "" "" true "BFLOAT16")
+	GenerateNamedObjects("bf16to.c" "SINGLE_PREC" "sbf16tos" 0 "" "" true "BFLOAT16")
+endif()
+
 add_library(interface OBJECT ${OPENBLAS_SRC})
 
 if (USE_OPENMP)
