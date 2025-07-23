@@ -46,6 +46,9 @@ BGEMMOTCOPY    = sbgemm_tcopy_$(BGEMM_UNROLL_N)_neoversev1.c
 BGEMMONCOPYOBJ =  bgemm_oncopy$(TSUFFIX).$(SUFFIX)
 BGEMMOTCOPYOBJ =  bgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
+BGEMVTKERNEL = sbgemv_t_bfdot.c
+BGEMVNKERNEL = bgemv_n_sve_v3x4.c
+
 SBGEMM_BETA    =  sbgemm_beta_neoversev1.c
 SBGEMMKERNEL    = sbgemm_kernel_$(SBGEMM_UNROLL_M)x$(SBGEMM_UNROLL_N)_neoversev1.c
 ifneq ($(SBGEMM_UNROLL_M), $(SBGEMM_UNROLL_N))
