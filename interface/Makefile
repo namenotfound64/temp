@@ -327,6 +327,9 @@ CSBBLAS1OBJS = cblas_sbdot.$(SUFFIX)
 CSBBLAS2OBJS = cblas_sbgemv.$(SUFFIX)
 CSBBLAS3OBJS = cblas_sbgemm.$(SUFFIX) cblas_sbgemmt.$(SUFFIX) cblas_sbgemmtr.$(SUFFIX) cblas_sbgemm_batch.$(SUFFIX)
 CSBEXTOBJS   = cblas_sbstobf16.$(SUFFIX) cblas_sbdtobf16.$(SUFFIX) cblas_sbf16tos.$(SUFFIX) cblas_dbf16tod.$(SUFFIX)
+ifeq ($(ONLY_CBLAS),1)
+CSBEXTOBJS    += sbstobf16.$(SUFFIX) sbdtobf16.$(SUFFIX) sbf16tos.$(SUFFIX) dbf16tod.$(SUFFIX)
+endif
 endif
 
 ifeq ($(BUILD_HFLOAT16),1)
