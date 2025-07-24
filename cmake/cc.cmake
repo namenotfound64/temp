@@ -1,3 +1,30 @@
+###############################################################################
+# Copyright (c) 2025, The OpenBLAS Project
+# All rights reserved.
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the OpenBLAS project nor the names of
+#    its contributors may be used to endorse or promote products
+#    derived from this software without specific prior written permission.
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE OPENBLAS PROJECT OR CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+###############################################################################
 ##
 ## Author: Hank Anderson <hank@statease.com>
 ## Description: Ported from portion of OpenBLAS/Makefile.system
@@ -192,6 +219,24 @@ if (${CORE} STREQUAL A64FX)
   endif ()
 endif ()
 
+if (${CORE} STREQUAL NEOVERSEV2)
+	if (NOT DYNAMIC_ARCH)
+		if (${CMAKE_C_COMPILER_ID} STREQUAL "PGI" AND NOT NO_SVE)
+			set (CCOMMON_OPT  "${CCOMMON_OPT} -Msve_intrinsics -march=armv8.5-a+sve+sve2+bf16 -mtune=neoverse-v2")
+		elseif (${CMAKE_C_COMPILER_ID} STREQUAL "NVC" AND NOT NO_SVE)
+			set (CCOMMON_OPT  "${CCOMMON_OPT} -tp=neoverse-v2")
+		else ()
+			if (${GCC_VERSION} VERSION_GREATER 13.0 OR ${GCC_VERSION} VERSION_EQUAL 13.0)
+				set (CCOMMON_OPT  "${CCOMMON_OPT} -mcpu=neoverse-v2")
+			elseif (${GCC_VERSION} VERSION_GREATER 10.4 OR ${GCC_VERSION} VERSION_EQUAL 10.4)
+				set (CCOMMON_OPT  "${CCOMMON_OPT} -march=armv8.4-a+sve+bf16 -mtune=neoverse-v1")
+			else ()
+				set (CCOMMON_OPT "${CCOMMON_OPT} -march=armv8.2-a+sve+bf16")
+			endif()
+		endif ()
+	endif ()
+endif ()
+
 if (${CORE} STREQUAL NEOVERSEN2)
   if (NOT DYNAMIC_ARCH)
     if (${CMAKE_C_COMPILER_ID} STREQUAL "PGI" AND NOT NO_SVE)
@@ -199,10 +244,10 @@ if (${CORE} STREQUAL NEOVERSEN2)
     elseif (${CMAKE_C_COMPILER_ID} STREQUAL "NVC" AND NOT NO_SVE)
 	set (CCOMMON_OPT  "${CCOMMON_OPT} -tp=neoverse-v2")
     else ()
-      if (${GCC_VERSION} VERSION_GREATER 10.4 OR ${GCC_VERSION} VERSION_EQUAL 10.4)
+      if (${GCC_VERSION} VERSION_GREATER 11.1 OR ${GCC_VERSION} VERSION_EQUAL 11.1)
 	set (CCOMMON_OPT  "${CCOMMON_OPT} -march=armv8.5-a+sve+sve2+bf16 -mtune=neoverse-n2")
       else ()
-	set (CCOMMON_OPT "${CCOMMON_OPT} -march=armv8.2-a+sve")
+	set (CCOMMON_OPT "${CCOMMON_OPT} -march=armv8.2-a+sve+bf16")
       endif()
     endif ()
   endif ()
