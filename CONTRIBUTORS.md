@@ -255,6 +255,7 @@ In chronological order:
 
 * Abhishek Kumar <https://github.com/abhishek-iitmadras>
   * [2025-04-22] Optimise dot kernel for NEOVERSE V1
+  * [2025-07-23] ARM64-Enable bfloat16 kernels by default 
 
 * Sharif Inamdar <sharif.inamdar@arm.com>
   * [2025-06-05] Optimize gemv_n_sve_v1x3 kernel

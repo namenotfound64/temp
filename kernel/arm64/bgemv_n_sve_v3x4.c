@@ -28,6 +28,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 
 #include <arm_sve.h>
+#include <arm_neon.h>
 
 #define UPDATE_PTRSx2 \
     a_ptr1 = a_ptr0 + lda;
