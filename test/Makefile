@@ -242,7 +242,7 @@ endif
 
 
 ifeq ($(SUPPORT_GEMM3M),1)
-level3: $(B3) $(S3) $(D3) $(C3) $(Z3) level3_3m
+level3: $(BF3) $(B3) $(S3) $(D3) $(C3) $(Z3) level3_3m
 else
 level3: $(BF3) $(B3) $(S3) $(D3) $(C3) $(Z3)
 endif
