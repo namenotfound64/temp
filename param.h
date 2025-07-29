@@ -3585,6 +3585,8 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 
 #elif defined(NEOVERSEV1) // 256-bit SVE
 
+#define GEMM_DIVIDE_LIMIT       3
+
 #if defined(XDOUBLE) || defined(DOUBLE)
 #define SWITCH_RATIO            8
 #define GEMM_PREFERED_SIZE      4
