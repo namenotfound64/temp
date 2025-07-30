@@ -63,6 +63,10 @@
 #define DIVIDE_RATE GEMM_DIVIDE_RATE
 #endif
 
+#ifdef GEMM_DIVIDE_LIMIT
+#define DIVIDE_LIMIT GEMM_DIVIDE_LIMIT
+#endif
+
 #ifdef THREADED_LEVEL3
 #include "level3_thread.c"
 #else
