@@ -119,24 +119,14 @@ SGEMMITCOPYOBJ =  sgemm_itcopy$(TSUFFIX).$(SUFFIX)
 endif
 
 DGEMMKERNEL    =  dgemm_kernel_$(DGEMM_UNROLL_M)x$(DGEMM_UNROLL_N)_zvl128b.c
-ifneq ($(filter $(DGEMM_UNROLL_N),4 8 16),)
-DGEMMONCOPY    =  gemm_ncopy_$(DGEMM_UNROLL_N)_rvv.c
-DGEMMOTCOPY    =  gemm_tcopy_$(DGEMM_UNROLL_N)_rvv.c
-else
 DGEMMONCOPY    =  ../generic/gemm_ncopy_$(DGEMM_UNROLL_N).c
 DGEMMOTCOPY    =  ../generic/gemm_tcopy_$(DGEMM_UNROLL_N).c
-endif
 DGEMMONCOPYOBJ =  dgemm_oncopy$(TSUFFIX).$(SUFFIX)
 DGEMMOTCOPYOBJ =  dgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
 ifneq ($(DGEMM_UNROLL_M), $(DGEMM_UNROLL_N))
-ifneq ($(filter $(DGEMM_UNROLL_M),4 8 16),)
-DGEMMINCOPY    =  gemm_ncopy_$(DGEMM_UNROLL_M)_rvv.c
-DGEMMITCOPY    =  gemm_tcopy_$(DGEMM_UNROLL_M)_rvv.c
-else
 DGEMMINCOPY    =  ../generic/gemm_ncopy_$(DGEMM_UNROLL_M).c
 DGEMMITCOPY    =  ../generic/gemm_tcopy_$(DGEMM_UNROLL_M).c
-endif
 DGEMMINCOPYOBJ =  dgemm_incopy$(TSUFFIX).$(SUFFIX)
 DGEMMITCOPYOBJ =  dgemm_itcopy$(TSUFFIX).$(SUFFIX)
 endif
