@@ -3598,15 +3598,15 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 #undef BGEMM_ALIGN_K
 #undef BGEMM_DEFAULT_UNROLL_M
 #undef BGEMM_DEFAULT_UNROLL_N
-#define BGEMM_ALIGN_K 8
+#define BGEMM_ALIGN_K 4
+#define BGEMM_DEFAULT_UNROLL_M 8
 #define BGEMM_DEFAULT_UNROLL_N 4
-#define BGEMM_DEFAULT_UNROLL_M 4
 
 #undef SBGEMM_ALIGN_K
 #undef SBGEMM_DEFAULT_UNROLL_M
 #undef SBGEMM_DEFAULT_UNROLL_N
-#define SBGEMM_ALIGN_K 8
-#define SBGEMM_DEFAULT_UNROLL_M 4
+#define SBGEMM_ALIGN_K 4
+#define SBGEMM_DEFAULT_UNROLL_M 8
 #define SBGEMM_DEFAULT_UNROLL_N 4
 
 #define SGEMM_DEFAULT_UNROLL_M  16

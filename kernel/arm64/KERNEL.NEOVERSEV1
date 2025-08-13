@@ -34,15 +34,15 @@ SGEMVTKERNEL = gemv_t_sve_v1x3.c
 DGEMVTKERNEL = gemv_t_sve_v1x3.c
 ifeq ($(BUILD_BFLOAT16), 1)
 BGEMM_BETA    =  bgemm_beta_neon.c
-BGEMMKERNEL    = bgemm_kernel_$(BGEMM_UNROLL_M)x$(BGEMM_UNROLL_N)_neoversev1.c
+BGEMMKERNEL    = bgemm_kernel_2vlx4_neoversev1.c
 ifneq ($(BGEMM_UNROLL_M), $(BGEMM_UNROLL_N))
-BGEMMINCOPY    = sbgemm_ncopy_$(SBGEMM_UNROLL_M)_neoversev1.c
-BGEMMITCOPY    = sbgemm_tcopy_$(SBGEMM_UNROLL_M)_neoversev1.c
+BGEMMINCOPY    = bgemm_ncopy_2vl_neoversev1.c
+BGEMMITCOPY    = bgemm_tcopy_2vl_neoversev1.c
 BGEMMINCOPYOBJ =  bgemm_incopy$(TSUFFIX).$(SUFFIX)
 BGEMMITCOPYOBJ =  bgemm_itcopy$(TSUFFIX).$(SUFFIX)
 endif
-BGEMMONCOPY    = sbgemm_ncopy_$(BGEMM_UNROLL_N)_neoversev1.c
-BGEMMOTCOPY    = sbgemm_tcopy_$(BGEMM_UNROLL_N)_neoversev1.c
+BGEMMONCOPY    = bgemm_ncopy_4_neoversev1.c
+BGEMMOTCOPY    = bgemm_tcopy_4_neoversev1.c
 BGEMMONCOPYOBJ =  bgemm_oncopy$(TSUFFIX).$(SUFFIX)
 BGEMMOTCOPYOBJ =  bgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
@@ -50,15 +50,15 @@ BGEMVTKERNEL = sbgemv_t_bfdot.c
 BGEMVNKERNEL = bgemv_n_sve_v3x4.c
 
 SBGEMM_BETA    =  sbgemm_beta_neoversev1.c
-SBGEMMKERNEL    = sbgemm_kernel_$(SBGEMM_UNROLL_M)x$(SBGEMM_UNROLL_N)_neoversev1.c
+SBGEMMKERNEL    = bgemm_kernel_2vlx4_neoversev1.c
 ifneq ($(SBGEMM_UNROLL_M), $(SBGEMM_UNROLL_N))
-SBGEMMINCOPY    = sbgemm_ncopy_$(SBGEMM_UNROLL_M)_neoversev1.c
-SBGEMMITCOPY    = sbgemm_tcopy_$(SBGEMM_UNROLL_M)_neoversev1.c
+SBGEMMINCOPY    = bgemm_ncopy_2vl_neoversev1.c
+SBGEMMITCOPY    = bgemm_tcopy_2vl_neoversev1.c
 SBGEMMINCOPYOBJ =  sbgemm_incopy$(TSUFFIX).$(SUFFIX)
 SBGEMMITCOPYOBJ =  sbgemm_itcopy$(TSUFFIX).$(SUFFIX)
 endif
-SBGEMMONCOPY    = sbgemm_ncopy_$(SBGEMM_UNROLL_N)_neoversev1.c
-SBGEMMOTCOPY    = sbgemm_tcopy_$(SBGEMM_UNROLL_N)_neoversev1.c
+SBGEMMONCOPY    = bgemm_ncopy_4_neoversev1.c
+SBGEMMOTCOPY    = bgemm_tcopy_4_neoversev1.c
 SBGEMMONCOPYOBJ =  sbgemm_oncopy$(TSUFFIX).$(SUFFIX)
 SBGEMMOTCOPYOBJ =  sbgemm_otcopy$(TSUFFIX).$(SUFFIX)
 

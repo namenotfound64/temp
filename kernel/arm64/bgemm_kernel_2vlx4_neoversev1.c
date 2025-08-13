@@ -32,20 +32,26 @@
 #include "common.h"
 
 #define ALPHA_ONE
-#include "bgemm_kernel_4x4_neoversev1_impl.c"
+#include "bgemm_kernel_2vlx4_neoversev1_impl.c"
 #undef ALPHA_ONE
 #undef UPDATE_C
-#include "bgemm_kernel_4x4_neoversev1_impl.c"
+#undef UPDATE_C2
+#undef UPDATE_C1
+#include "bgemm_kernel_2vlx4_neoversev1_impl.c"
 
 int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT *A, IFLOAT *B,
           FLOAT *C, BLASLONG ldc) {
+#ifdef BGEMM
   bfloat16_t alpha_bf16;
   memcpy(&alpha_bf16, &alpha, sizeof(bfloat16_t));
   float alpha_f32 = vcvtah_f32_bf16(alpha_bf16);
+#else
+  float alpha_f32 = alpha;
+#endif
 
   if (alpha_f32 == 1.0f)
-    return bgemm_kernel_neoversev1_alpha_one(m, n, k, alpha, A, B, C, ldc);
+    return bgemm_kernel_neoversev1_alpha_one(m, n, k, alpha_f32, A, B, C, ldc);
   else
-    return bgemm_kernel_neoversev1_alpha(m, n, k, alpha, A, B, C, ldc);
+    return bgemm_kernel_neoversev1_alpha(m, n, k, alpha_f32, A, B, C, ldc);
   return 0;
 }
