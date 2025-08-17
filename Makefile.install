@@ -71,7 +71,7 @@ install : 	lib.grd
 	@cat common_interface.h >> "$(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/f77blas.h"
 	@echo \#endif >> "$(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/f77blas.h"
 
-ifndef NO_CBLAS
+ifneq ($(NO_CBLAS),1)
 	@echo Generating cblas.h in $(DESTDIR)$(OPENBLAS_INCLUDE_DIR)
 	@cp cblas.h cblas.tmp
 ifdef SYMBOLPREFIX
