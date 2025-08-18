@@ -35,16 +35,17 @@
 #define K_exit       x15 //Exit condition for K loop
 #define M_cntr       x16 //M loop counter
 #define C1           x17 //Constant1: N*(SVLs+1);SVLs-No. of 32-bit elements
-#define C2           x18 //Constant2: N + SVLs
-#define C3           x19 //Constant3: K*SVLs + SVLs
-#define C4           x20 //Constant4: SVLs-2
-#define C5           x21 //Constant5: K*SVLs
-#define C6           x22 //Constant6: N*SVLs
+#define C2           x19 //Constant2: N + SVLs
+#define C3           x20 //Constant3: K*SVLs + SVLs
+#define C4           x21 //Constant4: SVLs-2
+#define C5           x22 //Constant5: K*SVLs
+#define C6           x23 //Constant6: N*SVLs
 
     .text
-    .global sgemm_direct_sme1_2VLx2VL
+    .global ASMNAME
 
-    sgemm_direct_sme1_2VLx2VL:
+    ASMNAME:
+    //sgemm_direct_sme1_2VLx2VL:
 
     stp     x19, x20, [sp, #-48]!
     stp     x21, x22, [sp, #16]
@@ -211,12 +212,12 @@ process_K_less_than_equal_2:
     addvl   Cptr, Cptr, #2
     addvl   Bptr, Bptr, #1
     whilelt p0.b, Bptr, N_exit           //1st Tile predicate (N dimension)
-    b.first .N_Loop
+    b.mi .N_Loop
     add     A_base, A_base, C5, lsl #3   //A_base += 2*K*SVLs FP32 elements
     add     C_base, C_base, C6, lsl #3   //C_base += 2*N*SVLs FP32 elements
     incw    M_cntr
     whilelt p2.s, M_cntr, M              //1st Tile predicate (M dimension)
-    b.first    .M_Loop
+    b.mi    .M_Loop
 
     smstop
 
