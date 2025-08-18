@@ -29,6 +29,9 @@ ifdef TARGET_CORE
 ifeq ($(TARGET_CORE), ARMV9SME)
  override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE) -DHAVE_SME -march=armv9-a+sve2+sme
 endif
+ifeq ($(TARGET_CORE), VORTEXM4)
+ override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE) -DHAVE_SME -march=armv8.4-a+sme
+endif
 ifeq ($(TARGET_CORE), SAPPHIRERAPIDS)
  override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE)
  ifeq (1, $(filter 1,$(GCCVERSIONGTEQ11) $(CLANGVERSIONGTEQ12)))
