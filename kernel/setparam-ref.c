@@ -216,6 +216,7 @@ gotoblas_t TABLE_NAME = {
 #ifdef ARCH_ARM64
   sgemm_directTS,
   sgemm_direct_alpha_betaTS,
+  sgemm_direct_performantTS,	
 #endif
 
   sgemm_kernelTS, sgemm_betaTS,
