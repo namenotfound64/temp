@@ -131,8 +131,12 @@ ifeq ($(ARCH), arm64)
 ifeq ($(TARGET_CORE), ARMV9SME)
 HAVE_SME = 1
 endif
+ifeq ($(TARGET_CORE), VORTEXM4)
+HAVE_SME = 1
+endif
 SGEMMDIRECTKERNEL = sgemm_direct_arm64_sme1.c
 SGEMMDIRECTKERNEL_ALPHA_BETA = sgemm_direct_alpha_beta_arm64_sme1.c
+SGEMMDIRECTPERFORMANT = sgemm_direct_performant.c
 endif
 endif
 endif
@@ -209,11 +213,12 @@ SKERNELOBJS += \
 endif
 ifeq ($(ARCH), arm64)
 SKERNELOBJS += \
+	sgemm_direct_performant$(TSUFFIX).$(SUFFIX) \
 	sgemm_direct$(TSUFFIX).$(SUFFIX) \
 	sgemm_direct_alpha_beta$(TSUFFIX).$(SUFFIX)
 ifdef HAVE_SME
 SKERNELOBJS += \
-	sgemm_direct_sme1$(TSUFFIX).$(SUFFIX) \
+	sgemm_direct_sme1_2VLx2VL$(TSUFFIX).$(SUFFIX) \
 	sgemm_direct_sme1_preprocess$(TSUFFIX).$(SUFFIX)
 endif
 endif
@@ -969,13 +974,15 @@ $(KDIR)sgemm_direct$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMMDIRECTKERNEL)
 	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX $< -o $@
 endif
 ifeq ($(ARCH), arm64)
+$(KDIR)sgemm_direct_performant$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMMDIRECTPERFORMANT)
+	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX $< -o $@
 $(KDIR)sgemm_direct$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMMDIRECTKERNEL)
 	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX $< -o $@
 $(KDIR)sgemm_direct_alpha_beta$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMMDIRECTKERNEL_ALPHA_BETA)
 	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX $< -o $@
 ifdef HAVE_SME
-$(KDIR)sgemm_direct_sme1$(TSUFFIX).$(SUFFIX) : 
-	$(CC) $(CFLAGS) -c $(KERNELDIR)/sgemm_direct_sme1.S -UDOUBLE -UCOMPLEX  -o $@
+$(KDIR)sgemm_direct_sme1_2VLx2VL$(TSUFFIX).$(SUFFIX) : 
+	$(CC) $(CFLAGS) -c $(KERNELDIR)/sgemm_direct_sme1_2VLx2VL.S -UDOUBLE -UCOMPLEX  -o $@
 $(KDIR)sgemm_direct_sme1_preprocess$(TSUFFIX).$(SUFFIX) : 
 	$(CC) $(CFLAGS) -c $(KERNELDIR)/sgemm_direct_sme1_preprocess.S -UDOUBLE -UCOMPLEX  -o $@
 endif
