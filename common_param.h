@@ -257,6 +257,7 @@ int (*shgemm_otcopy   )(BLASLONG, BLASLONG, hfloat16 *, BLASLONG, hfloat16 *);
 #ifdef ARCH_ARM64
   void (*sgemm_direct) (BLASLONG, BLASLONG, BLASLONG, float *, BLASLONG , float *, BLASLONG , float * , BLASLONG);
   void (*sgemm_direct_alpha_beta) (BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float, float * , BLASLONG);
+  int  (*sgemm_direct_performant) (BLASLONG M, BLASLONG N, BLASLONG K);
 #endif
 
   
