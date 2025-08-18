@@ -1252,7 +1252,7 @@ endif ()
     set(ZGEMM_UNROLL_M 4)
     set(ZGEMM_UNROLL_N 4)
     set(SYMV_P 16)
-  elseif ("${TCORE}" STREQUAL "VORTEX")
+  elseif ("${TCORE}" STREQUAL "VORTEX" OR "${TCORE}" STREQUAL "VORTEXM4")
     file(APPEND ${TARGET_CONF_TEMP}
       "#define ARMV8\n"
       "#define L1_CODE_SIZE\t32768\n"
