@@ -111,6 +111,7 @@ return;
 }
 
 __arm_new("za") __arm_locally_streaming
+__attribute__((visibility("hidden")))
 static void sgemm_direct_alpha_beta_sme1_2VLx2VL(uint64_t m, uint64_t k, uint64_t n, const float* alpha,\
                                    const float *ba, const float *restrict bb, const float* beta,\
                                    float *restrict C) {
@@ -209,3 +210,4 @@ void CNAME (BLASLONG M, BLASLONG N, BLASLONG K, float alpha, float * __restrict 
             float beta, float * __restrict R, BLASLONG strideR){fprintf(stderr,"empty sgemm_direct_alpha_beta should not be called!!!\n");}
  
 #endif
+
