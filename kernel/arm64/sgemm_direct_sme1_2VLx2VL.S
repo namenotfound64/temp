@@ -62,7 +62,7 @@
     add     C2, N, C4                  //N + SVLs
     add     C3, C5, C4                 //K*SVLs + SVLs
     whilelt p2.s, M_cntr, M            //Tile 0,1 predicate (M dimension)
-    sub     w20, w20, #2               //SVLs-2
+    sub     w21, w21, #2               //SVLs-2
 
 .M_Loop:
     incw    M_cntr
@@ -199,7 +199,7 @@ process_K_less_than_equal_2:
     st1w    {za1h.s[w13, #0]},  p5, [Cptr1]
     st1w    {za2h.s[w13, #0]},  p6, [Cptr0, C6, lsl #2]
     st1w    {za3h.s[w13, #0]},  p7, [Cptr1, C6, lsl #2]
-    cmp     w13, w20
+    cmp     w13, w21
     b.mi    .Loop_store_ZA
     psel    p4, p0, p2.s[w13, 1]
     psel    p5, p1, p2.s[w13, 1]
