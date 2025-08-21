@@ -7,3 +7,6 @@ DGEMVTKERNEL = gemv_t_sve_v4x3.c
 
 DDOTKERNEL   = dot_sve_v8.c
 SDOTKERNEL   = dot_sve_v8.c
+
+SAXPYKERNEL  = axpy_sve.c
+DAXPYKERNEL  = axpy_sve.c

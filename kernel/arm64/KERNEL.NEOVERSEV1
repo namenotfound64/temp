@@ -32,6 +32,10 @@ SGEMVNKERNEL = gemv_n_sve_v1x3.c
 DGEMVNKERNEL = gemv_n_sve_v1x3.c
 SGEMVTKERNEL = gemv_t_sve_v1x3.c
 DGEMVTKERNEL = gemv_t_sve_v1x3.c
+
+SAXPYKERNEL = axpy_sve.c
+DAXPYKERNEL = axpy_sve.c
+
 ifeq ($(BUILD_BFLOAT16), 1)
 BGEMM_BETA    =  bgemm_beta_neon.c
 BGEMMKERNEL    = bgemm_kernel_2vlx4_neoversev1.c
