@@ -111,7 +111,6 @@ return;
 }
 
 __arm_new("za") __arm_locally_streaming
-__attribute__((visibility("hidden")))
 static void sgemm_direct_alpha_beta_sme1_2VLx2VL(uint64_t m, uint64_t k, uint64_t n, const float* alpha,\
                                    const float *ba, const float *restrict bb, const float* beta,\
                                    float *restrict C) {
@@ -177,11 +176,11 @@ void CNAME (BLASLONG M, BLASLONG N, BLASLONG K, float alpha, float * __restrict 
 	     * of reading directly from vector (z) registers.
 	     * */
         asm volatile("" : : :"p0", "p1", "p2", "p3", "p4", "p5", "p6", "p7",
-                         "p8", "p9", "p10", "p11", "p12", "p13", "p14", "p15",
+                         "p8", "p9", "p10", "p11", "p12", "p13", "p14", "p15", "d8", "d9", "d10", "d11", "d12", "d13", "d14", "d15",
                          "z0", "z1", "z2", "z3", "z4", "z5", "z6", "z7",
                          "z8", "z9", "z10", "z11", "z12", "z13", "z14", "z15",
                          "z16", "z17", "z18", "z19", "z20", "z21", "z22", "z23",
-                         "z24", "z25", "z26", "z27", "z28", "z29", "z30", "z31");
+                         "z24", "z25", "z26", "z27", "z28", "z29", "z30", "z31","za");
       
         /* Pre-process the left matrix to make it suitable for 
            matrix sum of outer-product calculation
@@ -190,11 +189,11 @@ void CNAME (BLASLONG M, BLASLONG N, BLASLONG K, float alpha, float * __restrict 
         SME1_PREPROCESS(M, K, A, A_mod);
        
         asm volatile("" : : :"p0", "p1", "p2", "p3", "p4", "p5", "p6", "p7",
-                         "p8", "p9", "p10", "p11", "p12", "p13", "p14", "p15",
+                         "p8", "p9", "p10", "p11", "p12", "p13", "p14", "p15","d8", "d9", "d10", "d11", "d12", "d13", "d14", "d15",
                          "z0", "z1", "z2", "z3", "z4", "z5", "z6", "z7",
                          "z8", "z9", "z10", "z11", "z12", "z13", "z14", "z15",
                          "z16", "z17", "z18", "z19", "z20", "z21", "z22", "z23",
-                         "z24", "z25", "z26", "z27", "z28", "z29", "z30", "z31");
+                         "z24", "z25", "z26", "z27", "z28", "z29", "z30", "z31", "za");
 
         /* Calculate C = alpha*A*B + beta*C */
 
@@ -210,4 +209,3 @@ void CNAME (BLASLONG M, BLASLONG N, BLASLONG K, float alpha, float * __restrict 
             float beta, float * __restrict R, BLASLONG strideR){fprintf(stderr,"empty sgemm_direct_alpha_beta should not be called!!!\n");}
  
 #endif
-
