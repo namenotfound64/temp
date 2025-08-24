@@ -625,7 +625,6 @@ else
       }
       bool is_efficient_gemv = have_tuned_gemv || ((NT == 'N') || (NT == 'T' && inc_x == 1));
       if (is_efficient_gemv) {
-fprintf(stderr,"gemv_forwarding\n");
         GEMV(&NT, &m, &n, args.alpha, args.a, &lda, args.b, &inc_x, args.beta, args.c, &inc_y);
         return;
       }
@@ -649,7 +648,6 @@ fprintf(stderr,"gemv_forwarding\n");
       }
       bool is_efficient_gemv = have_tuned_gemv || ((NT == 'N' && inc_y == 1) || (NT == 'T' && inc_x == 1));
       if (is_efficient_gemv) {
-fprintf(stderr,"gemv_forwarding\n");
         GEMV(&NT, &m, &n, args.alpha, args.b, &ldb, args.a, &inc_x, args.beta, args.c, &inc_y);
         return;
       }
