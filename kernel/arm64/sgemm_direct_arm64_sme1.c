@@ -70,7 +70,6 @@ void CNAME (BLASLONG M, BLASLONG N, BLASLONG K, float * __restrict A,\
         SME1_PREPROCESS(M, K, A, A_mod);
         
         /* Calculate C = A*B */
-fprintf(stderr,"sme direct calling 2x2\n");
         SME1_DIRECT2X2(M, K, N, A_mod, B, R);
        
         asm volatile("" : : :"p0", "p1", "p2", "p3", "p4", "p5", "p6", "p7",
@@ -90,3 +89,4 @@ void CNAME (BLASLONG M, BLASLONG N, BLASLONG K, float * __restrict A,\
 fprintf(stderr,"EMPTY sgemm_kernel_direct should never be called \n");
 } 
 #endif
+
