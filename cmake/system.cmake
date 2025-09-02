@@ -422,10 +422,11 @@ if (USE_OPENMP)
     get_target_property(OMP_F_LIBS OpenMP::OpenMP_Fortran INTERFACE_LINK_LIBRARIES)
     if (NOT OMP_C_LIBS STREQUAL OMP_F_LIBS)
       message(NOTICE
-        "OpenMP runtimes detected:\n"
+        "CMake detected different OpenMP libraries for C and Fortran:\n"
         "C=${OMP_C_LIBS}\n"
         "Fortran=${OMP_F_LIBS}\n"
-        "Please check that they are the same OpenMP runtime implementation."
+        "In case you encounter issues, please check that this is correct.\n"
+        "You may pass -DOpenMP_<lang>_LIB_NAMES and -DOpenMP_<libname>_LIBRARY to cmake to manually force the OpenMP library."
       )
     endif()
   endif ()
