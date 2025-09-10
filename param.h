@@ -4141,8 +4141,6 @@ Until then, just keep it different than DGEMM_DEFAULT_UNROLL_N to keep copy rout
 #define CGEMM_DEFAULT_UNROLL_N 2
 #define ZGEMM_DEFAULT_UNROLL_N 2
 #define XGEMM_DEFAULT_UNROLL_N 1
-#define CGEMM3M_DEFAULT_UNROLL_N 2
-#define ZGEMM3M_DEFAULT_UNROLL_N 2
 
 #ifdef ARCH_X86
 #define SGEMM_DEFAULT_UNROLL_M 2
@@ -4158,8 +4156,11 @@ Until then, just keep it different than DGEMM_DEFAULT_UNROLL_N to keep copy rout
 #define CGEMM_DEFAULT_UNROLL_M 2
 #define ZGEMM_DEFAULT_UNROLL_M 2
 #define XGEMM_DEFAULT_UNROLL_M 1
+#endif
 #define CGEMM3M_DEFAULT_UNROLL_M 2
 #define ZGEMM3M_DEFAULT_UNROLL_M 2
+#define CGEMM3M_DEFAULT_UNROLL_N 2
+#define ZGEMM3M_DEFAULT_UNROLL_N 2
 #define CGEMM3M_DEFAULT_P 448
 #define ZGEMM3M_DEFAULT_P 224
 #define XGEMM3M_DEFAULT_P 112
@@ -4170,7 +4171,7 @@ Until then, just keep it different than DGEMM_DEFAULT_UNROLL_N to keep copy rout
 #define ZGEMM3M_DEFAULT_R 12288
 #define XGEMM3M_DEFAULT_R 12288
 
-#endif
+
 
 #ifdef ARCH_MIPS
 #define SGEMM_DEFAULT_P  128
