@@ -177,6 +177,8 @@ static gotoblas_t* get_coretype(void) {
 			return NULL;
 	} else {
 #if defined(BUILD_HFLOAT16)
+		snprintf(coremsg, sizeof(coremsg), "Cpu support for Zfh+Zvfh extensions required due to BUILD_HFLOAT16=1\n");
+		openblas_warning(1, coremsg);
 		return NULL;
 #else
 		if (!(getauxval(AT_HWCAP) & DETECT_RISCV64_HWCAP_ISA_V))
