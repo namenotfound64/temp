@@ -219,6 +219,9 @@ COMATCOPY_CN = zomatcopy_cn_vector.c
 DOMATCOPY_CN = omatcopy_cn_vector.c
 SOMATCOPY_CN = omatcopy_cn_vector.c
 
+DOMATCOPY_CT = omatcopy_ct_rvv.c
+SOMATCOPY_CT = omatcopy_ct_rvv.c
+
 
 ifeq ($(BUILD_BFLOAT16), 1)
 SHGEMMKERNEL    =  shgemm_kernel_$(SHGEMM_UNROLL_M)x$(SHGEMM_UNROLL_N)_zvl256b.c
