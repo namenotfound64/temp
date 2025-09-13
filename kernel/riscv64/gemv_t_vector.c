@@ -28,7 +28,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 #if !defined(DOUBLE)
 #define VSETVL(n) RISCV_RVV(vsetvl_e32m8)(n)
-#define VSETVL_MAX_M1 RISCV_RVV(vsetvlmax_e32m1)
 #define FLOAT_V_T vfloat32m8_t
 #define FLOAT_V_T_M1 vfloat32m1_t
 #define VLEV_FLOAT RISCV_RVV(vle32_v_f32m8)
@@ -44,7 +43,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define xint_t int
 #else
 #define VSETVL(n) RISCV_RVV(vsetvl_e64m8)(n)
-#define VSETVL_MAX_M1 RISCV_RVV(vsetvlmax_e64m1)
 #define FLOAT_V_T vfloat64m8_t
 #define FLOAT_V_T_M1 vfloat64m1_t
 #define VLEV_FLOAT RISCV_RVV(vle64_v_f64m8)
@@ -70,7 +68,6 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
     FLOAT_V_T va, vr, vx;
     unsigned int gvl = 0;
     FLOAT_V_T_M1 v_res;
-    size_t vlmax = VSETVL_MAX_M1();
 
     if(inc_x == 1){
 
