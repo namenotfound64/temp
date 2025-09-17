@@ -266,3 +266,6 @@ ifndef SHGEMM_BETA
 SHGEMM_BETA =  gemm_beta_rvv.c
 endif
 endif
+
+DOMATCOPY_CT = omatcopy_ct_rvv.c
+SOMATCOPY_CT = omatcopy_ct_rvv.c
