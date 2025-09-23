@@ -121,8 +121,8 @@ void NAME(char *transa_array, char *transb_array,
 	   IFLOAT ** a_array, blasint * lda_array,
 	   IFLOAT ** b_array, blasint * ldb_array,
 	   FLOAT * beta_array,
-	   FLOAT ** c_array, blasint * ldc_array, blasint group_count, blasint * group_size) {
-
+	   FLOAT ** c_array, blasint * ldc_array, blasint * gcount, blasint * group_size) {
+       blasint group_count = *gcount;
 #else
 
 void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE *  transa_array, enum CBLAS_TRANSPOSE * transb_array,
