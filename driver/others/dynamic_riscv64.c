@@ -99,8 +99,6 @@ struct riscv_hwprobe {
 #define		RISCV_HWPROBE_IMA_V		(1 << 2)
 #define		RISCV_HWPROBE_EXT_ZFH		(1 << 27)
 #define		RISCV_HWPROBE_EXT_ZVFH		(1 << 30)
-#define		RISCV_HWPROBE_EXT_ZFBFMIN	(1 << 52)
-#define		RISCV_HWPROBE_EXT_ZVFBFMIN	(1 << 53)
 #define		RISCV_HWPROBE_EXT_ZVFBFWMA	(1 << 54)
 
 #ifndef NR_riscv_hwprobe
@@ -174,7 +172,7 @@ static gotoblas_t* get_coretype(void) {
 #if defined(BUILD_HFLOAT16)
 		vector_mask = (RISCV_HWPROBE_IMA_V | RISCV_HWPROBE_EXT_ZFH | RISCV_HWPROBE_EXT_ZVFH);
 #elif defined(BUILD_BFLOAT16)
-		vector_mask = (RISCV_HWPROBE_IMA_V | RISCV_HWPROBE_EXT_ZFBFMIN | RISCV_HWPROBE_EXT_ZVFBFMIN | RISCV_HWPROBE_EXT_ZVFBFWMA);
+		vector_mask = (RISCV_HWPROBE_IMA_V | RISCV_HWPROBE_EXT_ZVFBFWMA);
 #else
 		vector_mask = RISCV_HWPROBE_IMA_V;
 #endif
