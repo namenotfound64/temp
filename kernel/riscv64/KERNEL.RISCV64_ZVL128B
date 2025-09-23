@@ -256,7 +256,7 @@ ifndef ZGEMM_BETA
 ZGEMM_BETA = zgemm_beta_rvv.c
 endif
 
-ifeq ($(BUILD_BFLOAT16), 1)
+ifeq ($(BUILD_HFLOAT16), 1)
 SHGEMMKERNEL    =  shgemm_kernel_$(SHGEMM_UNROLL_M)x$(SHGEMM_UNROLL_N)_zvl128b.c
 SHGEMMONCOPY    =  ../generic/gemm_ncopy_$(SHGEMM_UNROLL_N).c
 SHGEMMOTCOPY    =  ../generic/gemm_tcopy_$(SHGEMM_UNROLL_N).c
@@ -264,6 +264,17 @@ SHGEMMONCOPYOBJ =  shgemm_oncopy$(TSUFFIX).$(SUFFIX)
 SHGEMMOTCOPYOBJ =  shgemm_otcopy$(TSUFFIX).$(SUFFIX)
 ifndef SHGEMM_BETA
 SHGEMM_BETA =  gemm_beta_rvv.c
+endif
+endif
+
+ifeq ($(BUILD_BFLOAT16), 1)
+SBGEMMKERNEL    =  sbgemm_kernel_$(SBGEMM_UNROLL_M)x$(SBGEMM_UNROLL_N)_zvl128b.c
+SBGEMMONCOPY    =  ../generic/gemm_ncopy_$(SBGEMM_UNROLL_N).c
+SBGEMMOTCOPY    =  ../generic/gemm_tcopy_$(SBGEMM_UNROLL_N).c
+SBGEMMONCOPYOBJ =  sbgemm_oncopy$(TSUFFIX).$(SUFFIX)
+SBGEMMOTCOPYOBJ =  sbgemm_otcopy$(TSUFFIX).$(SUFFIX)
+ifndef SBGEMM_BETA
+SBGEMM_BETA =  gemm_beta_rvv.c
 endif
 endif
 
