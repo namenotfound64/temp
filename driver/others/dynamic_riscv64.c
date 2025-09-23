@@ -184,7 +184,7 @@ static gotoblas_t* get_coretype(void) {
 		openblas_warning(1, coremsg);
 		return NULL;
 #elif defined(BUILD_BFLOAT16)
-		snprintf(coremsg, sizeof(coremsg), "Cpu support for Zfbfmin+Zvfbfmin+Zvfbfwma extensions required due to BUILD_BFLOAT16=1\n");
+		snprintf(coremsg, sizeof(coremsg), "Cpu support for Zvfbfwma extensions required due to BUILD_BFLOAT16=1\n");
 		openblas_warning(1, coremsg);
 		return NULL;
 #else
