@@ -346,7 +346,7 @@ int detect(void)
     else if (strstr(cpu_implementer, "0x46") && strstr(cpu_part, "0x001"))
                         return CPU_A64FX;
     // Apple
-    else if (strstr(cpu_implementer, "0x61") && strstr(cpu_part, "0x022"))
+    else if (strstr(cpu_implementer, "0x61") /* && strstr(cpu_part, "0x022")*/)
 	    		return CPU_VORTEX;
    // Phytium
    else if (strstr(cpu_implementer, "0x70") && (strstr(cpu_part, "0x660") || strstr(cpu_part, "0x661") 
