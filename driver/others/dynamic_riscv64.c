@@ -99,6 +99,7 @@ struct riscv_hwprobe {
 #define		RISCV_HWPROBE_IMA_V		(1 << 2)
 #define		RISCV_HWPROBE_EXT_ZFH		(1 << 27)
 #define		RISCV_HWPROBE_EXT_ZVFH		(1 << 30)
+#define		RISCV_HWPROBE_EXT_ZVFBFWMA	(1 << 54)
 
 #ifndef NR_riscv_hwprobe
 #ifndef NR_arch_specific_syscall
@@ -170,6 +171,8 @@ static gotoblas_t* get_coretype(void) {
 	if (ret == 0) {
 #if defined(BUILD_HFLOAT16)
 		vector_mask = (RISCV_HWPROBE_IMA_V | RISCV_HWPROBE_EXT_ZFH | RISCV_HWPROBE_EXT_ZVFH);
+#elif defined(BUILD_BFLOAT16)
+		vector_mask = (RISCV_HWPROBE_IMA_V | RISCV_HWPROBE_EXT_ZVFBFWMA);
 #else
 		vector_mask = RISCV_HWPROBE_IMA_V;
 #endif
@@ -178,6 +181,10 @@ static gotoblas_t* get_coretype(void) {
 	} else {
 #if defined(BUILD_HFLOAT16)
 		snprintf(coremsg, sizeof(coremsg), "Cpu support for Zfh+Zvfh extensions required due to BUILD_HFLOAT16=1\n");
+		openblas_warning(1, coremsg);
+		return NULL;
+#elif defined(BUILD_BFLOAT16)
+		snprintf(coremsg, sizeof(coremsg), "Cpu support for Zvfbfwma extensions required due to BUILD_BFLOAT16=1\n");
 		openblas_warning(1, coremsg);
 		return NULL;
 #else

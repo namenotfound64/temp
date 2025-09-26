@@ -11,7 +11,7 @@ ifeq ($(BUILD_HFLOAT16), 1)
 RISCV64_OPT := $(RISCV64_OPT)_zvfh_zfh
 endif
 ifeq ($(BUILD_BFLOAT16), 1)
-RISCV64_OPT := $(RISCV64_OPT)_zfbfmin_zvfbfmin_zvfbfwma
+RISCV64_OPT := $(RISCV64_OPT)_zvfbfwma
 endif
 ifeq ($(CORE), RISCV64_ZVL256B)
 CCOMMON_OPT += -march=$(RISCV64_OPT)_zvl256b -mabi=lp64d
