@@ -1,5 +1,5 @@
 /*****************************************************************************
-Copyright (c) 2020, The OpenBLAS Project
+Copyright (c) 2025, The OpenBLAS Project
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -39,22 +39,22 @@ void openblas_warning(int verbose, const char * msg);
 
 #ifndef COMPLEX
 #ifdef XDOUBLE
-#define ERROR_NAME "QGEMM_BATCH "
+#define ERROR_NAME "QGEMM_BATCH_STRIDED "
 #elif defined(DOUBLE)
-#define ERROR_NAME "DGEMM_BATCH "
+#define ERROR_NAME "DGEMM_BATCH_STRIDED "
 #define GEMM_BATCH_THREAD dgemm_batch_thread
 #else
-#define ERROR_NAME "SGEMM_BATCH "
+#define ERROR_NAME "SGEMM_BATCH_STRIDED "
 #define GEMM_BATCH_THREAD sgemm_batch_thread
 #endif
 #else
 #ifdef XDOUBLE
-#define ERROR_NAME "XGEMM_BATCH "
+#define ERROR_NAME "XGEMM_BATCH_STRIDED "
 #elif defined(DOUBLE)
-#define ERROR_NAME "ZGEMM_BATCH "
+#define ERROR_NAME "ZGEMM_BATCH_STRIDED "
 #define GEMM_BATCH_THREAD zgemm_batch_thread
 #else
-#define ERROR_NAME "CGEMM_BATCH "
+#define ERROR_NAME "CGEMM_BATCH_STRIDED "
 #define GEMM_BATCH_THREAD cgemm_batch_thread
 #endif
 #endif
@@ -115,36 +115,57 @@ static size_t zgemm_small_kernel_b0[] = {
 #endif
 
 #ifndef CBLAS
-void NAME(char *transa_array, char *transb_array,
-	   blasint * m_array, blasint * n_array, blasint * k_array,
-	   FLOAT * alpha_array,
-	   IFLOAT ** a_array, blasint * lda_array,
-	   IFLOAT ** b_array, blasint * ldb_array,
-	   FLOAT * beta_array,
-	   FLOAT ** c_array, blasint * ldc_array, blasint * gcount, blasint * group_size) {
-       blasint group_count = *gcount;
+void NAME(char *transa, char *transb,
+	   blasint * M, blasint * N, blasint * K,
+	   FLOAT * Alpha,
+	   IFLOAT * a, blasint * Lda,
+	   blasint * stride_a,
+	   IFLOAT *b, blasint * Ldb,
+	   blasint * stride_b,
+	   FLOAT * Beta,
+	   FLOAT * c, blasint * Ldc, blasint * stride_c, blasint * matcount) {
+ 	  
+           char ta = *transa;
+   	   char tb = *transb;	   
+	   blasint count = *matcount;
+	   blasint stridea= *stride_a;
+	   blasint strideb= *stride_b;
+	   blasint stridec= *stride_c;
+	   blasint m=*M;
+	   blasint n=*N;
+	   blasint k=*K;
+	   blasint lda=*Lda;
+	   blasint ldb=*Ldb;
+	   blasint ldc=*Ldc;
+#if !defined(COMPLEX)	   
+	   FLOAT alpha=*Alpha;
+	   FLOAT beta=*Beta;
+#else
+	   FLOAT *alpha=Alpha;
+	   FLOAT *beta=Beta;
+#endif
 #else
 
-void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE *  transa_array, enum CBLAS_TRANSPOSE * transb_array,
-	   blasint * m_array, blasint * n_array, blasint * k_array,
+void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE transa, enum CBLAS_TRANSPOSE transb,
+	   blasint m, blasint n, blasint k,
 #ifndef COMPLEX
-	   FLOAT * alpha_array,
-	   IFLOAT ** a_array, blasint * lda_array,
-	   IFLOAT ** b_array, blasint * ldb_array,
-	   FLOAT * beta_array,
-	   FLOAT ** c_array, blasint * ldc_array, blasint group_count, blasint * group_size) {
+	   FLOAT alpha,
+	   IFLOAT * a, blasint lda, blasint stridea,
+	   IFLOAT * b, blasint ldb, blasint strideb,
+	   FLOAT beta,
+	   FLOAT * c, blasint ldc, blasint stridec, blasint count) {
 #else
-	   void * valpha_array,
-	   void ** va_array, blasint * lda_array,
-	   void ** vb_array, blasint * ldb_array,
-	   void * vbeta_array,
-	   void ** vc_array, blasint * ldc_array, blasint group_count, blasint * group_size) {
+	   void * valpha,
+	   void * va, blasint lda, blasint stridea,
+	   void * vb, blasint ldb, blasint strideb,
+	   void * vbeta,
+	   void * vc, blasint ldc, blasint stridec, blasint count) {
 
-  FLOAT * alpha_array=(FLOAT *)valpha_array;
-  FLOAT * beta_array=(FLOAT *)vbeta_array;
-  FLOAT ** a_array=(FLOAT**)va_array;
-  FLOAT ** b_array=(FLOAT**)vb_array;
-  FLOAT ** c_array=(FLOAT**)vc_array;
+  FLOAT * alpha=(FLOAT *)valpha;
+  FLOAT * beta=(FLOAT *)vbeta;
+  FLOAT * a=(FLOAT*)va;
+  FLOAT * b=(FLOAT*)vb;
+  FLOAT * c=(FLOAT*)vc;
 #endif
 #endif
   BLASLONG group_m, group_n, group_k;
@@ -153,15 +174,13 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE *  transa_array, enum CB
   blas_arg_t * args_array=NULL;
 
   int mode=0, group_mode=0;
-  blasint total_num=0;
 
-  blasint i=0, j=0, matrix_idx=0, count=0;
+  blasint i=0;
 
   int group_transa, group_transb;
   BLASLONG group_nrowa, group_nrowb;
   blasint info;
 
-  void * group_alpha, * group_beta;
   void * group_routine=NULL;
 #ifdef SMALL_MATRIX_OPT
   void * group_small_matrix_opt_routine=NULL;
@@ -172,12 +191,8 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE *  transa_array, enum CB
 #endif
 
   PRINT_DEBUG_CNAME;
-    
-  for(i=0; i<group_count; i++){
-    total_num+=group_size[i];
-  }
 
-  args_array=(blas_arg_t *)malloc(total_num * sizeof(blas_arg_t));
+  args_array=(blas_arg_t *)malloc(count * sizeof(blas_arg_t));
   
   if(args_array == NULL){
     openblas_warning(0, "memory alloc failed!\n");
@@ -204,9 +219,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE *  transa_array, enum CB
 #endif
 #endif
   
-  for(i=0; i<group_count; matrix_idx+=group_size[i], i++){
-    group_alpha = (void *)&alpha_array[i * COMPSIZE];
-    group_beta = (void *)&beta_array[i * COMPSIZE];
+  for(i=0; i<count; i++) {
 
     group_m = group_n = group_k = 0;
     group_lda = group_ldb = group_ldc = 0;
@@ -216,31 +229,28 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE *  transa_array, enum CB
    
 #if defined(CBLAS) 
     if (order == CblasColMajor) {
-      group_m = m_array[i];
-      group_n = n_array[i];
-      group_k = k_array[i];
+      group_m = m;
+      group_n = n;
+      group_k = k;
 
-      group_lda = lda_array[i];
-      group_ldb = ldb_array[i];
-      group_ldc = ldc_array[i];
       
-      if (transa_array[i] == CblasNoTrans)     group_transa = 0;
-      if (transa_array[i] == CblasTrans)       group_transa = 1;
+      if (transa == CblasNoTrans)     group_transa = 0;
+      if (transa == CblasTrans)       group_transa = 1;
 #ifndef COMPLEX
-      if (transa_array[i] == CblasConjNoTrans) group_transa = 0;
-      if (transa_array[i] == CblasConjTrans)   group_transa = 1;
+      if (transa == CblasConjNoTrans) group_transa = 0;
+      if (transa == CblasConjTrans)   group_transa = 1;
 #else
-      if (transa_array[i] == CblasConjNoTrans) group_transa = 2;
-      if (transa_array[i] == CblasConjTrans)   group_transa = 3;
+      if (transa == CblasConjNoTrans) group_transa = 2;
+      if (transa == CblasConjTrans)   group_transa = 3;
 #endif
-      if (transb_array[i] == CblasNoTrans)     group_transb = 0;
-      if (transb_array[i] == CblasTrans)       group_transb = 1;
+      if (transb == CblasNoTrans)     group_transb = 0;
+      if (transb == CblasTrans)       group_transb = 1;
 #ifndef COMPLEX
-      if (transb_array[i] == CblasConjNoTrans) group_transb = 0;
-      if (transb_array[i] == CblasConjTrans)   group_transb = 1;
+      if (transb == CblasConjNoTrans) group_transb = 0;
+      if (transb == CblasConjTrans)   group_transb = 1;
 #else
-      if (transb_array[i] == CblasConjNoTrans) group_transb = 2;
-      if (transb_array[i] == CblasConjTrans)   group_transb = 3;
+      if (transb == CblasConjNoTrans) group_transb = 2;
+      if (transb == CblasConjTrans)   group_transb = 3;
 #endif
       group_nrowa = group_m;
       if (group_transa & 1) group_nrowa = group_k;
@@ -260,55 +270,55 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE *  transa_array, enum CB
 
     }else if (order == CblasRowMajor) {
       
-      group_m = n_array[i];
-      group_n = m_array[i];
-      group_k = k_array[i];
+      group_m = n;
+      group_n = m;
+      group_k = k;
 
-      group_lda = ldb_array[i];
-      group_ldb = lda_array[i];
-      group_ldc = ldc_array[i];
+      group_lda = ldb;
+      group_ldb = lda;
+      group_ldc = ldc;
 
-      if (transb_array[i] == CblasNoTrans)     group_transa = 0;
-      if (transb_array[i] == CblasTrans)       group_transa = 1;
+      if (transb == CblasNoTrans)     group_transa = 0;
+      if (transb == CblasTrans)       group_transa = 1;
 #ifndef COMPLEX
-      if (transb_array[i] == CblasConjNoTrans) group_transa = 0;
-      if (transb_array[i] == CblasConjTrans)   group_transa = 1;
+      if (transb == CblasConjNoTrans) group_transa = 0;
+      if (transb == CblasConjTrans)   group_transa = 1;
 #else
-      if (transb_array[i] == CblasConjNoTrans) group_transa = 2;
-      if (transb_array[i] == CblasConjTrans)   group_transa = 3;
+      if (transb == CblasConjNoTrans) group_transa = 2;
+      if (transb == CblasConjTrans)   group_transa = 3;
 #endif
-      if (transa_array[i] == CblasNoTrans)     group_transb = 0;
-      if (transa_array[i] == CblasTrans)       group_transb = 1;
+      if (transa == CblasNoTrans)     group_transb = 0;
+      if (transa == CblasTrans)       group_transb = 1;
 #ifndef COMPLEX
-      if (transa_array[i] == CblasConjNoTrans) group_transb = 0;
-      if (transa_array[i] == CblasConjTrans)   group_transb = 1;
+      if (transa == CblasConjNoTrans) group_transb = 0;
+      if (transa == CblasConjTrans)   group_transb = 1;
 #else
-      if (transa_array[i] == CblasConjNoTrans) group_transb = 2;
-      if (transa_array[i] == CblasConjTrans)   group_transb = 3;
+      if (transa == CblasConjNoTrans) group_transb = 2;
+      if (transa == CblasConjTrans)   group_transb = 3;
 #endif
 
 #else
-      group_m = m_array[i];
-      group_n = n_array[i];
-      group_k = k_array[i];
+      group_m = m;
+      group_n = n;
+      group_k = k;
 
-      group_lda = lda_array[i];
-      group_ldb = ldb_array[i];
-      group_ldc = ldc_array[i];
+      group_lda = lda;
+      group_ldb = ldb;
+      group_ldc = ldc;
       
-      if (transb_array[i] == 'N')   group_transa = 0;
-      if (transb_array[i] == 'T')   group_transa = 1;
+      if (tb == 'N')   group_transa = 0;
+      if (tb == 'T')   group_transa = 1;
 #ifndef COMPLEX
-      if (transb_array[i] == 'C')   group_transa = 1;
+      if (tb == 'C')   group_transa = 1;
 #else
-      if (transb_array[i] == 'C')   group_transa = 3;
+      if (tb == 'C')   group_transa = 3;
 #endif
-      if (transa_array[i] == 'N')   group_transb = 0;
-      if (transa_array[i] == 'T')   group_transb = 1;
+      if (ta == 'N')   group_transb = 0;
+      if (ta == 'T')   group_transb = 1;
 #ifndef COMPLEX
-      if (transa_array[i] == 'C')   group_transb = 1;
+      if (ta == 'C')   group_transb = 1;
 #else
-      if (transa_array[i] == 'C')   group_transb = 3;
+      if (ta == 'C')   group_transb = 3;
 #endif
 #endif
 
@@ -349,7 +359,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE *  transa_array, enum CB
     if (MNK <= 100.0*100.0*100.0){
       group_routine=NULL;
 #if !defined(COMPLEX)
-      if(*(FLOAT *)(group_beta) == 0.0){
+      if(beta == 0.0){
 	group_mode=mode | BLAS_SMALL_B0_OPT;
 	group_small_matrix_opt_routine=(void *)(gemm_small_kernel_b0[(group_transb<<2)|group_transa]);
       }else{
@@ -357,7 +367,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE *  transa_array, enum CB
 	group_small_matrix_opt_routine=(void *)(gemm_small_kernel[(group_transb<<2)|group_transa]);
       }
 #else
-      if(((FLOAT *)(group_beta))[0] == 0.0 && ((FLOAT *)(group_beta))[1] == 0.0){
+      if(beta[0] == 0.0 && beta[1] == 0.0){
 	group_mode=mode | BLAS_SMALL_B0_OPT;
 	group_small_matrix_opt_routine=(void *)(zgemm_small_kernel_b0[(group_transb<<2)|group_transa]);
       }else{
@@ -375,41 +385,39 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE *  transa_array, enum CB
 #endif    
 
     
-    for(j=0; j<group_size[i]; j++){
-      args_array[count].m=group_m;
-      args_array[count].n=group_n;
-      args_array[count].k=group_k;
-      args_array[count].lda=group_lda;
-      args_array[count].ldb=group_ldb;
-      args_array[count].ldc=group_ldc;
-      args_array[count].alpha=group_alpha;
-      args_array[count].beta=group_beta;
+      args_array[i].m=group_m;
+      args_array[i].n=group_n;
+      args_array[i].k=group_k;
+      args_array[i].lda=group_lda;
+      args_array[i].ldb=group_ldb;
+      args_array[i].ldc=group_ldc;
+      args_array[i].alpha=&alpha;
+      args_array[i].beta=&beta;
 
 #if defined(CBLAS)
       if (order == CblasColMajor) {      
-	args_array[count].a=(a_array[matrix_idx+j]);
-	args_array[count].b=(b_array[matrix_idx+j]);
+	args_array[i].a=&(a[i*stridea]);
+	args_array[i].b=&(b[i*strideb]);
       }else if(order == CblasRowMajor){
-#endif
-	args_array[count].a=(b_array[matrix_idx+j]);
-	args_array[count].b=(a_array[matrix_idx+j]);
-#if defined(CBLAS)
+	args_array[i].a=&(b[i*strideb]);
+	args_array[i].b=&(a[i*stridea]);
       }
+#else
+	args_array[i].a=&(a[i*stridea]);
+	args_array[i].b=&(b[i*strideb]);
 #endif
       
-      args_array[count].c=(c_array[matrix_idx+j]);
+      args_array[i].c= &c[i*stridec];
       
-      args_array[count].routine_mode=group_mode;
-      args_array[count].routine=group_routine;
+      args_array[i].routine_mode=group_mode;
+      args_array[i].routine=group_routine;
 #ifdef SMALL_MATRIX_OPT
       if (!group_routine)
-        args_array[count].routine=group_small_matrix_opt_routine;
+        args_array[i].routine=group_small_matrix_opt_routine;
 #endif      
-      count++;
-    }
   }
 
-  if(count>0){
+  if(count>0) {
     GEMM_BATCH_THREAD(args_array,count);
   }
 
