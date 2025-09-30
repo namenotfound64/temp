@@ -225,7 +225,7 @@ static void zaxpy_kernel_4 (long n, double *x, double *y,
        "=b" (ytmp)	// 12
      :
        "m" (*(const double (*)[n * 2]) x),
-       "m" (*(const double (*)[2]) mvecp)
+       "m" (*(const double (*)[2]) mvecp),
 
        "d" (alpha_r),	// 15
        "d" (alpha_i),	// 16
