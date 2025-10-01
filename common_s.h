@@ -50,6 +50,8 @@
 #define SGEMM_DIRECT_PERFORMANT    sgemm_direct_performant
 #define SGEMM_DIRECT		sgemm_direct
 #define  SGEMM_DIRECT_ALPHA_BETA		sgemm_direct_alpha_beta
+#define  SSYMM_DIRECT_ALPHA_BETA_LU		ssymm_direct_alpha_betaLU
+#define  SSYMM_DIRECT_ALPHA_BETA_LL		ssymm_direct_alpha_betaLL
 
 #define	SGEMM_ONCOPY		sgemm_oncopy
 #define	SGEMM_OTCOPY		sgemm_otcopy
@@ -220,6 +222,8 @@
 #define SGEMM_DIRECT_PERFORMANT    sgemm_direct_performant
 #define  SGEMM_DIRECT		gotoblas -> sgemm_direct
 #define  SGEMM_DIRECT_ALPHA_BETA		gotoblas -> sgemm_direct_alpha_beta
+#define  SSYMM_DIRECT_ALPHA_BETA_LU		gotoblas -> ssymm_direct_alpha_betaLU
+#define  SSYMM_DIRECT_ALPHA_BETA_LL		gotoblas -> ssymm_direct_alpha_betaLL
 #endif
 
 #define	SGEMM_ONCOPY		gotoblas -> sgemm_oncopy
