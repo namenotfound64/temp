@@ -1310,7 +1310,7 @@ endif ()
     file(APPEND ${TARGET_CONF_TEMP}
       "#define L1_DATA_SIZE\t32768\n"
       "#define L1_DATA_LINESIZE\t64\n"
-      "#define L2_SIZE\t262144\n"
+      "#define L2_SIZE\t1048576\n"
       "#define L2_LINESIZE\t64\n"
       "#define DTB_DEFAULT_ENTRIES\t64\n"
       "#define DTB_SIZE\t4096\n"
@@ -1429,7 +1429,7 @@ endif ()
     file(APPEND ${TARGET_CONF_TEMP}
       "#define L1_DATA_SIZE 65536\n"
       "#define L1_LINESIZE 32 \n"
-      "#define L2_SIZE 262144\n"
+      "#define L2_SIZE 2097152\n"
       "#define L2_LINESIZE 32 \n"
       "#define DTB_DEFAULT_ENTRIES 128\n"
       "#define DTB_SIZE 4096\n"
@@ -1465,7 +1465,7 @@ endif ()
     file(APPEND ${TARGET_CONF_TEMP}
       "#define L1_DATA_SIZE 65536\n"
       "#define L1_DATA_LINESIZE 32\n"
-      "#define L2_SIZE 262144\n"
+      "#define L2_SIZE 2097152\n"
       "#define L2_LINESIZE 32 \n"
       "#define DTB_DEFAULT_ENTRIES 128\n"
       "#define DTB_SIZE 4096\n"

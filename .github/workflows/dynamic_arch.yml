@@ -49,7 +49,7 @@ jobs:
           elif [ "$RUNNER_OS" == "macOS" ]; then
             # It looks like "gfortran" isn't working correctly unless "gcc" is re-installed.
             brew reinstall gcc
-            brew install coreutils cmake ccache
+            brew install coreutils ccache
           else
             echo "::error::$RUNNER_OS not supported"
             exit 1

@@ -217,6 +217,8 @@ gotoblas_t TABLE_NAME = {
   sgemm_directTS,
   sgemm_direct_alpha_betaTS,
   sgemm_direct_performantTS,	
+  ssymm_direct_alpha_betaLUTS,
+  ssymm_direct_alpha_betaLLTS,
 #endif
 
   sgemm_kernelTS, sgemm_betaTS,
