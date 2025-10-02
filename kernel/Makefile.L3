@@ -230,7 +230,7 @@ SKERNELOBJS += \
 	sgemm_direct_alpha_beta$(TSUFFIX).$(SUFFIX)
 ifdef HAVE_SME
 SKERNELOBJS += \
-	sgemm_direct_sme1_2VLx2VL$(TSUFFIX).$(SUFFIX) \
+	sgemm_direct_sme1(TSUFFIX).$(SUFFIX) \
 	sgemm_direct_sme1_preprocess$(TSUFFIX).$(SUFFIX)
 endif
 endif
@@ -1001,8 +1001,8 @@ $(KDIR)sgemm_direct$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMMDIRECTKERNEL)
 $(KDIR)sgemm_direct_alpha_beta$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMMDIRECTKERNEL_ALPHA_BETA)
 	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX $< -o $@
 ifdef HAVE_SME
-$(KDIR)sgemm_direct_sme1_2VLx2VL$(TSUFFIX).$(SUFFIX) : 
-	$(CC) $(CFLAGS) -c $(KERNELDIR)/sgemm_direct_sme1_2VLx2VL.S -UDOUBLE -UCOMPLEX  -o $@
+$(KDIR)sgemm_direct_sme1$(TSUFFIX).$(SUFFIX) : 
+	$(CC) $(CFLAGS) -c $(KERNELDIR)/sgemm_direct_sme1.S -UDOUBLE -UCOMPLEX  -o $@
 $(KDIR)sgemm_direct_sme1_preprocess$(TSUFFIX).$(SUFFIX) : 
 	$(CC) $(CFLAGS) -c $(KERNELDIR)/sgemm_direct_sme1_preprocess.S -UDOUBLE -UCOMPLEX  -o $@
 endif
