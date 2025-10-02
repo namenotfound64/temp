@@ -19,8 +19,11 @@
 #define COMBINE2(a,b) COMBINE(a,b)
 #define SME1_PREPROCESS_BASE sgemm_direct_sme1_preprocess
 #define SME1_PREPROCESS COMBINE2(SME1_PREPROCESS_BASE,TS)
+#define SME1_KERNEL2X2_BASE sgemm_direct_alpha_beta_sme1_2VLx2VL
+#define SME1_KERNEL2X2 COMBINE2(SME1_KERNEL2X2_BASE,TS)
 #else
 #define SME1_PREPROCESS sgemm_direct_sme1_preprocess
+#define SME1_KERNEL2X2  sgemm_direct_alpha_beta_sme1_2VLx2VL
 #endif
 /* Function prototypes */
 extern void SME1_PREPROCESS(uint64_t nbr, uint64_t nbc,\
@@ -111,7 +114,7 @@ return;
 }
 
 __arm_new("za") __arm_locally_streaming
-static void sgemm_direct_alpha_beta_sme1_2VLx2VL(uint64_t m, uint64_t k, uint64_t n, const float* alpha,\
+void SME1_KERNEL2X2(uint64_t m, uint64_t k, uint64_t n, const float* alpha,\
                                    const float *ba, const float *restrict bb, const float* beta,\
                                    float *restrict C) {
 
@@ -151,7 +154,7 @@ static void sgemm_direct_alpha_beta_sme1_2VLx2VL(uint64_t m, uint64_t k, uint64_
 }
 
 #else
-void sgemm_direct_alpha_beta_sme1_2VLx2VL(uint64_t m, uint64_t k, uint64_t n, const float* alpha,\
+void SME1_KERNEL2X2(uint64_t m, uint64_t k, uint64_t n, const float* alpha,\
                                    const float *ba, const float *restrict bb, const float* beta,\
                                    float *restrict C){fprintf(stderr,"empty sgemm_alpha_beta2x2 should never get called!!!\n");}
 #endif
@@ -197,7 +200,7 @@ void CNAME (BLASLONG M, BLASLONG N, BLASLONG K, float alpha, float * __restrict 
 
         /* Calculate C = alpha*A*B + beta*C */
 
-        sgemm_direct_alpha_beta_sme1_2VLx2VL(M, K, N, &alpha, A_mod, B, &beta, R);
+        SME1_KERNEL2X2(M, K, N, &alpha, A_mod, B, &beta, R);
 
         free(A_mod);
 }
