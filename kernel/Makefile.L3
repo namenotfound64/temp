@@ -52,6 +52,7 @@ endif
 ifeq ($(ARCH), arm64)
 USE_TRMM = 1
 USE_DIRECT_SGEMM = 1
+USE_DIRECT_SSYMM = 1
 endif
 
 ifeq ($(ARCH), riscv64)
@@ -137,6 +138,17 @@ endif
 endif
 endif
 
+ifdef USE_DIRECT_SSYMM
+ifndef SSYMMDIRECTKERNEL_ALPHA_BETA
+ifeq ($(ARCH), arm64)
+ifeq ($(TARGET_CORE), ARMV9SME)
+HAVE_SME = 1
+endif
+SSYMMDIRECTKERNEL_ALPHA_BETA = ssymm_direct_alpha_beta_arm64_sme1.c
+endif
+endif
+endif
+
 ifeq ($(BUILD_BFLOAT16), 1)
 ifndef BGEMMKERNEL
 BGEMM_BETA = ../generic/gemm_beta.c
@@ -217,6 +229,14 @@ SKERNELOBJS += \
 	sgemm_direct_sme1_preprocess$(TSUFFIX).$(SUFFIX)
 endif
 endif
+endif
+endif
+
+ifdef USE_DIRECT_SSYMM
+ifeq ($(ARCH), arm64)
+SKERNELOBJS += \
+	ssymm_direct_alpha_betaLU$(TSUFFIX).$(SUFFIX) \
+	ssymm_direct_alpha_betaLL$(TSUFFIX).$(SUFFIX)
 endif
 endif
 
@@ -979,6 +999,15 @@ $(KDIR)sgemm_direct_sme1$(TSUFFIX).$(SUFFIX) :
 $(KDIR)sgemm_direct_sme1_preprocess$(TSUFFIX).$(SUFFIX) : 
 	$(CC) $(CFLAGS) -c $(KERNELDIR)/sgemm_direct_sme1_preprocess.S -UDOUBLE -UCOMPLEX  -o $@
 endif
+endif
+endif
+
+ifdef USE_DIRECT_SSYMM
+ifeq ($(ARCH), arm64)
+$(KDIR)ssymm_direct_alpha_betaLU$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SSYMMDIRECTKERNEL_ALPHA_BETA)
+	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX -DLEFT -DUPPER $< -o $@
+$(KDIR)ssymm_direct_alpha_betaLL$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SSYMMDIRECTKERNEL_ALPHA_BETA)
+	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX -DLEFT -DLOWER $< -o $@
 endif
 endif
 
