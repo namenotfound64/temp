@@ -283,6 +283,8 @@ SBGEMMOTCOPYOBJ =  sbgemm_otcopy$(TSUFFIX).$(SUFFIX)
 ifndef SBGEMM_BETA
 SBGEMM_BETA =  gemm_beta_rvv.c
 endif
+SBGEMVNKERNEL = sbgemv_n_vector.c
+SBGEMVTKERNEL = sbgemv_t_vector.c
 endif
 
 SAXPBYKERNEL  = axpby_vector_v2.c
