@@ -38,7 +38,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define IFLOAT_V_T              vfloat16m4_t
 #define VLEV_IFLOAT             RISCV_RVV(vle16_v_f16m4)
 #define VLSEV_IFLOAT            RISCV_RVV(vlse16_v_f16m4)
-#define VFMACCVV_FLOAT          RISCV_RVV(vfwmacc_vv_f32m8)
+#define VFMACCVV_FLOAT(a,b,c,d) RISCV_RVV(vfwmul_vv_f32m8)(b,c,d)
 #else
 #define IFLOAT_V_T              vbfloat16m4_t
 #define VLEV_IFLOAT             RISCV_RVV(vle16_v_bf16m4)
@@ -62,7 +62,10 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, IFLOAT *a, BLASL
     FLOAT temp;
 
     IFLOAT_V_T va, vx;
-    FLOAT_V_T vr, vz;
+#if !defined(HFLOAT16)
+    FLOAT_V_T vz;
+#endif
+    FLOAT_V_T vr;
     BLASLONG gvl = 0;
     FLOAT_V_T_M1 v_res;
 
@@ -71,7 +74,9 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, IFLOAT *a, BLASL
             v_res = VFMVVF_FLOAT_M1(0, 1);
             gvl = VSETVL(m);
             j = 0;
+#if !defined(HFLOAT16)
             vz = VFMVVF_FLOAT(0, gvl);
+#endif
             for (k = 0; k < m/gvl; k++) {
                 va = VLEV_IFLOAT(&a_ptr[j], gvl);
                 vx = VLEV_IFLOAT(&x[j], gvl);
@@ -99,7 +104,9 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, IFLOAT *a, BLASL
             gvl = VSETVL(m);
             j = 0;
             ix = 0;
+#if !defined(HFLOAT16)
             vz = VFMVVF_FLOAT(0, gvl);
+#endif
             for (k = 0; k < m/gvl; k++) {
                 va = VLEV_IFLOAT(&a_ptr[j], gvl);
                 vx = VLSEV_IFLOAT(&x[ix], stride_x, gvl);
