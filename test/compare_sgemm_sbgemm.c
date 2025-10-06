@@ -140,7 +140,8 @@ main (int argc, char *argv[])
   }
 
   if (ret != 0) {
-    fprintf (stderr, "FATAL ERROR SBGEMM - Return code: %d\n", ret);
+    fprintf(stderr, "SBGEMM FAILURES: %d\n", ret);
+    return 1;
   }
 
   return ret;

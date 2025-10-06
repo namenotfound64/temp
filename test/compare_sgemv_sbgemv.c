@@ -122,7 +122,10 @@ main (int argc, char *argv[])
   } // alpha
   } // beta
 
-  if (ret != 0)
-    fprintf (stderr, "FATAL ERROR SBGEMV - Return code: %d\n", ret);
+  if (ret != 0) {
+    fprintf(stderr, "SBGEMV FAILURES: %d\n", ret);
+    return 1;
+  }
+
   return ret;
 }
