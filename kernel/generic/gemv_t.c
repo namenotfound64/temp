@@ -52,7 +52,14 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT alpha, IFLOAT *a, BLASLONG lda, IFLOAT *
             temp += BF16TOF32(a_ptr[i]) * BF16TOF32(x[ix]);
             ix += inc_x;
         }
-        y[iy] = F32TOBF16(BF16TOF32(y[iy]) + (ALPHA * temp));
+        if (BETA == ZERO)
+        {
+            y[iy] = F32TOBF16(ALPHA * temp);
+        }
+        else
+        {
+            y[iy] = F32TOBF16(ALPHA * temp + BETA * BF16TOF32(y[iy]));
+        }
         iy += inc_y;
         a_ptr += lda;
     }
