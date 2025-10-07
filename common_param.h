@@ -60,7 +60,8 @@ int (*shgemm_itcopy   )(BLASLONG, BLASLONG, hfloat16 *, BLASLONG, hfloat16 *);
 int (*shgemm_oncopy   )(BLASLONG, BLASLONG, hfloat16 *, BLASLONG, hfloat16 *);
 int (*shgemm_otcopy   )(BLASLONG, BLASLONG, hfloat16 *, BLASLONG, hfloat16 *);
 
-
+int (*shgemv_n) (BLASLONG, BLASLONG, float, hfloat16 *, BLASLONG, hfloat16 *, BLASLONG, float, float *, BLASLONG);
+int (*shgemv_t) (BLASLONG, BLASLONG, float, hfloat16 *, BLASLONG, hfloat16 *, BLASLONG, float, float *, BLASLONG);
 #endif
 
 
