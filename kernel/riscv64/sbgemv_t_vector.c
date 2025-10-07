@@ -98,7 +98,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT alpha, IFLOAT *a, BLASLONG lda, IFLOAT *
             a_ptr += lda;
         }
     } else {
-        BLASLONG stride_x = inc_x * sizeof(FLOAT);
+        BLASLONG stride_x = inc_x * sizeof(IFLOAT);
         for (i = 0; i < n; i++) {
             v_res = VFMVVF_FLOAT_M1(0, 1);
             gvl = VSETVL(m);
