@@ -466,7 +466,7 @@ static void dgemv_kernel_4x8 (long n, double *ap, long lda, double *x, double *y
        "=b" (tmp)
      :
        "m" (*(double (*)[4]) x),
-       "m" (*(double (*)[]) ap),
+       "m" (*(double (*)[4]) ap),
        "d" (alpha),	// 14
        "r" (x),		// 15
        "3" (ap),	// 16
