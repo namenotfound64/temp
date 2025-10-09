@@ -92,7 +92,18 @@ typedef FLOAT v4sf_t __attribute__ ((vector_size (16)));
 	  rowC = (v4sf_t *) &CO[1* ldc+J]; \
           rowC[0] += result[1] * alpha;
 #endif
-
+#define KERNEL(i) \
+          rowA = (vec_t *)&AO[i<< 3];\
+          rowB = *((__vector_pair *)((void *)&BO[i << 3]));\
+          rowB1 = *((__vector_pair *)((void *)&BO[(i << 3) + 4]));\
+          __builtin_mma_xvf64gerpp(&acc0, rowB, rowA[0]);\
+          __builtin_mma_xvf64gerpp(&acc1, rowB1, rowA[0]);\
+          __builtin_mma_xvf64gerpp(&acc2, rowB, rowA[1]);\
+          __builtin_mma_xvf64gerpp(&acc3, rowB1, rowA[1]);\
+          __builtin_mma_xvf64gerpp(&acc4, rowB, rowA[2]);\
+          __builtin_mma_xvf64gerpp(&acc5, rowB1, rowA[2]);\
+          __builtin_mma_xvf64gerpp(&acc6, rowB, rowA[3]);\
+          __builtin_mma_xvf64gerpp(&acc7, rowB1, rowA[3]);
 #define PREFETCH1(x, y) asm volatile ("dcbt %0, %1" : : "r" (x), "b" (y) : "memory");
 
 #if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
@@ -203,214 +214,53 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT * A, FLOAT * B,
 	  __builtin_mma_xvf64ger (&acc7, rowB1, rowA[3]);
 	  for (l = 1; l + 15 < temp; l += 16)
 	{
-
-		vec_t *rowA0 = (vec_t *)&AO[(l + 0) << 3];
-		__vector_pair rowB0 = *((__vector_pair *)((void *)&BO[(l + 0) << 3]));
-		__vector_pair rowB0_1 = *((__vector_pair *)((void *)&BO[((l + 0) << 3) + 4]));
-		__builtin_mma_xvf64gerpp(&acc0, rowB0, rowA0[0]);
-		__builtin_mma_xvf64gerpp(&acc1, rowB0_1, rowA0[0]);
-		__builtin_mma_xvf64gerpp(&acc2, rowB0, rowA0[1]);
-		__builtin_mma_xvf64gerpp(&acc3, rowB0_1, rowA0[1]);
-		__builtin_mma_xvf64gerpp(&acc4, rowB0, rowA0[2]);
-		__builtin_mma_xvf64gerpp(&acc5, rowB0_1, rowA0[2]);
-		__builtin_mma_xvf64gerpp(&acc6, rowB0, rowA0[3]);
-		__builtin_mma_xvf64gerpp(&acc7, rowB0_1, rowA0[3]);
-
-		vec_t *rowA1 = (vec_t *)&AO[(l + 1) << 3];
-		__vector_pair rowB1 = *((__vector_pair *)((void *)&BO[(l + 1) << 3]));
-		__vector_pair rowB1_1 = *((__vector_pair *)((void *)&BO[((l + 1) << 3) + 4]));
-		__builtin_mma_xvf64gerpp(&acc0, rowB1, rowA1[0]);
-		__builtin_mma_xvf64gerpp(&acc1, rowB1_1, rowA1[0]);
-		__builtin_mma_xvf64gerpp(&acc2, rowB1, rowA1[1]);
-		__builtin_mma_xvf64gerpp(&acc3, rowB1_1, rowA1[1]);
-		__builtin_mma_xvf64gerpp(&acc4, rowB1, rowA1[2]);
-		__builtin_mma_xvf64gerpp(&acc5, rowB1_1, rowA1[2]);
-		__builtin_mma_xvf64gerpp(&acc6, rowB1, rowA1[3]);
-		__builtin_mma_xvf64gerpp(&acc7, rowB1_1, rowA1[3]);
-
-		vec_t *rowA2 = (vec_t *)&AO[(l + 2) << 3];
-		__vector_pair rowB2 = *((__vector_pair *)((void *)&BO[(l + 2) << 3]));
-		__vector_pair rowB2_1 = *((__vector_pair *)((void *)&BO[((l + 2) << 3) + 4]));
-		__builtin_mma_xvf64gerpp(&acc0, rowB2, rowA2[0]);
-		__builtin_mma_xvf64gerpp(&acc1, rowB2_1, rowA2[0]);
-		__builtin_mma_xvf64gerpp(&acc2, rowB2, rowA2[1]);
-		__builtin_mma_xvf64gerpp(&acc3, rowB2_1, rowA2[1]);
-		__builtin_mma_xvf64gerpp(&acc4, rowB2, rowA2[2]);
-		__builtin_mma_xvf64gerpp(&acc5, rowB2_1, rowA2[2]);
-		__builtin_mma_xvf64gerpp(&acc6, rowB2, rowA2[3]);
-		__builtin_mma_xvf64gerpp(&acc7, rowB2_1, rowA2[3]);
-
-		vec_t *rowA3 = (vec_t *)&AO[(l + 3) << 3];
-		__vector_pair rowB3 = *((__vector_pair *)((void *)&BO[(l + 3) << 3]));
-		__vector_pair rowB3_1 = *((__vector_pair *)((void *)&BO[((l + 3) << 3) + 4]));
-		__builtin_mma_xvf64gerpp(&acc0, rowB3, rowA3[0]);
-		__builtin_mma_xvf64gerpp(&acc1, rowB3_1, rowA3[0]);
-		__builtin_mma_xvf64gerpp(&acc2, rowB3, rowA3[1]);
-		__builtin_mma_xvf64gerpp(&acc3, rowB3_1, rowA3[1]);
-		__builtin_mma_xvf64gerpp(&acc4, rowB3, rowA3[2]);
-		__builtin_mma_xvf64gerpp(&acc5, rowB3_1, rowA3[2]);
-		__builtin_mma_xvf64gerpp(&acc6, rowB3, rowA3[3]);
-		__builtin_mma_xvf64gerpp(&acc7, rowB3_1, rowA3[3]);
-
-		vec_t *rowA4 = (vec_t *)&AO[(l + 4) << 3];
-		__vector_pair rowB4 = *((__vector_pair *)((void *)&BO[(l + 4) << 3]));
-		__vector_pair rowB4_1 = *((__vector_pair *)((void *)&BO[((l + 4) << 3) + 4]));
-		__builtin_mma_xvf64gerpp(&acc0, rowB4, rowA4[0]);
-		__builtin_mma_xvf64gerpp(&acc1, rowB4_1, rowA4[0]);
-		__builtin_mma_xvf64gerpp(&acc2, rowB4, rowA4[1]);
-		__builtin_mma_xvf64gerpp(&acc3, rowB4_1, rowA4[1]);
-		__builtin_mma_xvf64gerpp(&acc4, rowB4, rowA4[2]);
-		__builtin_mma_xvf64gerpp(&acc5, rowB4_1, rowA4[2]);
-		__builtin_mma_xvf64gerpp(&acc6, rowB4, rowA4[3]);
-		__builtin_mma_xvf64gerpp(&acc7, rowB4_1, rowA4[3]);
-		
-		vec_t *rowA5 = (vec_t *)&AO[(l + 5) << 3];
-		__vector_pair rowB5 = *((__vector_pair *)((void *)&BO[(l + 5) << 3]));
-		__vector_pair rowB5_1 = *((__vector_pair *)((void *)&BO[((l + 5) << 3) + 4]));
-		__builtin_mma_xvf64gerpp(&acc0, rowB5, rowA5[0]);
-		__builtin_mma_xvf64gerpp(&acc1, rowB5_1, rowA5[0]);
-		__builtin_mma_xvf64gerpp(&acc2, rowB5, rowA5[1]);
-		__builtin_mma_xvf64gerpp(&acc3, rowB5_1, rowA5[1]);
-		__builtin_mma_xvf64gerpp(&acc4, rowB5, rowA5[2]);
-		__builtin_mma_xvf64gerpp(&acc5, rowB5_1, rowA5[2]);
-		__builtin_mma_xvf64gerpp(&acc6, rowB5, rowA5[3]);
-		__builtin_mma_xvf64gerpp(&acc7, rowB5_1, rowA5[3]);
-
-		vec_t *rowA6 = (vec_t *)&AO[(l + 6) << 3];
-		__vector_pair rowB6 = *((__vector_pair *)((void *)&BO[(l + 6) << 3]));
-		__vector_pair rowB6_1 = *((__vector_pair *)((void *)&BO[((l + 6) << 3) + 4]));
-		__builtin_mma_xvf64gerpp(&acc0, rowB6, rowA6[0]);
-		__builtin_mma_xvf64gerpp(&acc1, rowB6_1, rowA6[0]);
-		__builtin_mma_xvf64gerpp(&acc2, rowB6, rowA6[1]);
-		__builtin_mma_xvf64gerpp(&acc3, rowB6_1, rowA6[1]);
-		__builtin_mma_xvf64gerpp(&acc4, rowB6, rowA6[2]);
-		__builtin_mma_xvf64gerpp(&acc5, rowB6_1, rowA6[2]);
-		__builtin_mma_xvf64gerpp(&acc6, rowB6, rowA6[3]);
-		__builtin_mma_xvf64gerpp(&acc7, rowB6_1, rowA6[3]);
-
-		vec_t *rowA7 = (vec_t *)&AO[(l + 7) << 3];
-		__vector_pair rowB7 = *((__vector_pair *)((void *)&BO[(l + 7) << 3]));
-		__vector_pair rowB7_1 = *((__vector_pair *)((void *)&BO[((l + 7) << 3) + 4]));
-		__builtin_mma_xvf64gerpp(&acc0, rowB7, rowA7[0]);
-		__builtin_mma_xvf64gerpp(&acc1, rowB7_1, rowA7[0]);
-		__builtin_mma_xvf64gerpp(&acc2, rowB7, rowA7[1]);
-		__builtin_mma_xvf64gerpp(&acc3, rowB7_1, rowA7[1]);
-		__builtin_mma_xvf64gerpp(&acc4, rowB7, rowA7[2]);
-		__builtin_mma_xvf64gerpp(&acc5, rowB7_1, rowA7[2]);
-		__builtin_mma_xvf64gerpp(&acc6, rowB7, rowA7[3]);
-		__builtin_mma_xvf64gerpp(&acc7, rowB7_1, rowA7[3]);
-
-		vec_t *rowA8 = (vec_t *)&AO[(l + 8) << 3];
-		__vector_pair rowB8 = *((__vector_pair *)((void *)&BO[(l + 8) << 3]));
-		__vector_pair rowB8_1 = *((__vector_pair *)((void *)&BO[((l + 8) << 3) + 4]));
-		__builtin_mma_xvf64gerpp(&acc0, rowB8, rowA8[0]);
-		__builtin_mma_xvf64gerpp(&acc1, rowB8_1, rowA8[0]);
-		__builtin_mma_xvf64gerpp(&acc2, rowB8, rowA8[1]);
-		__builtin_mma_xvf64gerpp(&acc3, rowB8_1, rowA8[1]);
-		__builtin_mma_xvf64gerpp(&acc4, rowB8, rowA8[2]);
-		__builtin_mma_xvf64gerpp(&acc5, rowB8_1, rowA8[2]);
-		__builtin_mma_xvf64gerpp(&acc6, rowB8, rowA8[3]);
-		__builtin_mma_xvf64gerpp(&acc7, rowB8_1, rowA8[3]);
-
-		vec_t *rowA9 = (vec_t *)&AO[(l + 9) << 3];
-		__vector_pair rowB9 = *((__vector_pair *)((void *)&BO[(l + 9) << 3]));
-		__vector_pair rowB9_1 = *((__vector_pair *)((void *)&BO[((l + 9) << 3) + 4]));
-		__builtin_mma_xvf64gerpp(&acc0, rowB9, rowA9[0]);
-		__builtin_mma_xvf64gerpp(&acc1, rowB9_1, rowA9[0]);
-		__builtin_mma_xvf64gerpp(&acc2, rowB9, rowA9[1]);
-		__builtin_mma_xvf64gerpp(&acc3, rowB9_1, rowA9[1]);
-		__builtin_mma_xvf64gerpp(&acc4, rowB9, rowA9[2]);
-		__builtin_mma_xvf64gerpp(&acc5, rowB9_1, rowA9[2]);
-		__builtin_mma_xvf64gerpp(&acc6, rowB9, rowA9[3]);
-		__builtin_mma_xvf64gerpp(&acc7, rowB9_1, rowA9[3]);
-
-		vec_t *rowA10 = (vec_t *)&AO[(l + 10) << 3];
-		__vector_pair rowB10 = *((__vector_pair *)((void *)&BO[(l + 10) << 3]));
-		__vector_pair rowB10_1 = *((__vector_pair *)((void *)&BO[((l + 10) << 3) + 4]));
-		__builtin_mma_xvf64gerpp(&acc0, rowB10, rowA10[0]);
-		__builtin_mma_xvf64gerpp(&acc1, rowB10_1, rowA10[0]);
-		__builtin_mma_xvf64gerpp(&acc2, rowB10, rowA10[1]);
-		__builtin_mma_xvf64gerpp(&acc3, rowB10_1, rowA10[1]);
-		__builtin_mma_xvf64gerpp(&acc4, rowB10, rowA10[2]);
-		__builtin_mma_xvf64gerpp(&acc5, rowB10_1, rowA10[2]);
-		__builtin_mma_xvf64gerpp(&acc6, rowB10, rowA10[3]);
-		__builtin_mma_xvf64gerpp(&acc7, rowB10_1, rowA10[3]);
-
-		vec_t *rowA11 = (vec_t *)&AO[(l + 11) << 3];
-		__vector_pair rowB11 = *((__vector_pair *)((void *)&BO[(l + 11) << 3]));
-		__vector_pair rowB11_1 = *((__vector_pair *)((void *)&BO[((l + 11) << 3) + 4]));
-		__builtin_mma_xvf64gerpp(&acc0, rowB11, rowA11[0]);
-		__builtin_mma_xvf64gerpp(&acc1, rowB11_1, rowA11[0]);
-		__builtin_mma_xvf64gerpp(&acc2, rowB11, rowA11[1]);
-		__builtin_mma_xvf64gerpp(&acc3, rowB11_1, rowA11[1]);
-		__builtin_mma_xvf64gerpp(&acc4, rowB11, rowA11[2]);
-		__builtin_mma_xvf64gerpp(&acc5, rowB11_1, rowA11[2]);
-		__builtin_mma_xvf64gerpp(&acc6, rowB11, rowA11[3]);
-		__builtin_mma_xvf64gerpp(&acc7, rowB11_1, rowA11[3]);
-
-		vec_t *rowA12 = (vec_t *)&AO[(l + 12) << 3];
-		__vector_pair rowB12 = *((__vector_pair *)((void *)&BO[(l + 12) << 3]));
-		__vector_pair rowB12_1 = *((__vector_pair *)((void *)&BO[((l + 12) << 3) + 4]));
-		__builtin_mma_xvf64gerpp(&acc0, rowB12, rowA12[0]);
-		__builtin_mma_xvf64gerpp(&acc1, rowB12_1, rowA12[0]);
-		__builtin_mma_xvf64gerpp(&acc2, rowB12, rowA12[1]);
-		__builtin_mma_xvf64gerpp(&acc3, rowB12_1, rowA12[1]);
-		__builtin_mma_xvf64gerpp(&acc4, rowB12, rowA12[2]);
-		__builtin_mma_xvf64gerpp(&acc5, rowB12_1, rowA12[2]);
-		__builtin_mma_xvf64gerpp(&acc6, rowB12, rowA12[3]);
-		__builtin_mma_xvf64gerpp(&acc7, rowB12_1, rowA12[3]);
-
-		vec_t *rowA13 = (vec_t *)&AO[(l + 13) << 3];
-		__vector_pair rowB13 = *((__vector_pair *)((void *)&BO[(l + 13) << 3]));
-		__vector_pair rowB13_1 = *((__vector_pair *)((void *)&BO[((l + 13) << 3) + 4]));
-		__builtin_mma_xvf64gerpp(&acc0, rowB13, rowA13[0]);
-		__builtin_mma_xvf64gerpp(&acc1, rowB13_1, rowA13[0]);
-		__builtin_mma_xvf64gerpp(&acc2, rowB13, rowA13[1]);
-		__builtin_mma_xvf64gerpp(&acc3, rowB13_1, rowA13[1]);
-		__builtin_mma_xvf64gerpp(&acc4, rowB13, rowA13[2]);
-		__builtin_mma_xvf64gerpp(&acc5, rowB13_1, rowA13[2]);
-		__builtin_mma_xvf64gerpp(&acc6, rowB13, rowA13[3]);
-		__builtin_mma_xvf64gerpp(&acc7, rowB13_1, rowA13[3]);
-
-		vec_t *rowA14 = (vec_t *)&AO[(l + 14) << 3];
-		__vector_pair rowB14 = *((__vector_pair *)((void *)&BO[(l + 14) << 3]));
-		__vector_pair rowB14_1 = *((__vector_pair *)((void *)&BO[((l + 14) << 3) + 4]));
-		__builtin_mma_xvf64gerpp(&acc0, rowB14, rowA14[0]);
-		__builtin_mma_xvf64gerpp(&acc1, rowB14_1, rowA14[0]);
-		__builtin_mma_xvf64gerpp(&acc2, rowB14, rowA14[1]);
-		__builtin_mma_xvf64gerpp(&acc3, rowB14_1, rowA14[1]);
-		__builtin_mma_xvf64gerpp(&acc4, rowB14, rowA14[2]);
-		__builtin_mma_xvf64gerpp(&acc5, rowB14_1, rowA14[2]);
-		__builtin_mma_xvf64gerpp(&acc6, rowB14, rowA14[3]);
-		__builtin_mma_xvf64gerpp(&acc7, rowB14_1, rowA14[3]);
-
-		vec_t *rowA15 = (vec_t *)&AO[(l + 15) << 3];
-		__vector_pair rowB15 = *((__vector_pair *)((void *)&BO[(l + 15) << 3]));
-		__vector_pair rowB15_1 = *((__vector_pair *)((void *)&BO[((l + 15) << 3) + 4]));
-		__builtin_mma_xvf64gerpp(&acc0, rowB15, rowA15[0]);
-		__builtin_mma_xvf64gerpp(&acc1, rowB15_1, rowA15[0]);
-		__builtin_mma_xvf64gerpp(&acc2, rowB15, rowA15[1]);
-		__builtin_mma_xvf64gerpp(&acc3, rowB15_1, rowA15[1]);
-		__builtin_mma_xvf64gerpp(&acc4, rowB15, rowA15[2]);
-		__builtin_mma_xvf64gerpp(&acc5, rowB15_1, rowA15[2]);
-		__builtin_mma_xvf64gerpp(&acc6, rowB15, rowA15[3]);
-		__builtin_mma_xvf64gerpp(&acc7, rowB15_1, rowA15[3]);
-
+		 KERNEL (l);
+		 KERNEL (l+1);
+		 KERNEL (l+2);
+		 KERNEL (l+3);
+		 KERNEL (l+4);
+		 KERNEL (l+5);
+		 KERNEL (l+6);
+		 KERNEL (l+7);
+		 KERNEL (l+8);
+		 KERNEL (l+9);
+		 KERNEL (l+10);
+    		 KERNEL (l+11);
+    		 KERNEL (l+12);
+    		 KERNEL (l+13);
+    		 KERNEL (l+14);
+    		 KERNEL (l+15);
 	}
-	  for (; l < temp; l++)
-	    {
-	      rowA = (vec_t *) & AO[l << 3];
-	      rowB = *((__vector_pair *)((void *)&BO[l << 3]));
-	      rowB1 = *((__vector_pair *)((void *)&BO[(l << 3) + 4]));
-	      __builtin_mma_xvf64gerpp (&acc0, rowB, rowA[0]);
-	      __builtin_mma_xvf64gerpp (&acc1, rowB1, rowA[0]);
-	      __builtin_mma_xvf64gerpp (&acc2, rowB, rowA[1]);
-	      __builtin_mma_xvf64gerpp (&acc3, rowB1, rowA[1]);
-	      __builtin_mma_xvf64gerpp (&acc4, rowB, rowA[2]);
-	      __builtin_mma_xvf64gerpp (&acc5, rowB1, rowA[2]);
-	      __builtin_mma_xvf64gerpp (&acc6, rowB, rowA[3]);
-	      __builtin_mma_xvf64gerpp (&acc7, rowB1, rowA[3]);
-	    }
+	if ((temp - l) & 8)
+	{
+		KERNEL(l);
+                KERNEL(l+1);
+                KERNEL(l+2);
+                KERNEL(l+3);
+                KERNEL(l+4);
+                KERNEL(l+5);
+                KERNEL(l+6);
+                KERNEL(l+7);
+                l += 8;
+	}
+	if ((temp - l) & 4)
+	{
+		KERNEL(l);
+        	KERNEL(l+1);
+        	KERNEL(l+2);
+        	KERNEL(l+3);
+        	l += 4;
+	}
+	if ((temp - l) & 2)
+	{
+		KERNEL(l);
+		KERNEL(l+1);
+		l += 2;
+	}
+	if ((temp - l) & 1)
+	{
+		KERNEL(l);
+	}
 	  SAVE_ACC (&acc0, 0);
 	  SAVE_ACC1 (&acc1, 0);
 	  SAVE_ACC (&acc2, 2);
