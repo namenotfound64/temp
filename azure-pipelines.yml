@@ -1,4 +1,4 @@
-trigger:
+ trigger:
   # start a new build for every push
   batch: False
   branches:
@@ -201,7 +201,7 @@ jobs:
   - script: |
       brew update
       brew install llvm libomp
-      make TARGET=CORE2 USE_OPENMP=1 DYNAMIC_ARCH=1 -DDYNAMIC_LIST='NEHALEM HASWELL SKYLAKEX' CC=/usr/local/opt/llvm/bin/clang NOFORTRAN=1
+      make TARGET=CORE2 USE_OPENMP=1 DYNAMIC_ARCH=1 DYNAMIC_LIST='NEHALEM HASWELL SKYLAKEX' CC=/usr/local/opt/llvm/bin/clang NOFORTRAN=1
 
 - job: OSX_OpenMP_Clang_cmake
   pool:
