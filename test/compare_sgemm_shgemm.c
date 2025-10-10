@@ -54,8 +54,8 @@ main (int argc, char *argv[])
     float *A = (float *)malloc_safe(m * k * sizeof(FLOAT));
     float *B = (float *)malloc_safe(k * n * sizeof(FLOAT));
     float *C = (float *)malloc_safe(m * n * sizeof(FLOAT));
-    hfloat16 *AA = (hfloat16 *)malloc_safe(m * k * sizeof(bfloat16));
-    hfloat16 *BB = (hfloat16 *)malloc_safe(k * n * sizeof(bfloat16));
+    hfloat16 *AA = (hfloat16 *)malloc_safe(m * k * sizeof(hfloat16));
+    hfloat16 *BB = (hfloat16 *)malloc_safe(k * n * sizeof(hfloat16));
     float *DD = (float *)malloc_safe(m * n * sizeof(FLOAT));
     float *CC = (float *)malloc_safe(m * n * sizeof(FLOAT));
     if ((A == NULL) || (B == NULL) || (C == NULL) || (AA == NULL) || (BB == NULL) ||
