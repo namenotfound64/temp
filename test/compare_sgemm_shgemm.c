@@ -26,7 +26,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 #include <stdio.h>
 #include <stdint.h>
-#define __USE_POSIX199309
 #include "../common.h"
 
 #include "test_helpers.h"
