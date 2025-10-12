@@ -227,6 +227,8 @@ static inline void strmm_direct_alpha_sme1_2VLx2VL(uint64_t m, uint64_t k, uint6
 }
 
 #else
+void strmm_direct_sme1_preprocess(uint64_t nbr, uint64_t nbc,
+                                  const float *restrict a, float *restrict a_mod) {}
 void strmm_direct_alpha_sme1_2VLx2VL(uint64_t m, uint64_t k, uint64_t n, const float* alpha,\
                                    const float *ba, float *restrict bb){}
 #endif
