@@ -220,6 +220,10 @@ gotoblas_t TABLE_NAME = {
   sgemm_direct_performantTS,	
   ssymm_direct_alpha_betaLUTS,
   ssymm_direct_alpha_betaLLTS,
+  strmm_direct_LNUNTS,
+  strmm_direct_LNLNTS,
+  strmm_direct_LTUNTS,
+  strmm_direct_LTLNTS,
 #endif
 
   sgemm_kernelTS, sgemm_betaTS,

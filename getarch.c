@@ -2060,10 +2060,9 @@ int main(int argc, char *argv[]){
 #endif
 
 
-#ifdef INTEL_AMD
-#ifndef FORCE
+#if defined(INTEL_AMD) && !defined(FORCE)
     get_sse();
-#else
+#elif defined(FORCE_INTEL)
 
     sprintf(buffer, "%s", ARCHCONFIG);
 
@@ -2092,7 +2091,6 @@ int main(int argc, char *argv[]){
 	printf("\n");
       } else p ++;
     }
-#endif
 #endif
 
 #if defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__

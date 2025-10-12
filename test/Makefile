@@ -34,7 +34,7 @@ ifneq (, $(filter $(CORE),LOONGSON3R3 LOONGSON3R4))
 endif
         override FFLAGS += -fno-tree-vectorize
 endif
-override CFLAGS += -std=c11 -Wall -Werror
+# override CFLAGS += -std=c11 -Wall -Werror
 
 SUPPORT_GEMM3M = 0
 
