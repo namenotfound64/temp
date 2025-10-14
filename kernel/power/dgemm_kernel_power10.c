@@ -225,30 +225,30 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT * A, FLOAT * B,
 		 KERNEL (l+8);
 		 KERNEL (l+9);
 		 KERNEL (l+10);
-    		 KERNEL (l+11);
-    		 KERNEL (l+12);
-    		 KERNEL (l+13);
-    		 KERNEL (l+14);
-    		 KERNEL (l+15);
+		 KERNEL (l+11);
+		 KERNEL (l+12);
+		 KERNEL (l+13);
+		 KERNEL (l+14);
+		 KERNEL (l+15);
 	}
 	if ((temp - l) & 8)
 	{
 		KERNEL(l);
-                KERNEL(l+1);
-                KERNEL(l+2);
-                KERNEL(l+3);
-                KERNEL(l+4);
-                KERNEL(l+5);
-                KERNEL(l+6);
-                KERNEL(l+7);
+		KERNEL(l+1);
+		KERNEL(l+2);
+		KERNEL(l+3);
+		KERNEL(l+4);
+		KERNEL(l+5);
+		KERNEL(l+6);
+		KERNEL(l+7);
                 l += 8;
 	}
 	if ((temp - l) & 4)
 	{
 		KERNEL(l);
-        	KERNEL(l+1);
-        	KERNEL(l+2);
-        	KERNEL(l+3);
+		KERNEL(l+1);
+		KERNEL(l+2);
+		KERNEL(l+3);
         	l += 4;
 	}
 	if ((temp - l) & 2)
