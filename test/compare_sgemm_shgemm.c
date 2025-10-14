@@ -73,7 +73,7 @@ main (int argc, char *argv[])
       for (i = 0; i < k; i++)
       {
         B[j * k + i] = ((FLOAT) rand () / (FLOAT) RAND_MAX) + 0.5;
-        BB[j * k + i] = (hfloat16) A[j * k + i];
+        BB[j * k + i] = (hfloat16) B[j * k + i];
       }
     }
     for (y = 0; y < 4; y++)
