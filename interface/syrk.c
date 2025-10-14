@@ -338,6 +338,23 @@ double NNK;
     BLASFUNC(xerbla)(ERROR_NAME, &info, sizeof(ERROR_NAME));
     return;
   }
+#if !defined(COMPLEX) && !defined(DOUBLE) && !defined(BFLOAT16)  && !defined(HFLOAT16)
+#if defined(ARCH_ARM64) && (defined(USE_SSYRK_KERNEL_DIRECT)||defined(DYNAMIC_ARCH))
+#if defined(DYNAMIC_ARCH)
+ if (support_sme1())
+#endif
+  if (args.n == 0) return;
+  if (order == CblasRowMajor && n == ldc) {
+    if (Trans == CblasNoTrans && k == lda) {
+      (Uplo == CblasUpper ? SSYRK_DIRECT_ALPHA_BETA_UN : SSYRK_DIRECT_ALPHA_BETA_LN)(n, k, alpha, a, lda, beta, c, ldc);
+      return;
+    } else if (Trans == CblasTrans && n == lda){
+      (Uplo == CblasUpper ? SSYRK_DIRECT_ALPHA_BETA_UT : SSYRK_DIRECT_ALPHA_BETA_LT)(n, k, alpha, a, lda, beta, c, ldc);
+      return;
+    }
+  }
+#endif
+#endif
 
 #endif
 
