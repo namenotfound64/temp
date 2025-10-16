@@ -205,6 +205,13 @@ if (BUILD_BFLOAT16)
   endif ()
 endif ()
 
+if (BUILD_HFLOAT16)
+  if (USE_THREAD)
+    GenerateNamedObjects("sbgemv_thread.c" "" "gemv_thread_n" false "" "" false "HFLOAT16")
+    GenerateNamedObjects("sbgemv_thread.c" "TRANSA" "gemv_thread_t" false "" "" false "HFLOAT16")
+  endif ()
+endif ()
+
 if ( BUILD_COMPLEX AND NOT  BUILD_SINGLE)
   if (USE_THREAD)
 	  GenerateNamedObjects("gemv_thread.c" "" "gemv_thread_n" false "" "" false "SINGLE")
