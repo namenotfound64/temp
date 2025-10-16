@@ -703,7 +703,7 @@ if(NOT NO_LAPACKE)
   COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/lapack-netlib/LAPACKE/include/lapacke_mangling_with_flags.h.in "${CMAKE_BINARY_DIR}/lapacke_mangling.h"
   )
   install (FILES ${CMAKE_BINARY_DIR}/lapacke_mangling.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-  if (NOT (${SYMBOLPREFIX}${SYMBOLSUFFIX} STREQUAL ""))
+  if (NOT (x${SYMBOLPREFIX}${SYMBOLSUFFIX} STREQUAL "x"))
   message (STATUS "Generating lapacke.h in ${CMAKE_INSTALL_INCLUDEDIR}")
   set(LAPACKE_H ${CMAKE_BINARY_DIR}/generated/lapacke.h)
   file(READ ${CMAKE_CURRENT_SOURCE_DIR}/lapack-netlib/LAPACKE/include/lapacke.h LAPACKE_H_CONTENTS)
