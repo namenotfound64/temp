@@ -356,14 +356,14 @@ void CNAME(enum CBLAS_ORDER order,
   }
 
 #if !defined(COMPLEX) && !defined(DOUBLE) && !defined(BFLOAT16)  && !defined(HFLOAT16)
-#if defined(ARCH_ARM64) && (defined(USE_STRMM_KERNEL_DIRECT)||defined(DYNAMIC_AR
-CH))
+#if defined(ARCH_ARM64) && (defined(USE_STRMM_KERNEL_DIRECT)||defined(DYNAMIC_ARCH))
 #if defined(DYNAMIC_ARCH)
 if (strcmp(gotoblas_corename(), "armv9sme") == 0
 #if defined(__clang__)
  || strcmp(gotoblas_corename(), "vortexm4") == 0
 #endif
 )
+#endif
   if (args.m == 0 || args.n == 0) return;
   if (order == CblasRowMajor && Diag == CblasNonUnit && Side == CblasLeft && m == lda && n == ldb) {
     if (Trans ==  CblasNoTrans) {
