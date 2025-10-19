@@ -304,7 +304,11 @@ endif
 endif
 
 ifeq ($(CORE), VORTEXM4)
+ifneq ($(C_COMPILER), GCC)
 CCOMMON_OPT += -march=armv8.4-a+sme
+else
+CCOMMON_OPT += -march=armv8.4-a
+endif
 FCOMMON_OPT += -march=armv8.4-a
 endif
 
