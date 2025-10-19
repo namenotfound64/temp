@@ -97,6 +97,9 @@
 #define GEMM_MULTITHREAD_THRESHOLD 4
 #endif
 
+#ifdef DYNAMIC_ARCH
+extern char* gotoblas_corename(void);                                
+#endif                                                               
 
 #ifdef SMP
 #ifndef COMPLEX

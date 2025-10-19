@@ -87,6 +87,10 @@
 #define SMP_FACTOR 128
 #endif
 
+#ifdef DYNAMIC_ARCH
+extern char* gotoblas_corename(void);                                
+#endif                                                               
+
 static int (*trsm[])(blas_arg_t *, BLASLONG *, BLASLONG *, FLOAT *, FLOAT *, BLASLONG) = {
 #ifndef TRMM
   TRSM_LNUU, TRSM_LNUN, TRSM_LNLU, TRSM_LNLN,
