@@ -58,7 +58,11 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT alpha, IFLOAT *a, BLASLONG lda, IFLOAT *
 {
     BLASLONG i = 0, j = 0, k = 0;
     BLASLONG ix = 0, iy = 0;
-    IFLOAT *a_ptr = a;
+#if defined(HFLOAT16)
+    _Float16 *a_ptr = (_Float16 *)(a);
+#else
+    __bf16 *a_ptr = (__bf16 *)(a);
+#endif
     FLOAT temp;
 
     IFLOAT_V_T va, vx;

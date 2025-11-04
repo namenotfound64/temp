@@ -6,6 +6,8 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
     BLASLONG gvl = 0;
     BLASLONG m_top = 0;
     BLASLONG n_top = 0;
+    __bf16 *BB = (__bf16 *)(B);
+    __bf16 *AA = (__bf16 *)(A);
 
     // -- MAIN PASS
     for (BLASLONG j=0; j<N/8; j+=1) {
@@ -26,17 +28,17 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
             vfloat32m2_t result7 = __riscv_vfmv_v_f_f32m2(0.0f, gvl);
 
             for (BLASLONG k=0; k<K; k++) {
-                __bf16 B0 = B[bi+0];
-                __bf16 B1 = B[bi+1];
-                __bf16 B2 = B[bi+2];
-                __bf16 B3 = B[bi+3];
-                __bf16 B4 = B[bi+4];
-                __bf16 B5 = B[bi+5];
-                __bf16 B6 = B[bi+6];
-                __bf16 B7 = B[bi+7];
+                __bf16 B0 = BB[bi+0];
+                __bf16 B1 = BB[bi+1];
+                __bf16 B2 = BB[bi+2];
+                __bf16 B3 = BB[bi+3];
+                __bf16 B4 = BB[bi+4];
+                __bf16 B5 = BB[bi+5];
+                __bf16 B6 = BB[bi+6];
+                __bf16 B7 = BB[bi+7];
                 bi += 8;
 
-                vbfloat16m1_t A0 = __riscv_vle16_v_bf16m1( &A[ai+0*gvl], gvl );
+                vbfloat16m1_t A0 = __riscv_vle16_v_bf16m1( &AA[ai+0*gvl], gvl );
                 ai += 8;
 
                 result0 = __riscv_vfwmaccbf16_vf_f32m2(result0, B0, A0, gvl);
@@ -100,17 +102,17 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
             vfloat32m1_t result7 = __riscv_vfmv_v_f_f32m1(0.0f, gvl);
 
             for (BLASLONG k=0; k < K; ++k) {
-                __bf16 B0 = B[bi+0];
-                __bf16 B1 = B[bi+1];
-                __bf16 B2 = B[bi+2];
-                __bf16 B3 = B[bi+3];
-                __bf16 B4 = B[bi+4];
-                __bf16 B5 = B[bi+5];
-                __bf16 B6 = B[bi+6];
-                __bf16 B7 = B[bi+7];
+                __bf16 B0 = BB[bi+0];
+                __bf16 B1 = BB[bi+1];
+                __bf16 B2 = BB[bi+2];
+                __bf16 B3 = BB[bi+3];
+                __bf16 B4 = BB[bi+4];
+                __bf16 B5 = BB[bi+5];
+                __bf16 B6 = BB[bi+6];
+                __bf16 B7 = BB[bi+7];
                 bi += 8;
 
-                vbfloat16mf2_t A0 = __riscv_vle16_v_bf16mf2(&A[ai + 0 * gvl], gvl);
+                vbfloat16mf2_t A0 = __riscv_vle16_v_bf16mf2(&AA[ai + 0 * gvl], gvl);
                 ai += 4;
 
                 result0 = __riscv_vfwmaccbf16_vf_f32m1(result0, B0, A0, gvl);
@@ -186,22 +188,22 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
             float result15 = 0;
 
             for (BLASLONG k=0; k<K; k++) {
-                result0+=(float)(A[ai+0])*(float)(B[bi+0]);
-                result1+=(float)(A[ai+1])*(float)(B[bi+0]);
-                result2+=(float)(A[ai+0])*(float)(B[bi+1]);
-                result3+=(float)(A[ai+1])*(float)(B[bi+1]);
-                result4+=(float)(A[ai+0])*(float)(B[bi+2]);
-                result5+=(float)(A[ai+1])*(float)(B[bi+2]);
-                result6+=(float)(A[ai+0])*(float)(B[bi+3]);
-                result7+=(float)(A[ai+1])*(float)(B[bi+3]);
-                result8+=(float)(A[ai+0])*(float)(B[bi+4]);
-                result9+=(float)(A[ai+1])*(float)(B[bi+4]);
-                result10+=(float)(A[ai+0])*(float)(B[bi+5]);
-                result11+=(float)(A[ai+1])*(float)(B[bi+5]);
-                result12+=(float)(A[ai+0])*(float)(B[bi+6]);
-                result13+=(float)(A[ai+1])*(float)(B[bi+6]);
-                result14+=(float)(A[ai+0])*(float)(B[bi+7]);
-                result15+=(float)(A[ai+1])*(float)(B[bi+7]);
+                result0+=(float)(AA[ai+0])*(float)(BB[bi+0]);
+                result1+=(float)(AA[ai+1])*(float)(BB[bi+0]);
+                result2+=(float)(AA[ai+0])*(float)(BB[bi+1]);
+                result3+=(float)(AA[ai+1])*(float)(BB[bi+1]);
+                result4+=(float)(AA[ai+0])*(float)(BB[bi+2]);
+                result5+=(float)(AA[ai+1])*(float)(BB[bi+2]);
+                result6+=(float)(AA[ai+0])*(float)(BB[bi+3]);
+                result7+=(float)(AA[ai+1])*(float)(BB[bi+3]);
+                result8+=(float)(AA[ai+0])*(float)(BB[bi+4]);
+                result9+=(float)(AA[ai+1])*(float)(BB[bi+4]);
+                result10+=(float)(AA[ai+0])*(float)(BB[bi+5]);
+                result11+=(float)(AA[ai+1])*(float)(BB[bi+5]);
+                result12+=(float)(AA[ai+0])*(float)(BB[bi+6]);
+                result13+=(float)(AA[ai+1])*(float)(BB[bi+6]);
+                result14+=(float)(AA[ai+0])*(float)(BB[bi+7]);
+                result15+=(float)(AA[ai+1])*(float)(BB[bi+7]);
                 ai+=2;
                 bi+=8;
             }
@@ -242,14 +244,14 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
             BLASLONG bi = n_top * K;
 
             for (BLASLONG k=0; k<K; k++) {
-                result0+=(float)(A[ai+0])*(float)(B[bi+0]);
-                result1+=(float)(A[ai+0])*(float)(B[bi+1]);
-                result2+=(float)(A[ai+0])*(float)(B[bi+2]);
-                result3+=(float)(A[ai+0])*(float)(B[bi+3]);
-                result4+=(float)(A[ai+0])*(float)(B[bi+4]);
-                result5+=(float)(A[ai+0])*(float)(B[bi+5]);
-                result6+=(float)(A[ai+0])*(float)(B[bi+6]);
-                result7+=(float)(A[ai+0])*(float)(B[bi+7]);
+                result0+=(float)(AA[ai+0])*(float)(BB[bi+0]);
+                result1+=(float)(AA[ai+0])*(float)(BB[bi+1]);
+                result2+=(float)(AA[ai+0])*(float)(BB[bi+2]);
+                result3+=(float)(AA[ai+0])*(float)(BB[bi+3]);
+                result4+=(float)(AA[ai+0])*(float)(BB[bi+4]);
+                result5+=(float)(AA[ai+0])*(float)(BB[bi+5]);
+                result6+=(float)(AA[ai+0])*(float)(BB[bi+6]);
+                result7+=(float)(AA[ai+0])*(float)(BB[bi+7]);
                 ai+=1;
                 bi+=8;
             }
@@ -284,13 +286,13 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
             vfloat32m2_t result3 = __riscv_vfmv_v_f_f32m2(0.0f, gvl);
 
             for (BLASLONG k=0; k<K; k++) {
-                __bf16 B0 = B[bi+0];
-                __bf16 B1 = B[bi+1];
-                __bf16 B2 = B[bi+2];
-                __bf16 B3 = B[bi+3];
+                __bf16 B0 = BB[bi+0];
+                __bf16 B1 = BB[bi+1];
+                __bf16 B2 = BB[bi+2];
+                __bf16 B3 = BB[bi+3];
                 bi += 4;
 
-                vbfloat16m1_t A0 = __riscv_vle16_v_bf16m1( &A[ai+0*gvl], gvl );
+                vbfloat16m1_t A0 = __riscv_vle16_v_bf16m1( &AA[ai+0*gvl], gvl );
                 ai += 8;
 
                 result0 = __riscv_vfwmaccbf16_vf_f32m2(result0, B0, A0, gvl);
@@ -332,13 +334,13 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
             vfloat32m1_t result3 = __riscv_vfmv_v_f_f32m1(0.0f, gvl);
 
             for (BLASLONG k=0; k < K; ++k) {
-                __bf16 B0 = B[bi+0];
-                __bf16 B1 = B[bi+1];
-                __bf16 B2 = B[bi+2];
-                __bf16 B3 = B[bi+3];
+                __bf16 B0 = BB[bi+0];
+                __bf16 B1 = BB[bi+1];
+                __bf16 B2 = BB[bi+2];
+                __bf16 B3 = BB[bi+3];
                 bi += 4;
 
-                vbfloat16mf2_t A0 = __riscv_vle16_v_bf16mf2(&A[ai + 0 * gvl], gvl);
+                vbfloat16mf2_t A0 = __riscv_vle16_v_bf16mf2(&AA[ai + 0 * gvl], gvl);
                 ai += 4;
 
                 result0 = __riscv_vfwmaccbf16_vf_f32m1(result0, B0, A0, gvl);
@@ -386,14 +388,14 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
             float result7 = 0;
 
             for (BLASLONG k=0; k<K; k++) {
-                result0+=(float)(A[ai+0])*(float)(B[bi+0]);
-                result1+=(float)(A[ai+1])*(float)(B[bi+0]);
-                result2+=(float)(A[ai+0])*(float)(B[bi+1]);
-                result3+=(float)(A[ai+1])*(float)(B[bi+1]);
-                result4+=(float)(A[ai+0])*(float)(B[bi+2]);
-                result5+=(float)(A[ai+1])*(float)(B[bi+2]);
-                result6+=(float)(A[ai+0])*(float)(B[bi+3]);
-                result7+=(float)(A[ai+1])*(float)(B[bi+3]);
+                result0+=(float)(AA[ai+0])*(float)(BB[bi+0]);
+                result1+=(float)(AA[ai+1])*(float)(BB[bi+0]);
+                result2+=(float)(AA[ai+0])*(float)(BB[bi+1]);
+                result3+=(float)(AA[ai+1])*(float)(BB[bi+1]);
+                result4+=(float)(AA[ai+0])*(float)(BB[bi+2]);
+                result5+=(float)(AA[ai+1])*(float)(BB[bi+2]);
+                result6+=(float)(AA[ai+0])*(float)(BB[bi+3]);
+                result7+=(float)(AA[ai+1])*(float)(BB[bi+3]);
                 ai+=2;
                 bi+=4;
             }
@@ -422,10 +424,10 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
             BLASLONG bi = n_top * K;
 
             for (BLASLONG k=0; k<K; k++) {
-                result0+=(float)(A[ai+0])*(float)(B[bi+0]);
-                result1+=(float)(A[ai+0])*(float)(B[bi+1]);
-                result2+=(float)(A[ai+0])*(float)(B[bi+2]);
-                result3+=(float)(A[ai+0])*(float)(B[bi+3]);
+                result0+=(float)(AA[ai+0])*(float)(BB[bi+0]);
+                result1+=(float)(AA[ai+0])*(float)(BB[bi+1]);
+                result2+=(float)(AA[ai+0])*(float)(BB[bi+2]);
+                result3+=(float)(AA[ai+0])*(float)(BB[bi+3]);
                 ai+=1;
                 bi+=4;
             }
@@ -454,11 +456,11 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
             vfloat32m2_t result1 = __riscv_vfmv_v_f_f32m2(0.0f, gvl);
 
             for (BLASLONG k=0; k<K; k++) {
-                __bf16 B0 = B[bi+0];
-                __bf16 B1 = B[bi+1];
+                __bf16 B0 = BB[bi+0];
+                __bf16 B1 = BB[bi+1];
                 bi += 2;
 
-                vbfloat16m1_t A0 = __riscv_vle16_v_bf16m1( &A[ai+0*gvl], gvl );
+                vbfloat16m1_t A0 = __riscv_vle16_v_bf16m1( &AA[ai+0*gvl], gvl );
                 ai += 8;
 
                 result0 = __riscv_vfwmaccbf16_vf_f32m2(result0, B0, A0, gvl);
@@ -490,11 +492,11 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
             vfloat32m1_t result1 = __riscv_vfmv_v_f_f32m1(0.0f, gvl);
 
             for (BLASLONG k=0; k < K; ++k) {
-                __bf16 B0 = B[bi+0];
-                __bf16 B1 = B[bi+1];
+                __bf16 B0 = BB[bi+0];
+                __bf16 B1 = BB[bi+1];
                 bi += 2;
 
-                vbfloat16mf2_t A0 = __riscv_vle16_v_bf16mf2(&A[ai + 0 * gvl], gvl);
+                vbfloat16mf2_t A0 = __riscv_vle16_v_bf16mf2(&AA[ai + 0 * gvl], gvl);
                 ai += 4;
 
                 result0 = __riscv_vfwmaccbf16_vf_f32m1(result0, B0, A0, gvl);
@@ -528,10 +530,10 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
             float result3 = 0;
 
             for (BLASLONG k=0; k<K; k++) {
-                result0+=(float)(A[ai+0])*(float)(B[bi+0]);
-                result1+=(float)(A[ai+1])*(float)(B[bi+0]);
-                result2+=(float)(A[ai+0])*(float)(B[bi+1]);
-                result3+=(float)(A[ai+1])*(float)(B[bi+1]);
+                result0+=(float)(AA[ai+0])*(float)(BB[bi+0]);
+                result1+=(float)(AA[ai+1])*(float)(BB[bi+0]);
+                result2+=(float)(AA[ai+0])*(float)(BB[bi+1]);
+                result3+=(float)(AA[ai+1])*(float)(BB[bi+1]);
                 ai+=2;
                 bi+=2;
             }
@@ -555,8 +557,8 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
             BLASLONG bi = n_top * K;
 
             for (BLASLONG k=0; k<K; k++) {
-                result0+=(float)(A[ai+0])*(float)(B[bi+0]);
-                result1+=(float)(A[ai+0])*(float)(B[bi+1]);
+                result0+=(float)(AA[ai+0])*(float)(BB[bi+0]);
+                result1+=(float)(AA[ai+0])*(float)(BB[bi+1]);
                 ai+=1;
                 bi+=2;
             }
@@ -582,10 +584,10 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
             vfloat32m2_t result0 = __riscv_vfmv_v_f_f32m2(0.0f, gvl);
 
             for (BLASLONG k=0; k<K; k++) {
-                __bf16 B0 = B[bi+0];
+                __bf16 B0 = BB[bi+0];
                 bi += 1;
 
-                vbfloat16m1_t A0 = __riscv_vle16_v_bf16m1( &A[ai+0*gvl], gvl );
+                vbfloat16m1_t A0 = __riscv_vle16_v_bf16m1( &AA[ai+0*gvl], gvl );
                 ai += 8;
 
                 result0 = __riscv_vfwmaccbf16_vf_f32m2(result0, B0, A0, gvl);
@@ -612,10 +614,10 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
             vfloat32m1_t result0 = __riscv_vfmv_v_f_f32m1(0.0f, gvl);
 
             for (BLASLONG k=0; k < K; ++k) {
-                __bf16 B0 = B[bi+0];
+                __bf16 B0 = BB[bi+0];
                 bi += 1;
 
-                vbfloat16mf2_t A0 = __riscv_vle16_v_bf16mf2(&A[ai + 0 * gvl], gvl);
+                vbfloat16mf2_t A0 = __riscv_vle16_v_bf16mf2(&AA[ai + 0 * gvl], gvl);
                 ai += 4;
 
                 result0 = __riscv_vfwmaccbf16_vf_f32m1(result0, B0, A0, gvl);
@@ -641,8 +643,8 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
             float result1 = 0;
 
             for (BLASLONG k=0; k<K; k++) {
-                result0+=(float)(A[ai+0])*(float)(B[bi+0]);
-                result1+=(float)(A[ai+1])*(float)(B[bi+0]);
+                result0+=(float)(AA[ai+0])*(float)(BB[bi+0]);
+                result1+=(float)(AA[ai+1])*(float)(BB[bi+0]);
                 ai+=2;
                 bi+=1;
             }
@@ -662,7 +664,7 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, IFLOAT *A, IFLOAT *B,
             BLASLONG bi = n_top * K;
 
             for (BLASLONG k=0; k<K; k++) {
-                result0+=(float)(A[ai+0])*(float)(B[bi+0]);
+                result0+=(float)(AA[ai+0])*(float)(BB[bi+0]);
                 ai+=1;
                 bi+=1;
             }
