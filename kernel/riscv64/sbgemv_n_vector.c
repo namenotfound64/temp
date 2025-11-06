@@ -51,7 +51,13 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT alpha, IFLOAT *a, BLASLONG lda, IFLOAT *
 {
     if (n < 0) return(0);
 
-    IFLOAT *a_ptr, temp;
+#if defined(HFLOAT16)
+    _Float16 *a_ptr, *x_ptr, temp;
+    x_ptr = (_Float16 *)(x);
+#else
+    __bf16 *a_ptr, *x_ptr, temp;
+    x_ptr = (__bf16 *)(x);
+#endif
     FLOAT *y_ptr;
     BLASLONG i, j, vl;
     IFLOAT_V_T va;
@@ -76,9 +82,14 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT alpha, IFLOAT *a, BLASLONG lda, IFLOAT *
             }
         }
         for (j = 0; j < n; j++) {
-            temp = (IFLOAT)(alpha * (FLOAT)(x[0]));
+#if defined(HFLOAT16)
+            temp = (_Float16)(alpha * (FLOAT)(x_ptr[0]));
+            a_ptr = (_Float16 *)(a);
+#else
+            temp = (__bf16)(alpha * (FLOAT)(x_ptr[0]));
+            a_ptr = (__bf16 *)(a);
+#endif
             y_ptr = y;
-            a_ptr = a;
             for (i = m; i > 0; i -= vl) {
                 vl = VSETVL(i);
                 vy = VLEV_FLOAT(y_ptr, vl);
@@ -88,7 +99,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT alpha, IFLOAT *a, BLASLONG lda, IFLOAT *
                 y_ptr += vl;
                 a_ptr += vl;
             }
-            x += inc_x;
+            x_ptr += inc_x;
             a += lda;
         }
     } else {
@@ -110,9 +121,14 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT alpha, IFLOAT *a, BLASLONG lda, IFLOAT *
             }
         }
         for (j = 0; j < n; j++) {
-            temp = (IFLOAT)(alpha * (FLOAT)(x[0]));
+#if defined(HFLOAT16)
+            temp = (_Float16)(alpha * (FLOAT)(x_ptr[0]));
+            a_ptr = (_Float16 *)(a);
+#else
+            temp = (__bf16)(alpha * (FLOAT)(x_ptr[0]));
+            a_ptr = (__bf16 *)(a);
+#endif
             y_ptr = y;
-            a_ptr = a;
             for (i = m; i > 0; i -= vl) {
                 vl = VSETVL(i);
                 vy = VLSEV_FLOAT(y_ptr, stride_y, vl);
@@ -122,7 +138,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT alpha, IFLOAT *a, BLASLONG lda, IFLOAT *
                 y_ptr += vl * inc_y;
                 a_ptr += vl;
             }
-            x += inc_x;
+            x_ptr += inc_x;
             a += lda;
         }
     }

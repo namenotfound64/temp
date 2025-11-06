@@ -58,7 +58,13 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT alpha, IFLOAT *a, BLASLONG lda, IFLOAT *
 {
     BLASLONG i = 0, j = 0, k = 0;
     BLASLONG ix = 0, iy = 0;
-    IFLOAT *a_ptr = a;
+#if defined(HFLOAT16)
+    _Float16 *a_ptr = (_Float16 *)(a);
+    _Float16 *x_ptr = (_Float16 *)(x);
+#else
+    __bf16 *a_ptr = (__bf16 *)(a);
+    __bf16 *x_ptr = (__bf16 *)(x);
+#endif
     FLOAT temp;
 
     IFLOAT_V_T va, vx;
@@ -79,7 +85,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT alpha, IFLOAT *a, BLASLONG lda, IFLOAT *
 #endif
             for (k = 0; k < m/gvl; k++) {
                 va = VLEV_IFLOAT(&a_ptr[j], gvl);
-                vx = VLEV_IFLOAT(&x[j], gvl);
+                vx = VLEV_IFLOAT(&x_ptr[j], gvl);
                 vr = VFMACCVV_FLOAT(vz, va, vx, gvl);           // could vfmacc here and reduce outside loop
                 v_res = VFREDSUM_FLOAT(vr, v_res, gvl);         // but that reordering diverges far enough from scalar path to make tests fail
                 j += gvl;
@@ -87,7 +93,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT alpha, IFLOAT *a, BLASLONG lda, IFLOAT *
             if (j < m) {
                 gvl = VSETVL(m-j);
                 va = VLEV_IFLOAT(&a_ptr[j], gvl);
-                vx = VLEV_IFLOAT(&x[j], gvl);
+                vx = VLEV_IFLOAT(&x_ptr[j], gvl);
                 vr = VFMACCVV_FLOAT(vz, va, vx, gvl);
                 v_res = VFREDSUM_FLOAT(vr, v_res, gvl);
             }
@@ -109,7 +115,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT alpha, IFLOAT *a, BLASLONG lda, IFLOAT *
 #endif
             for (k = 0; k < m/gvl; k++) {
                 va = VLEV_IFLOAT(&a_ptr[j], gvl);
-                vx = VLSEV_IFLOAT(&x[ix], stride_x, gvl);
+                vx = VLSEV_IFLOAT(&x_ptr[ix], stride_x, gvl);
                 vr = VFMACCVV_FLOAT(vz, va, vx, gvl);
                 v_res = VFREDSUM_FLOAT(vr, v_res, gvl);
                 j += gvl;
@@ -118,7 +124,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT alpha, IFLOAT *a, BLASLONG lda, IFLOAT *
             if (j < m) {
                 gvl = VSETVL(m-j);
                 va = VLEV_IFLOAT(&a_ptr[j], gvl);
-                vx = VLSEV_IFLOAT(&x[ix], stride_x, gvl);
+                vx = VLSEV_IFLOAT(&x_ptr[ix], stride_x, gvl);
                 vr = VFMACCVV_FLOAT(vz, va, vx, gvl);
                 v_res = VFREDSUM_FLOAT(vr, v_res, gvl);
             }
