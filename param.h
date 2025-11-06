@@ -3868,6 +3868,7 @@ Until then, just keep it different than DGEMM_DEFAULT_UNROLL_N to keep copy rout
 #define USE_SGEMM_KERNEL_DIRECT 1
 #define USE_SSYMM_KERNEL_DIRECT 1
 #define USE_STRMM_KERNEL_DIRECT 1
+#define USE_SSYRK_KERNEL_DIRECT 1
 #endif /* ARMv9 SME */
 
 #if defined(ARMV5)
