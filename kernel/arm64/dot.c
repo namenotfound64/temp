@@ -97,7 +97,7 @@ static inline int get_dot_optimal_nthreads(BLASLONG n) {
   if (n <= 10000L)
     return 1;
   else
-    return num_cpu_avail(1);
+    return ncpu;
 }
 #endif
 
