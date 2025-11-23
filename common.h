@@ -781,7 +781,7 @@ static __inline int readenv_atoi(char *env) {
 #endif
 #endif
 
-#if !defined(XDOUBLE) || !defined(QUAD_PRECISION)
+#if !defined(BFLOAT16) && (!defined(XDOUBLE) || !defined(QUAD_PRECISION))
 
 static __inline void compinv(FLOAT *b, FLOAT ar, FLOAT ai){
 
