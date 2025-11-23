@@ -118,6 +118,10 @@ ifeq ($(F_COMPILER), GFORTRAN)
 FCOMMON_OPT += -fno-optimize-sibling-calls
 endif
 
+ifeq ($(F_COMPILER), FLANGNEW)
+override FCOMMON_OPT := $(filter-out -frecursive,$(FCOMMON_OPT))
+endif
+
 FLAMEPATH	= $(HOME)/flame/lib
 
 #ifeq ($(CORE), CELL)
