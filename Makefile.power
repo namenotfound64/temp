@@ -151,11 +151,14 @@ endif
 ifdef BINARY64
 
 
+#Skip C/Fortran compiler combination checks in AIX if NO_FORTRAN or ONLY_CBLAS is set
+ifeq ($(filter 1,$(NO_FORTRAN) $(ONLY_CBLAS)),)
 ifeq ($(C_COMPILER)$(F_COMPILER)$(OSNAME), GCCIBMAIX)
 $(error Using GCC and XLF on AIX is not a supported combination.)
 endif
 ifeq ($(C_COMPILER)$(F_COMPILER)$(OSNAME), CLANGGFORTRANAIX)
 $(error Using Clang and gFortran on AIX is not a supported combination.)
+endif
 endif
 
 ifeq ($(OSNAME), AIX)
