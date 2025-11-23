@@ -152,6 +152,8 @@ static int cpulowperf=0;
 static int cpumidperf=0;
 static int cpuhiperf=0;
 
+int aliased = 0;
+
 int get_feature(char *search)
 {
 
@@ -420,7 +422,10 @@ int detect(void)
 	if (errcode != ERROR_SUCCESS) wprintf(L"Error reading cpuname from registry:%x\n",errcode);
 //wprintf(stderr,L"%s\n",(PWSTR)valstring);
 	RegCloseKey(reghandle);
-	if (strstr(valstring, "Snapdragon(R) X Elite")) return CPU_NEOVERSEN1;
+	if (strstr(valstring, "Snapdragon(R) X Elite")) {
+		aliased = 1;
+		return CPU_NEOVERSEN1;
+	}
 	if (strstr(valstring, "Ampere(R) Altra")) return CPU_NEOVERSEN1;
 	if (strstr(valstring, "Snapdragon (TM) 8cx Gen 3")) return CPU_CORTEXX1;
 	if (strstr(valstring, "Snapdragon Compute Platform")) return CPU_CORTEXX1;
@@ -543,6 +548,7 @@ void get_cpuconfig(void)
 		break;
 	    case CPU_NEOVERSEN1:
 		printf("#define %s\n", cpuname[d]);
+		if (aliased == 0) {
 		printf("#define L1_CODE_SIZE 65536\n");
 		printf("#define L1_CODE_LINESIZE 64\n");
 		printf("#define L1_CODE_ASSOCIATIVE 4\n");
@@ -554,6 +560,23 @@ void get_cpuconfig(void)
 		printf("#define L2_ASSOCIATIVE 8\n");
 		printf("#define DTB_DEFAULT_ENTRIES 48\n");
 		printf("#define DTB_SIZE 4096\n");
+		} else {
+		printf("#define L1_CODE_SIZE 196608\n");
+		printf("#define L1_CODE_LINESIZE 64\n");
+		printf("#define L1_CODE_ASSOCIATIVE 6\n");
+		printf("#define L1_DATA_SIZE 98304\n");
+		printf("#define L1_DATA_LINESIZE 64\n");
+		printf("#define L1_DATA_ASSOCIATIVE 6\n");
+		printf("#define L2_SIZE 12582912\n");
+		printf("#define L2_LINESIZE 32\n");
+		printf("#define L2_ASSOCIATIVE 12\n");
+		printf("#define ITB_SIZE 4096\n");
+		printf("#define ITB_ASSOCIATIVE 8\n");
+		printf("#define ITB_DEFAULT_ENTRIES 256\n");
+		printf("#define DTB_DEFAULT_ENTRIES 224\n");
+		printf("#define DTB_ASSOCIATIVE 7\n");
+		printf("#define DTB_SIZE 4096\n");
+		}	
 		break;
 
 	    case CPU_NEOVERSEV1:

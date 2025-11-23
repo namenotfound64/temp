@@ -99,7 +99,6 @@ if (${COMPILER_ID} STREQUAL "GNU")
 endif ()
 
 string(TOUPPER ${ARCH} UC_ARCH)
-
 file(WRITE ${TARGET_CONF_TEMP}
   "#define OS_${HOST_OS}\t1\n"
   "#define ARCH_${UC_ARCH}\t1\n"
@@ -110,6 +109,10 @@ file(WRITE ${TARGET_CONF_TEMP}
 if (${HOST_OS} STREQUAL "WINDOWSSTORE")
   file(APPEND ${TARGET_CONF_TEMP}
     "#define OS_WINNT\t1\n")
+endif ()
+if (${HOST_OS} STREQUAL CYGWIN)
+  file(APPEND ${TARGET_CONF_TEMP}
+    "#define OS_CYGWIN_NT\t1\n")
 endif ()
 
 # f_check

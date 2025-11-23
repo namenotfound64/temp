@@ -54,6 +54,7 @@ USE_TRMM = 1
 USE_DIRECT_SGEMM = 1
 USE_DIRECT_SSYMM = 1
 USE_DIRECT_STRMM = 1
+USE_DIRECT_SSYRK = 1
 endif
 
 ifeq ($(ARCH), riscv64)
@@ -165,6 +166,16 @@ endif
 endif
 endif
 
+ifdef USE_DIRECT_SSYRK
+ifndef SSYRKDIRECTKERNEL_ALPHA_BETA
+ifeq ($(ARCH), arm64)
+ifeq ($(TARGET_CORE), ARMV9SME)
+HAVE_SME = 1
+endif
+SSYRKDIRECTKERNEL_ALPHA_BETA = ssyrk_direct_alpha_beta_arm64_sme1.c
+endif
+endif
+endif
 
 ifeq ($(BUILD_BFLOAT16), 1)
 ifndef BGEMMKERNEL
@@ -263,6 +274,14 @@ ifeq ($(ARCH), arm64)
 SKERNELOBJS += \
 	strmm_direct_LNUN$(TSUFFIX).$(SUFFIX) strmm_direct_LNLN$(TSUFFIX).$(SUFFIX) \
 	strmm_direct_LTUN$(TSUFFIX).$(SUFFIX) strmm_direct_LTLN$(TSUFFIX).$(SUFFIX)
+endif
+endif
+
+ifdef USE_DIRECT_SSYRK
+ifeq ($(ARCH), arm64)
+SKERNELOBJS += \
+	ssyrk_direct_alpha_betaUN$(TSUFFIX).$(SUFFIX) ssyrk_direct_alpha_betaUT$(TSUFFIX).$(SUFFIX) \
+	ssyrk_direct_alpha_betaLN$(TSUFFIX).$(SUFFIX) ssyrk_direct_alpha_betaLT$(TSUFFIX).$(SUFFIX)
 endif
 endif
 
@@ -1165,6 +1184,21 @@ $(KDIR)xgemm_kernel_r$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(XGEMMKERNEL) $(XGEMMD
 $(KDIR)xgemm_kernel_b$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(XGEMMKERNEL) $(XGEMMDEPEND)
 	$(CC) $(CFLAGS) -c -DXDOUBLE -DCOMPLEX -DCC $< -o $@
 
+ifdef USE_DIRECT_SSYRK
+ifeq ($(ARCH), arm64)
+$(KDIR)ssyrk_direct_alpha_betaUN$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SSYRKDIRECTKERNEL_ALPHA_BETA)
+	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX -DUPPER -UTRANSA $< -o $@
+
+$(KDIR)ssyrk_direct_alpha_betaUT$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SSYRKDIRECTKERNEL_ALPHA_BETA)
+	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX -DUPPER -DTRANSA $< -o $@
+
+$(KDIR)ssyrk_direct_alpha_betaLN$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SSYRKDIRECTKERNEL_ALPHA_BETA)
+	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX -UUPPER -UTRANSA $< -o $@
+
+$(KDIR)ssyrk_direct_alpha_betaLT$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SSYRKDIRECTKERNEL_ALPHA_BETA)
+	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX -UUPPER -DTRANSA $< -o $@
+endif
+endif
 
 ifdef USE_TRMM
 $(KDIR)strmm_kernel_LN$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(STRMMKERNEL)
