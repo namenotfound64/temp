@@ -7,7 +7,6 @@
 #include <stdlib.h>
 #include <inttypes.h>
 #include <math.h>
-#if defined(HAVE_SME)
 #if defined(DYNAMIC_ARCH)
 #define COMBINE(a,b) a ## b
 #define COMBINE2(a,b) COMBINE(a,b)
@@ -19,6 +18,7 @@
 #define SME1_PREPROCESS sgemm_direct_sme1_preprocess
 #define SME1_DIRECT2X2 sgemm_direct_sme1_2VLx2VL
 #endif
+#if defined(HAVE_SME)
 /* Function prototypes */
 extern void SME1_PREPROCESS(uint64_t nbr, uint64_t nbc,\
                                   const float * restrict a, float *  a_mod) ;
@@ -87,6 +87,14 @@ void CNAME (BLASLONG M, BLASLONG N, BLASLONG K, float * __restrict A,\
             BLASLONG strideA, float * __restrict B, BLASLONG strideB ,\
             float * __restrict R, BLASLONG strideR){
 fprintf(stderr,"EMPTY sgemm_kernel_direct should never be called \n");
-} 
+}
+void SME1_DIRECT2X2( uint64_t M , uint64_t K, uint64_t N,\
+                               const float * restrict A_base,\
+                               const float * restrict B_base,\
+                               const float * restrict C_base){}; 
+void SME1_PREPROCESS(uint64_t nbr, uint64_t nbc,\
+                                  const float * restrict a, float *  a_mod){};
+
+
 #endif
 

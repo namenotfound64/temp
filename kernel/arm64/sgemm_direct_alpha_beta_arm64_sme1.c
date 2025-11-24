@@ -8,11 +8,6 @@
 #include <inttypes.h>
 #include <math.h>
 #include "sme_abi.h"
-#if defined(HAVE_SME)
-
-#if defined(__ARM_FEATURE_SME) && defined(__clang__) && __clang_major__ >= 16
-#include <arm_sme.h>
-#endif
 
 #if defined(DYNAMIC_ARCH)
 #define COMBINE(a,b) a ## b
@@ -25,9 +20,16 @@
 #define SME1_PREPROCESS sgemm_direct_sme1_preprocess
 #define SME1_KERNEL2X2  sgemm_direct_alpha_beta_sme1_2VLx2VL
 #endif
+
 /* Function prototypes */
 extern void SME1_PREPROCESS(uint64_t nbr, uint64_t nbc,\
                                   const float * restrict a, float *  a_mod);
+
+#if defined(HAVE_SME)
+
+#if defined(__ARM_FEATURE_SME) && defined(__clang__) && __clang_major__ >= 16
+#include <arm_sme.h>
+#endif
 
 /* Function Definitions */
 static uint64_t sve_cntw() {
@@ -210,5 +212,4 @@ void CNAME (BLASLONG M, BLASLONG N, BLASLONG K, float alpha, float * __restrict 
 void CNAME (BLASLONG M, BLASLONG N, BLASLONG K, float alpha, float * __restrict A,\
             BLASLONG strideA, float * __restrict B, BLASLONG strideB ,\
             float beta, float * __restrict R, BLASLONG strideR){fprintf(stderr,"empty sgemm_direct_alpha_beta should not be called!!!\n");}
- 
 #endif
