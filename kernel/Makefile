@@ -27,10 +27,14 @@ endif
 
 ifdef TARGET_CORE
 ifeq ($(TARGET_CORE), ARMV9SME)
- override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE) -DHAVE_SME -march=armv9-a+sve2+sme
+ override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE) -march=armv9-a+sve2+sme
 endif
 ifeq ($(TARGET_CORE), VORTEXM4)
- override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE) -DHAVE_SME -march=armv8.4-a+sme
+  ifeq ($(C_COMPILER), GCC)
+ override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE) -UHAVE_SME -march=armv8.4-a
+  else
+ override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE) -march=armv8.4-a+sme
+  endif
 endif
 ifeq ($(TARGET_CORE), SAPPHIRERAPIDS)
  override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE)
