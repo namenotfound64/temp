@@ -405,6 +405,7 @@ int detect(void)
 	if (value64 == 3660830781) return CPU_VORTEX; //A15/M2
         if (value64 == 2271604202) return CPU_VORTEX; //A16/M3
         if (value64 == 1867590060) return CPU_VORTEXM4; //M4
+	    if (value64 == 492472296) return CPU_VORTEXM4; //M5
 #else
 #ifdef OS_WINDOWS
 	HKEY reghandle;
