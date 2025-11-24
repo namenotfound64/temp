@@ -772,7 +772,9 @@ void get_cpuconfig(void)
 		break;
 	    case CPU_VORTEXM4:
 		printf("#define VORTEXM4		      \n");
+#ifdef __ARM_FEATURE_LOCALLY_STREAMING
 		printf("#define HAVE_SME 1		      \n");
+#endif
 #ifdef __APPLE__
 		length64 = sizeof(value64);
 		sysctlbyname("hw.l1icachesize",&value64,&length64,NULL,0);
