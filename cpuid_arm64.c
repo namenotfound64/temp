@@ -772,7 +772,7 @@ void get_cpuconfig(void)
 		break;
 	    case CPU_VORTEXM4:
 		printf("#define VORTEXM4		      \n");
-#ifdef __ARM_FEATURE_LOCALLY_STREAMING
+#ifdef __clang__
 		printf("#define HAVE_SME 1		      \n");
 #endif
 #ifdef __APPLE__
