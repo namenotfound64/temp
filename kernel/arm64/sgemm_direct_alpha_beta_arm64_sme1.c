@@ -185,7 +185,7 @@ void CNAME (BLASLONG M, BLASLONG N, BLASLONG K, float alpha, float * __restrict 
                          "z0", "z1", "z2", "z3", "z4", "z5", "z6", "z7",
                          "z8", "z9", "z10", "z11", "z12", "z13", "z14", "z15",
                          "z16", "z17", "z18", "z19", "z20", "z21", "z22", "z23",
-                         "z24", "z25", "z26", "z27", "z28", "z29", "z30", "z31","za");
+                         "z24", "z25", "z26", "z27", "z28", "z29", "z30", "z31");
       
         /* Pre-process the left matrix to make it suitable for 
            matrix sum of outer-product calculation
@@ -198,7 +198,7 @@ void CNAME (BLASLONG M, BLASLONG N, BLASLONG K, float alpha, float * __restrict 
                          "z0", "z1", "z2", "z3", "z4", "z5", "z6", "z7",
                          "z8", "z9", "z10", "z11", "z12", "z13", "z14", "z15",
                          "z16", "z17", "z18", "z19", "z20", "z21", "z22", "z23",
-                         "z24", "z25", "z26", "z27", "z28", "z29", "z30", "z31", "za");
+                         "z24", "z25", "z26", "z27", "z28", "z29", "z30", "z31");
 
         /* Calculate C = alpha*A*B + beta*C */
 
@@ -213,3 +213,4 @@ void CNAME (BLASLONG M, BLASLONG N, BLASLONG K, float alpha, float * __restrict 
             BLASLONG strideA, float * __restrict B, BLASLONG strideB ,\
             float beta, float * __restrict R, BLASLONG strideR){fprintf(stderr,"empty sgemm_direct_alpha_beta should not be called!!!\n");}
 #endif
+
