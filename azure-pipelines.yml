@@ -284,6 +284,8 @@ jobs:
      CFLAGS: -O2 -Wno-macro-redefined -isysroot /Applications/Xcode_16.2.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS17.2.sdk -arch arm64 -miphoneos-version-min=10.0
   steps:
   - script: |
+     ls /Applications/Xcode_16.2.app/Contents/Developer/Platforms/
+     ls /Applications/Xcode_16.2.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs
      make TARGET=ARMV8 DYNAMIC_ARCH=1 NUM_THREADS=32 HOSTCC=clang NOFORTRAN=1
 
 - job: OSX_IOS_ARMV7
