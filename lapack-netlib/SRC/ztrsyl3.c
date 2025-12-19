@@ -190,8 +190,8 @@ typedef struct Namelist Namelist;
 #define c_abs(z) (cabsf(Cf(z)))
 #define c_cos(R,Z) { pCf(R)=ccos(Cf(Z)); }
 #ifdef _MSC_VER
-#define c_div(c, a, b) {Cf(c)._Val[0] = (Cf(a)._Val[0]/Cf(b)._Val[0]); Cf(c)._Val[1]=(Cf(a)._Val[1]/Cf(b)._Val[1]);}
-#define z_div(c, a, b) {Cd(c)._Val[0] = (Cd(a)._Val[0]/Cd(b)._Val[0]); Cd(c)._Val[1]=(Cd(a)._Val[1]/Cd(b)._Val[1]);}
+#define c_div(c, a, b) {float n=crealf(_FCmulcc(Cf(b),conjf(Cf(b)))); _Fcomplex z=_FCmulcc(Cf(a),conjf(Cf(b))); pCf(c)=_FCbuild(crealf(z)/n,cimagf(z)/n);}
+#define z_div(c, a, b) {double n=creal(_Cmulcc(Cd(b),conj(Cd(b)))); _Dcomplex z=_Cmulcc(Cd(a),conj(Cd(b))); pCd(c)=_Cbuild(creal(z)/n,cimag(z)/n);}
 #else
 #define c_div(c, a, b) {pCf(c) = Cf(a)/Cf(b);}
 #define z_div(c, a, b) {pCd(c) = Cd(a)/Cd(b);}
@@ -424,16 +424,16 @@ static inline void zdotc_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	_Dcomplex zdotc = {0.0, 0.0};
 	if (incx == 1 && incy == 1) {
 		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += conj(Cd(&x[i]))._Val[0] * Cd(&y[i])._Val[0]
+			zdotc._Val[0] += Cd(&x[i])._Val[0] * Cd(&y[i])._Val[0]
 				+ Cd(&x[i])._Val[1] * Cd(&y[i])._Val[1];
-			zdotc._Val[1] += conj(Cd(&x[i]))._Val[1] * Cd(&y[i])._Val[1]
+			zdotc._Val[1] -= Cd(&x[i])._Val[1] * Cd(&y[i])._Val[0]
 				- Cd(&x[i])._Val[0] * Cd(&y[i])._Val[1];
 		}
 	} else {
 		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += conj(Cd(&x[i*incx]))._Val[0] * Cd(&y[i*incy])._Val[0]
+			zdotc._Val[0] += Cd(&x[i*incx])._Val[0] * Cd(&y[i*incy])._Val[0]
 				+ Cd(&x[i*incx])._Val[1] * Cd(&y[i*incy])._Val[1];
-			zdotc._Val[1] += conj(Cd(&x[i*incx]))._Val[1] * Cd(&y[i*incy])._Val[1]
+			zdotc._Val[1] -= Cd(&x[i*incx])._Val[1] * Cd(&y[i*incy])._Val[0]
 				- Cd(&x[i*incx])._Val[0] * Cd(&y[i*incy])._Val[1];
 		}
 	}
