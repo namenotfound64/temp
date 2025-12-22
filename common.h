@@ -362,18 +362,6 @@ typedef int blasint;
 #define MAX_CPU_NUMBER 2
 #endif
 
-#if defined(OS_SUNOS)
-#define YIELDING	thr_yield()
-#endif
-
-#if defined(OS_WINDOWS)
-#if defined(_MSC_VER) && !defined(__clang__)
-#define YIELDING    YieldProcessor()
-#else
-#define YIELDING	SwitchToThread()
-#endif
-#endif
-
 #if defined(ARMV7) || defined(ARMV6) || defined(ARMV8) || defined(ARMV5)
 #define YIELDING        __asm__ __volatile__ ("nop;nop;nop;nop;nop;nop;nop;nop; \n");
 #endif
@@ -398,13 +386,24 @@ typedef int blasint;
 #endif
 #endif
 
-
 #ifdef __EMSCRIPTEN__
 #define YIELDING
 #endif
 
 #ifndef YIELDING
+#if defined(OS_SUNOS)
+#define YIELDING	thr_yield()
+
+#elif defined(OS_WINDOWS)
+# if defined(_MSC_VER) && !defined(__clang__)
+# define YIELDING    	YieldProcessor()
+# else
+# define YIELDING	SwitchToThread()
+# endif
+
+#else
 #define YIELDING	sched_yield()
+#endif
 #endif
 
 /***
