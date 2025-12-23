@@ -765,7 +765,7 @@ static __inline int readenv_atoi(char *env) {
 	return 0;
 }
 #else
-#ifdef OS_WINDOWS
+#if defined(OS_WINDOWS) && !defined(OS_CYGWIN_NT)
 static __inline int readenv_atoi(char *env) {
   env_var_t p;
   return readenv(p,env) ? 0 : atoi(p);
