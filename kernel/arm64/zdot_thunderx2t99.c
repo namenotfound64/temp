@@ -243,8 +243,9 @@ static void zdot_compute(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLON
 	"	asr	"J", "N", #"N_DIV_SHIFT"	\n"
 	"	cmp	"J", xzr			\n"
 	"	beq	3f //dot_kernel_F1		\n"
-
-	"//	.align 5				\n"
+#ifndef _MSC_VER
+	"	.align 5				\n"
+#endif
 	"2: //dot_kernel_F:				\n"
 	"	"KERNEL_F"				\n"
 	"	subs	"J", "J", #1			\n"
