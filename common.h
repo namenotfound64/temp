@@ -390,18 +390,19 @@ typedef int blasint;
 #define YIELDING
 #endif
 
+#if defined(_MSC_VER) && !defined(__clang__)
+#undef YIELDING // MSVC doesn't support assembly code
+#define YIELDING    	YieldProcessor()
+#endif
+
 #ifndef YIELDING
 #if defined(OS_SUNOS)
 #define YIELDING	thr_yield()
 
 #elif defined(OS_WINDOWS)
-# if defined(_MSC_VER) && !defined(__clang__)
-# define YIELDING    	YieldProcessor()
-# else
-# define YIELDING	SwitchToThread()
-# endif
+#define YIELDING	SwitchToThread()
 
-#else
+#else // assume linux
 #define YIELDING	sched_yield()
 #endif
 #endif
