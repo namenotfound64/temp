@@ -402,7 +402,7 @@ typedef int blasint;
 #elif defined(OS_WINDOWS)
 #define YIELDING	SwitchToThread()
 
-#else // assume linux
+#else // assume POSIX.1-2008
 #define YIELDING	sched_yield()
 #endif
 #endif
