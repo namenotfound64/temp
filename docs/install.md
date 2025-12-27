@@ -229,14 +229,15 @@ the C parts, as the ABI imposed by `ifort` is incompatible with MSVC
 
 A fully-optimized OpenBLAS that can be statically or dynamically linked to your
 application can currently be built for the 64-bit architecture with the LLVM
-compiler infrastructure. We're going to use [Miniconda3](https://docs.anaconda.com/miniconda/)
+compiler infrastructure. We're going to use [Miniforge3] the pre-configured
+and more versatile alternative to [Miniconda](https://docs.anaconda.com/miniconda/)
 to grab all of the tools we need, since some of them are in an experimental
 status. Before you begin, you'll need to have Microsoft Visual Studio 2015 or
 newer installed.
 
 1. Install Miniforge for 64-bit Windows with the latest version of the installer Miniforge3-Windows-x86_64.exe
    available on [github.com](https://github.com/conda-forge/miniforge/releases/)
-2. Open the "Anaconda Command Prompt" now available in the Start Menu, or at `%USERPROFILE%\miniconda3\shell\condabin\conda-hook.ps1`.
+2. Open the "Miniforge Command Prompt" now available in the Start Menu, or at `%USERPROFILE%\miniforge3\shell\condabin\conda-hook.ps1`.
 3. In that command prompt window, use `cd` to change to the directory where you want to build OpenBLAS.
 4. Now install all of the tools we need:
    ```
