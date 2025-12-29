@@ -244,6 +244,7 @@ newer installed.
    conda update -n base conda
    conda install -y cmake flang_win-64 clangdev perl libflang ninja
    ```
+   (if you want to build with OpenMP support, add `llvm-openmp` and `llvm-openmp-fortran`)
 5.  Still in the Anaconda Command Prompt window, activate the 64-bit MSVC environment with `vcvarsall x64`.
     On Windows 11 with Visual Studio 2022, this would be done by invoking:
     
