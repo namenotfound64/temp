@@ -61,6 +61,11 @@ endif
 ifeq ($(CORE), ARMV9SME)
 CCOMMON_OPT += -march=armv9-a+sve2+sme
 FCOMMON_OPT += -march=armv9-a+sve2
+if defined(OS_WINDOWS)
+ifeq ($(C_COMPILER), CLANG)
+CCOMMON_OPT += --aarch64-stack-hazard-size=0
+endif
+endif
 endif
 
 ifeq ($(CORE), CORTEXA53)
