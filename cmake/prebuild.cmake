@@ -1639,6 +1639,8 @@ else(NOT CMAKE_CROSSCOMPILING)
   unset (HAVE_VFP)
   unset (HAVE_VFPV3)
   unset (HAVE_VFPV4)
+  unset (HAVE_SVE)
+  unset (HAVE_SME)
   message(STATUS "Running getarch")
 
   # use the cmake binary w/ the -E param to run a shell command in a cross-platform way
