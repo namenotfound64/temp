@@ -310,7 +310,7 @@ endif
 
 ifeq ($(CORE), VORTEXM4)
 ifneq ($(C_COMPILER), GCC)
-CCOMMON_OPT += -march=armv8.4-a+sme
+CCOMMON_OPT += -march=armv8.4-a -mcpu=apple-m4
 else
 CCOMMON_OPT += -march=armv8.4-a
 endif
