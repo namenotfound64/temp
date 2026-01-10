@@ -712,9 +712,10 @@ fully working OpenBLAS for this platform.
 
 Go to the directory where you unpacked OpenBLAS,and enter the following commands:
 ```bash
-CC=/Applications/Xcode_12.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
+CC="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang"
 
-CFLAGS= -O2 -Wno-macro-redefined -isysroot /Applications/Xcode_12.4.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.4.sdk -arch arm64 -miphoneos-version-min=10.0
+SDKROOT="$(xcrun --sdk iphoneos --show-sdk-path)"
+CFLAGS="-O2 -Wno-macro-redefined -isysroot $SDKROOT -arch arm64 -miphoneos-version-min=10.0"
 
 make TARGET=ARMV8 DYNAMIC_ARCH=1 NUM_THREADS=32 HOSTCC=clang NOFORTRAN=1
 ```
