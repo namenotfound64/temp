@@ -341,6 +341,9 @@ double NNK;
 
   if (args.n == 0) return;
 
+#ifdef DYNAMIC_ARCH
+extern char* gotoblas_corename(void);
+#endif
 	
 #if !defined(COMPLEX) && !defined(DOUBLE) && !defined(BFLOAT16)  && !defined(HFLOAT16)
 #if defined(ARCH_ARM64) && (defined(USE_SSYRK_KERNEL_DIRECT)||defined(DYNAMIC_ARCH))
