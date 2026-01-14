@@ -314,7 +314,7 @@ ifeq ($(APPLECLANG),1)
 CCOMMON_OPT += -march=armv8.4-a+sme
 else
 CCOMMON_OPT += -march=armv8.4-a+sme
-override LFLAGS += -lclang_rt_builtins-aarch64
+override LDFLAGS += -lclang_rt_builtins-aarch64
 endif
 else
 CCOMMON_OPT += -march=armv8.4-a
