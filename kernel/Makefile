@@ -39,9 +39,9 @@ ifeq ($(TARGET_CORE), VORTEXM4)
     override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE) -UHAVE_SME -march=armv8.4-a
   else
     ifeq ($(APPLECLANG),1)
-      override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE) -march=armv8.4-a+sme -mcpu=apple-m4
+      override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE) -march=armv8.4-a+sme
     else
-      override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE) -march=armv8.4-a -mcpu=apple-m4
+      override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE) -march=armv8.4-a
     endif
     ifdef OS_WINDOWS
       ifeq ($(C_COMPILER), CLANG)
