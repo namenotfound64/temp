@@ -42,6 +42,7 @@ ifeq ($(TARGET_CORE), VORTEXM4)
       override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE) -march=armv8.4-a+sme
     else
       override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE) -march=armv8.4-a+sme
+	  override LFLAGS += -lclang_rt_builtins-aarch64
     endif
     ifdef OS_WINDOWS
       ifeq ($(C_COMPILER), CLANG)
