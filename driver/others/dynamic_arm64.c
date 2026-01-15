@@ -169,7 +169,7 @@ extern gotoblas_t  gotoblas_A64FX;
 #endif
 #ifndef NO_SME
 extern gotoblas_t  gotoblas_ARMV9SME;
-#if defined (__clang__)
+#if defined (__clang__) && defined(OS_DARWIN)
 extern gotoblas_t  gotoblas_VORTEXM4;
 #else
 #define gotoblas_VORTEXM4 gotoblas_NEOVERSEN1
