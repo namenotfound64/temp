@@ -722,8 +722,10 @@ DYNAMIC_CORE += A64FX
 endif
 ifneq ($(NO_SME), 1)
 DYNAMIC_CORE += ARMV9SME
+ifeq ($(OSNAME), Darwin)
 ifneq ($(C_COMPILER), GCC)
 DYNAMIC_CORE += VORTEXM4
+endif
 endif
 endif
 DYNAMIC_CORE += THUNDERX
